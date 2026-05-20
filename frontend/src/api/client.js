@@ -1,11 +1,6 @@
-const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-const isLoopbackApi =
-  configuredApiBaseUrl?.includes("localhost") || configuredApiBaseUrl?.includes("127.0.0.1");
-
-const API_BASE_URL =
-  import.meta.env.PROD && isLoopbackApi
-    ? "/_backend"
-    : configuredApiBaseUrl ?? (import.meta.env.PROD ? "/_backend" : "http://localhost:8002");
+const API_BASE_URL = import.meta.env.PROD
+  ? "/_backend"
+  : import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8002";
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
