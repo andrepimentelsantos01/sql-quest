@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, HelpCircle, ShieldQuestion, TerminalSquare, XCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle, PartyPopper, RotateCcw, ShieldQuestion, TerminalSquare, XCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   answerSqlHelpQuestion,
@@ -17,6 +17,7 @@ import ResultModal from "./components/ResultModal";
 import SqlTerminal from "./components/SqlTerminal";
 
 const STARTER_QUERY = "SELECT \nFROM \nLIMIT 10;";
+const INITIAL_PLAYER = { streak: 0, lives: 5 };
 
 export default function App() {
   const terminalSectionRef = useRef(null);
@@ -39,7 +40,8 @@ export default function App() {
   const [previewing, setPreviewing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [player, setPlayer] = useState({ level: 1, xp: 0, streak: 0, lives: 5 });
+  const [player, setPlayer] = useState(INITIAL_PLAYER);
+  const [gameOverStreak, setGameOverStreak] = useState(null);
 
   async function loadRound() {
     setLoadingRound(true);
@@ -91,9 +93,15 @@ export default function App() {
     setError("");
     try {
       const response = await submitQuery(scenario.id, query);
+      const correct = isCorrectResult(response.correct);
+      const normalizedResponse = { ...response, correct };
+      const gameOver = !correct && player.lives <= 1;
       setPreviewResult(response.user_result);
-      setModalResult(response);
-      setPlayer((current) => updatePlayer(current, response.correct));
+      setModalResult(gameOver ? null : normalizedResponse);
+      if (gameOver) {
+        setGameOverStreak(player.streak);
+      }
+      setPlayer((current) => updatePlayer(current, correct));
     } catch (err) {
       setError(err.message);
     } finally {
@@ -113,6 +121,9 @@ export default function App() {
       const currentLineIndex = getNextAssistLineIndex(query, assistLineIndex);
       const response = await fetchAssistLine(scenario.id, currentLineIndex);
       if (response.line) {
+        if (player.lives <= 1) {
+          setGameOverStreak(player.streak);
+        }
         setQuery((current) => insertAssistLine(current, response.line, currentLineIndex));
         setAssistLineIndex(response.next_index);
         setPlayer((current) => ({
@@ -168,14 +179,17 @@ export default function App() {
     setError("");
     try {
       const result = await answerSqlHelpQuestion(scenario.id, sqlHelpQuestion.id, optionId);
-      const resultWithScenario = { ...result, scenarioId: scenario.id };
+      const correct = isCorrectResult(result.correct);
+      const resultWithScenario = { ...result, correct, scenarioId: scenario.id };
       setSqlHelpResult(resultWithScenario);
       setUsedSqlHelpResult(resultWithScenario);
-      if (!result.correct) {
-        setPlayer((current) => ({
-          ...current,
-          lives: Math.max(0, current.lives - 1),
-        }));
+      if (!correct) {
+        if (player.lives <= 1) {
+          setGameOverStreak(player.streak);
+          setSqlHelpQuestion(null);
+          setSqlHelpResult(null);
+        }
+        setPlayer(applyLifePenalty);
       }
     } catch (err) {
       setError(err.message);
@@ -189,11 +203,29 @@ export default function App() {
   }
 
   async function handleConfirmGiveUpTask() {
+    const gameOver = player.lives <= 1;
+    if (gameOver) {
+      setGameOverStreak(player.streak);
+      setGiveUpModalOpen(false);
+      setPlayer((current) => ({
+        ...current,
+        streak: 0,
+        lives: 0,
+      }));
+      return;
+    }
+
     setPlayer((current) => ({
       ...current,
       streak: 0,
       lives: Math.max(0, current.lives - 1),
     }));
+    await loadRound();
+  }
+
+  async function handleRetryGame() {
+    setGameOverStreak(null);
+    setPlayer(INITIAL_PLAYER);
     await loadRound();
   }
 
@@ -218,8 +250,6 @@ export default function App() {
       <GameAmbientEffects />
       <main className="app-shell">
       <GameHud
-        level={player.level}
-        xp={player.xp}
         streak={player.streak}
         lives={player.lives}
       />
@@ -313,8 +343,64 @@ export default function App() {
           setSqlHelpResult(null);
         }}
       />
+      <GameOverModal streak={gameOverStreak} onRetry={handleRetryGame} />
       </main>
     </div>
+  );
+}
+
+function GameOverModal({ streak, onRetry }) {
+  if (streak === null) {
+    return null;
+  }
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="modal-backdrop"
+        role="presentation"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className="modal game-over-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="game-over-title"
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: 10 }}
+          transition={{ duration: 0.24, ease: "easeOut" }}
+        >
+          <div className="party-burst" aria-hidden="true">
+            {Array.from({ length: 14 }, (_, index) => (
+              <span key={index} style={{ "--burst-index": `${index}` }} />
+            ))}
+          </div>
+
+          <motion.div
+            className="result-icon success"
+            initial={{ rotate: -8, scale: 0.82 }}
+            animate={{ rotate: [0, -6, 6, 0], scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.08 }}
+          >
+            <PartyPopper size={30} />
+          </motion.div>
+
+          <h3 id="game-over-title">Fim de jogo</h3>
+          <p>Parabéns pela rodada. Sua sequência final foi:</p>
+          <div className="game-over-streak">{streak}</div>
+
+          <div className="modal-actions">
+            <button type="button" className="primary-button" onClick={onRetry}>
+              <RotateCcw size={17} />
+              Tentar novamente
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -564,17 +650,24 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
 function updatePlayer(current, correct) {
   if (!correct) {
     return {
-      ...current,
+      ...applyLifePenalty(current),
       streak: 0,
-      lives: Math.max(0, current.lives - 1),
     };
   }
 
-  const nextXp = current.xp + 25;
   return {
-    level: nextXp >= 100 ? current.level + 1 : current.level,
-    xp: nextXp >= 100 ? nextXp - 100 : nextXp,
+    ...current,
     streak: current.streak + 1,
-    lives: Math.min(5, current.lives + 1),
+  };
+}
+
+function isCorrectResult(value) {
+  return value === true;
+}
+
+function applyLifePenalty(current) {
+  return {
+    ...current,
+    lives: Math.max(0, current.lives - 1),
   };
 }

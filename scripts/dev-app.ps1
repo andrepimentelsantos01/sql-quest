@@ -6,7 +6,7 @@ $rootPath = Split-Path -Parent $PSScriptRoot
 $backendPath = Join-Path $rootPath "backend"
 $frontendPath = Join-Path $rootPath "frontend"
 $backendHost = "127.0.0.1"
-$backendPorts = @(8002, 8003)
+$backendPort = 8002
 $frontendPort = 5173
 $jobs = @()
 
@@ -61,18 +61,6 @@ function Get-ListeningProcessId {
   return $null
 }
 
-function Get-AvailablePort {
-  param([int[]]$Ports)
-
-  foreach ($port in $Ports) {
-    if (-not (Get-ListeningProcessId -Port $port)) {
-      return $port
-    }
-  }
-
-  return $null
-}
-
 function Assert-PortAvailable {
   param(
     [string]$ServiceName,
@@ -86,12 +74,7 @@ function Assert-PortAvailable {
 }
 
 try {
-  $backendPort = Get-AvailablePort -Ports $backendPorts
-  if (-not $backendPort) {
-    $ports = $backendPorts -join ", "
-    throw (Format-PtText "Backend n{t}o foi iniciado: as portas $ports est{t}o ocupadas. Encerre os processos e rode npm run dev:app novamente.")
-  }
-
+  Assert-PortAvailable -ServiceName "Backend" -Port $backendPort
   Assert-PortAvailable -ServiceName "Frontend" -Port $frontendPort
 
   Write-Host "Iniciando backend em http://localhost:$backendPort"

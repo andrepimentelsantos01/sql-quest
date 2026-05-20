@@ -1,9 +1,9 @@
-import { Flame, Heart, Trophy, Zap } from "lucide-react";
+import { Flame, Heart } from "lucide-react";
 import { motion } from "motion/react";
 
 const MAX_LIVES = 5;
 
-export default function GameHud({ level, xp, streak, lives }) {
+export default function GameHud({ streak, lives }) {
   return (
     <motion.header
       className="game-hud"
@@ -20,14 +20,6 @@ export default function GameHud({ level, xp, streak, lives }) {
       </div>
 
       <div className="hud-stats" aria-label="Status do jogador">
-        <div className="hud-stat level-stat">
-          <Trophy size={17} />
-          <span>Nível {level}</span>
-        </div>
-        <div className="hud-stat xp-stat">
-          <Zap size={17} />
-          <span>{xp}/100 XP</span>
-        </div>
         <div className="hud-stat streak-stat">
           <Flame size={17} />
           <span>Sequência {streak}</span>

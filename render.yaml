@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: sql-quest-api
+    env: python
+    rootDir: backend
+    buildCommand: "pip install -r requirements.txt && python scripts/seed_databases.py"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: CORS_ORIGINS
+        sync: false

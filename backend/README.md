@@ -1,13 +1,30 @@
 # Backend do SQL Quest
 
-## Rodar
+## Porta local padrao
+
+API local: `http://localhost:8002/api/health`
+
+## Rodar localmente
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 python scripts/seed_databases.py
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8002
+uvicorn app.main:app --host 127.0.0.1 --port 8002
 ```
 
-API fixa: http://localhost:8002/api/health
+## CORS
+
+Por padrao, o backend aceita:
+
+- `http://localhost:5173`
+- `http://127.0.0.1:5173`
+
+Em producao, configure:
+
+```bash
+CORS_ORIGINS=https://seu-frontend.vercel.app
+```
+
+Multiplas origens podem ser separadas por virgula.

@@ -26,16 +26,6 @@ export default function MissionReport({
         </div>
 
         <div className="report-actions">
-          <button
-            className="primary-button submit-task-button"
-            type="button"
-            onClick={onSubmit}
-            disabled={submitting || !canSubmit}
-          >
-            <Send size={17} />
-            {submitting ? "Entregando..." : "Entregar a task"}
-          </button>
-
           <button className="danger-help-button" type="button" onClick={onRequestHelp} disabled={helpLoading}>
             <HelpCircle size={15} />
             {helpLoading ? "..." : "Pedir Ajuda"}
@@ -45,14 +35,24 @@ export default function MissionReport({
 
       {result ? <ResultTable result={result} /> : <p>A pré-visualização da consulta aparece aqui depois da execução.</p>}
 
-      {taskAccepted ? (
-        <div className="report-footer-actions">
+      <div className="report-footer-actions">
+        {taskAccepted ? (
           <button type="button" className="give-up-task-button" onClick={onGiveUpTask} disabled={givingUp}>
             <XCircle size={18} />
             Desistir da Task
           </button>
-        </div>
-      ) : null}
+        ) : null}
+
+        <button
+          className="primary-button submit-task-button"
+          type="button"
+          onClick={onSubmit}
+          disabled={submitting || !canSubmit}
+        >
+          <Send size={17} />
+          {submitting ? "Entregando..." : "Entregar a task"}
+        </button>
+      </div>
     </motion.section>
   );
 }
