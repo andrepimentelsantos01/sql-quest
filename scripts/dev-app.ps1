@@ -81,7 +81,7 @@ try {
   $jobs += Start-DevJob -Name "backend" -WorkingDirectory $backendPath -Command "python" -CommandArguments @("-m", "uvicorn", "app.main:app", "--host", $backendHost, "--port", "$backendPort")
 
   Write-Host "Iniciando frontend em http://localhost:$frontendPort"
-  $jobs += Start-DevJob -Name "frontend" -WorkingDirectory $frontendPath -Command "npm.cmd" -CommandArguments @("run", "dev") -Environment @{ VITE_API_BASE_URL = "http://localhost:$backendPort" }
+  $jobs += Start-DevJob -Name "frontend" -WorkingDirectory $frontendPath -Command "npm.cmd" -CommandArguments @("run", "dev")
 
   Write-Host (Format-PtText "Aplica{c}{t}o em execu{c}{t}o. Use Ctrl+C para encerrar backend e frontend.")
 

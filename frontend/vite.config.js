@@ -8,5 +8,12 @@ export default defineConfig({
     host: "127.0.0.1",
     port: 5173,
     strictPort: true,
+    proxy: {
+      "/_backend": {
+        target: "http://localhost:8002",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/_backend/, ""),
+      },
+    },
   },
 });

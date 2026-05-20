@@ -22,7 +22,7 @@ Nao ha fallback automatico de porta. Se uma porta estiver ocupada, encerre o pro
 npm run dev:app
 ```
 
-O script inicia backend e frontend e injeta `VITE_API_BASE_URL=http://localhost:8002` no frontend.
+O script inicia backend e frontend. O frontend chama `/_backend` e o Vite redireciona essa rota para `http://localhost:8002` em desenvolvimento.
 
 ## Rodar backend manualmente
 
@@ -50,10 +50,10 @@ copy .env.example .env
 npm run dev
 ```
 
-`frontend/.env`:
+`frontend/.env` opcional:
 
 ```bash
-VITE_API_BASE_URL=http://localhost:8002
+VITE_API_BASE_URL=/_backend
 ```
 
 ## Deploy online
@@ -92,7 +92,7 @@ Se a Vercel detectar o projeto como multiplos servicos, use o `vercel.json` da r
 
 Nesse modo, nao e necessario configurar `VITE_API_BASE_URL`; o frontend usa `/_backend` automaticamente em producao.
 
-Se existir `VITE_API_BASE_URL=http://localhost:8002` nas variaveis da Vercel, remova essa variavel. O frontend tambem ignora loopback em producao para evitar chamadas para `localhost`.
+O frontend nao referencia `localhost` no client. Em producao, as chamadas usam `/_backend`.
 
 ## MVP atual
 
