@@ -10,6 +10,7 @@ import {
   submitQuery,
 } from "./api/client";
 import GameHud from "./components/GameHud";
+import GameAmbientEffects from "./components/effects/GameAmbientEffects";
 import MissionBriefing from "./components/MissionBriefing";
 import MissionReport from "./components/MissionReport";
 import ResultModal from "./components/ResultModal";
@@ -213,7 +214,9 @@ export default function App() {
   }, [taskAccepted, scenario?.id]);
 
   return (
-    <main className="app-shell">
+    <div className="game-root">
+      <GameAmbientEffects />
+      <main className="app-shell">
       <GameHud
         level={player.level}
         xp={player.xp}
@@ -310,7 +313,8 @@ export default function App() {
           setSqlHelpResult(null);
         }}
       />
-    </main>
+      </main>
+    </div>
   );
 }
 
