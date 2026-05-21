@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const PARTICLES = [
   { x: "8%", y: "18%", size: 4, delay: "0s", duration: "18s", drift: "22px" },
   { x: "18%", y: "72%", size: 3, delay: "1.8s", duration: "22s", drift: "-18px" },
@@ -13,7 +15,7 @@ const PARTICLES = [
   { x: "73%", y: "10%", size: 2, delay: "4.1s", duration: "24s", drift: "-18px" },
 ];
 
-export default function ParticleField() {
+function ParticleField() {
   return (
     <div className="ambient-particles">
       {PARTICLES.map((particle) => (
@@ -34,3 +36,5 @@ export default function ParticleField() {
     </div>
   );
 }
+
+export default memo(ParticleField);

@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const TOKENS = [
   { label: "SELECT", x: "7%", y: "28%", delay: "0s", duration: "26s", drift: "16px", rotate: "1.6deg" },
   { label: "JOIN", x: "84%", y: "22%", delay: "2.4s", duration: "28s", drift: "-14px", rotate: "-1.3deg" },
@@ -9,7 +11,7 @@ const TOKENS = [
   { label: ";", x: "92%", y: "58%", delay: "0.8s", duration: "24s", drift: "-14px", rotate: "-1.3deg" },
 ];
 
-export default function FloatingSqlTokens() {
+function FloatingSqlTokens() {
   return (
     <div className="ambient-sql-tokens">
       {TOKENS.map((token) => (
@@ -31,3 +33,5 @@ export default function FloatingSqlTokens() {
     </div>
   );
 }
+
+export default memo(FloatingSqlTokens);

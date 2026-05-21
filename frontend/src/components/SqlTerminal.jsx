@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { sql } from "@codemirror/lang-sql";
 import { EditorView } from "@codemirror/view";
@@ -49,12 +50,23 @@ const terminalTheme = EditorView.theme({
 });
 
 export default function SqlTerminal({ schema, value, onChange, onPreview, loading, onRequestAssist, assistDisabled }) {
+  const extensions = useMemo(() => [sql(), terminalTheme], []);
+  const basicSetup = useMemo(
+    () => ({
+      drawSelection: false,
+      foldGutter: false,
+      highlightActiveLine: true,
+      highlightActiveLineGutter: true,
+    }),
+    [],
+  );
+
   return (
     <motion.section
       className={`panel terminal-panel sql-terminal${loading ? " is-running" : ""}`}
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.05 }}
+      transition={{ duration: 0.2, delay: 0.03 }}
     >
       <div className="panel-title">
         <Terminal size={19} />
@@ -67,13 +79,8 @@ export default function SqlTerminal({ schema, value, onChange, onPreview, loadin
         <CodeMirror
           value={value}
           height="230px"
-          extensions={[sql(), terminalTheme]}
-          basicSetup={{
-            drawSelection: false,
-            foldGutter: false,
-            highlightActiveLine: true,
-            highlightActiveLineGutter: true,
-          }}
+          extensions={extensions}
+          basicSetup={basicSetup}
           onChange={onChange}
           placeholder="SELECT ..."
           theme="dark"

@@ -17,7 +17,7 @@ export default function MissionReport({
       className={`panel result-panel${result ? "" : " empty"}`}
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: 0.1 }}
+      transition={{ duration: 0.2, delay: 0.04 }}
     >
       <div className="mission-report-header">
         <div className="panel-title">

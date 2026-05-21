@@ -1,10 +1,11 @@
+import { memo } from "react";
 import AmbientGlow from "./AmbientGlow";
 import AnimatedGridOverlay from "./AnimatedGridOverlay";
 import FloatingSqlTokens from "./FloatingSqlTokens";
 import ParticleField from "./ParticleField";
 import ScanlineEffect from "./ScanlineEffect";
 
-export default function GameAmbientEffects() {
+function GameAmbientEffects() {
   return (
     <div className="game-ambient-effects" aria-hidden="true">
       <AnimatedGridOverlay />
@@ -15,3 +16,5 @@ export default function GameAmbientEffects() {
     </div>
   );
 }
+
+export default memo(GameAmbientEffects);

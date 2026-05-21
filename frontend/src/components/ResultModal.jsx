@@ -20,7 +20,7 @@ export default function ResultModal({ result, onClose, onNextRound }) {
             initial={{ opacity: 0, scale: 0.92, y: 18 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 10 }}
-            transition={{ duration: 0.22 }}
+            transition={{ duration: 0.16 }}
           >
             <ResultContent result={result} onClose={onClose} onNextRound={onNextRound} />
           </motion.div>

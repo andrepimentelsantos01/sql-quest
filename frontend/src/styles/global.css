@@ -91,6 +91,7 @@ button {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  contain: layout paint style;
 }
 
 .ambient-grid-overlay {
@@ -136,6 +137,8 @@ button {
     0 0 12px rgba(14, 165, 233, 0.1);
   animation: ambient-particle-float var(--particle-duration) ease-in-out infinite;
   animation-delay: var(--particle-delay);
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
   will-change: transform, opacity;
 }
 
@@ -152,13 +155,15 @@ button {
   white-space: nowrap;
   animation: ambient-token-float var(--token-duration) ease-in-out infinite;
   animation-delay: var(--token-delay);
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
   will-change: transform, opacity;
 }
 
 .ambient-scanline {
   background: linear-gradient(115deg, transparent 18%, rgba(255, 255, 255, 0.2) 42%, rgba(20, 184, 166, 0.08) 48%, transparent 62%);
   opacity: 0.28;
-  transform: translateX(-120%);
+  transform: translate3d(-120%, 0, 0);
   animation: ambient-scan-sweep 24s ease-in-out infinite;
   will-change: transform;
 }
@@ -197,8 +202,9 @@ button {
   inset: 0;
   pointer-events: none;
   background: linear-gradient(110deg, transparent 0%, rgba(20, 184, 166, 0.1) 42%, transparent 64%);
-  transform: translateX(-120%);
+  transform: translate3d(-120%, 0, 0);
   animation: hud-shine 7s ease-in-out infinite;
+  will-change: transform;
 }
 
 .game-logo-wrap {
@@ -438,7 +444,7 @@ h3 {
   pointer-events: none;
   background: linear-gradient(105deg, transparent 16%, rgba(255, 255, 255, 0.2) 42%, rgba(20, 184, 166, 0.08) 50%, transparent 68%);
   opacity: 0.42;
-  transform: translateX(-120%);
+  transform: translate3d(-120%, 0, 0);
   animation: panel-scanline 16s ease-in-out infinite;
   will-change: transform, opacity;
 }
@@ -1204,6 +1210,155 @@ tbody tr:hover td {
   color: #71460a;
 }
 
+.intro-modal {
+  width: min(720px, 100%);
+  max-height: min(88vh, 760px);
+  overflow-y: auto;
+  gap: 18px;
+  border-color: rgba(20, 184, 166, 0.34);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(20, 184, 166, 0.18), transparent 34%),
+    radial-gradient(circle at 88% 18%, rgba(14, 165, 233, 0.12), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(236, 248, 247, 0.9)),
+    #f2f6f5;
+  box-shadow:
+    0 32px 90px rgba(32, 48, 58, 0.34),
+    0 0 46px rgba(20, 184, 166, 0.16);
+}
+
+.intro-heading {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.intro-heading h2 {
+  color: #17262f;
+  font-size: clamp(1.7rem, 4vw, 2.35rem);
+}
+
+.intro-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(20, 184, 166, 0.28);
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(236, 253, 245, 0.96), rgba(207, 250, 254, 0.7));
+  color: #12645f;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 0 20px rgba(20, 184, 166, 0.18);
+}
+
+.intro-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(22, 117, 111, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.62);
+  color: #33424d;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.74);
+}
+
+.intro-copy p {
+  line-height: 1.58;
+}
+
+.intro-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.start-missions-button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 22px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #15803d, #16a34a, #14b8a6);
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 900;
+  box-shadow:
+    0 14px 30px rgba(22, 163, 74, 0.24),
+    0 0 24px rgba(20, 184, 166, 0.16);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    opacity 0.16s ease;
+}
+
+.start-missions-button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 16px 34px rgba(22, 163, 74, 0.3),
+    0 0 30px rgba(20, 184, 166, 0.2);
+}
+
+.start-missions-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.start-missions-button:focus-visible {
+  outline: 3px solid rgba(34, 197, 94, 0.34);
+  outline-offset: 2px;
+}
+
+.intro-data-animation {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.intro-data-animation::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 18%, rgba(20, 184, 166, 0.12) 44%, rgba(255, 255, 255, 0.22) 50%, transparent 64%);
+  transform: translate3d(-120%, 0, 0);
+  animation: intro-scan 4.8s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.intro-data-animation span {
+  position: absolute;
+  color: #12645f;
+  font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  opacity: 0.12;
+  animation: intro-token-drift 7s ease-in-out infinite;
+}
+
+.intro-data-animation span:nth-child(1) {
+  left: 9%;
+  top: 18%;
+}
+
+.intro-data-animation span:nth-child(2) {
+  right: 10%;
+  top: 36%;
+  animation-delay: 1.2s;
+}
+
+.intro-data-animation span:nth-child(3) {
+  left: 48%;
+  bottom: 12%;
+  animation-delay: 2s;
+}
+
 .game-over-modal {
   position: relative;
   place-items: center;
@@ -1576,11 +1731,11 @@ tbody tr:hover td {
 @keyframes hud-shine {
   0%,
   72% {
-    transform: translateX(-120%);
+    transform: translate3d(-120%, 0, 0);
   }
 
   100% {
-    transform: translateX(120%);
+    transform: translate3d(120%, 0, 0);
   }
 }
 
@@ -1597,11 +1752,11 @@ tbody tr:hover td {
 @keyframes ambient-scan-sweep {
   0%,
   58% {
-    transform: translateX(-120%);
+    transform: translate3d(-120%, 0, 0);
   }
 
   100% {
-    transform: translateX(120%);
+    transform: translate3d(120%, 0, 0);
   }
 }
 
@@ -1645,7 +1800,7 @@ tbody tr:hover td {
 @keyframes panel-scanline {
   0%,
   64% {
-    transform: translateX(-120%);
+    transform: translate3d(-120%, 0, 0);
     opacity: 0;
   }
 
@@ -1654,7 +1809,7 @@ tbody tr:hover td {
   }
 
   100% {
-    transform: translateX(120%);
+    transform: translate3d(120%, 0, 0);
     opacity: 0;
   }
 }
@@ -1669,6 +1824,36 @@ tbody tr:hover td {
   50% {
     transform: translateY(-1px);
     opacity: 1;
+  }
+}
+
+@keyframes intro-scan {
+  0%,
+  46% {
+    opacity: 0;
+    transform: translate3d(-120%, 0, 0);
+  }
+
+  62% {
+    opacity: 0.85;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(120%, 0, 0);
+  }
+}
+
+@keyframes intro-token-drift {
+  0%,
+  100% {
+    opacity: 0.08;
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    opacity: 0.18;
+    transform: translate3d(10px, -8px, 0);
   }
 }
 

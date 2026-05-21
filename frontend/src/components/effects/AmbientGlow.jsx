@@ -1,10 +1,12 @@
+import { memo } from "react";
+
 const GLOWS = [
   { className: "ambient-glow cyan", x: "-8%", y: "4%", duration: "20s", delay: "0s" },
   { className: "ambient-glow teal", x: "72%", y: "62%", duration: "24s", delay: "2s" },
   { className: "ambient-glow mint", x: "38%", y: "82%", duration: "26s", delay: "4s" },
 ];
 
-export default function AmbientGlow() {
+function AmbientGlow() {
   return (
     <div className="ambient-glows">
       {GLOWS.map((glow) => (
@@ -22,3 +24,5 @@ export default function AmbientGlow() {
     </div>
   );
 }
+
+export default memo(AmbientGlow);

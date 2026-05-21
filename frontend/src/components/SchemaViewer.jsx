@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { Database, Table2 } from "lucide-react";
 
-export default function SchemaViewer({ schema, compact = false }) {
+function SchemaViewer({ schema, compact = false }) {
   return (
     <section className={`schema-panel${compact ? " compact" : ""}`} aria-labelledby="schema-title">
       <div className="schema-header">
@@ -33,6 +34,8 @@ export default function SchemaViewer({ schema, compact = false }) {
     </section>
   );
 }
+
+export default memo(SchemaViewer);
 
 function getColumnClassName(column) {
   if (column === "id") {

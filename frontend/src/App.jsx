@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, HelpCircle, PartyPopper, RotateCcw, ShieldQuestion, TerminalSquare, XCircle } from "lucide-react";
+import { CheckCircle2, Database, HelpCircle, PartyPopper, Play, RotateCcw, ShieldQuestion, TerminalSquare, XCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   answerSqlHelpQuestion,
@@ -18,6 +18,7 @@ import SqlTerminal from "./components/SqlTerminal";
 
 const STARTER_QUERY = "SELECT \nFROM \nLIMIT 10;";
 const INITIAL_PLAYER = { streak: 0, lives: 5 };
+const INTRO_STORAGE_KEY = "sql-quest:intro-seen";
 
 export default function App() {
   const terminalSectionRef = useRef(null);
@@ -42,6 +43,7 @@ export default function App() {
   const [error, setError] = useState("");
   const [player, setPlayer] = useState(INITIAL_PLAYER);
   const [gameOverStreak, setGameOverStreak] = useState(null);
+  const [introOpen, setIntroOpen] = useState(() => localStorage.getItem(INTRO_STORAGE_KEY) !== "true");
 
   async function loadRound() {
     setLoadingRound(true);
@@ -229,6 +231,11 @@ export default function App() {
     await loadRound();
   }
 
+  function handleStartIntro() {
+    localStorage.setItem(INTRO_STORAGE_KEY, "true");
+    setIntroOpen(false);
+  }
+
   useEffect(() => {
     loadRound();
   }, []);
@@ -240,7 +247,7 @@ export default function App() {
 
     const scrollTimer = window.setTimeout(() => {
       terminalSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 260);
+    }, 90);
 
     return () => window.clearTimeout(scrollTimer);
   }, [taskAccepted, scenario?.id]);
@@ -273,10 +280,10 @@ export default function App() {
                 <motion.div
                   className="accepted-workspace"
                   key={`${scenario.id}-accepted-workspace`}
-                  initial={{ opacity: 0, y: 24, height: 0 }}
-                  animate={{ opacity: 1, y: 0, height: "auto" }}
-                  exit={{ opacity: 0, y: -12, height: 0 }}
-                  transition={{ duration: 0.38, ease: "easeOut" }}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.22, ease: "easeOut" }}
                 >
                   <div ref={terminalSectionRef}>
                     <SqlTerminal
@@ -343,9 +350,68 @@ export default function App() {
           setSqlHelpResult(null);
         }}
       />
+      <IntroModal open={introOpen} onStart={handleStartIntro} />
       <GameOverModal streak={gameOverStreak} onRetry={handleRetryGame} />
       </main>
     </div>
+  );
+}
+
+function IntroModal({ open, onStart }) {
+  if (!open) {
+    return null;
+  }
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="modal-backdrop"
+        role="presentation"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <motion.div
+          className="modal intro-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="intro-title"
+          initial={{ opacity: 0, scale: 0.92, y: 18 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: 10 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
+        >
+          <div className="intro-data-animation" aria-hidden="true">
+            <span>SELECT</span>
+            <span>JOIN</span>
+            <span>COUNT()</span>
+          </div>
+
+          <div className="intro-heading">
+            <span className="intro-icon" aria-hidden="true">
+              <Database size={22} />
+            </span>
+            <h2 id="intro-title">Bem-vindo ao SQL Quest.</h2>
+          </div>
+
+          <div className="intro-copy">
+            <p>Você não é apenas um estudante praticando consultas. Você é o analista chamado quando a reunião já falhou, o dashboard não convenceu ninguém e alguém precisa encontrar a verdade escondida no banco de dados.</p>
+            <p>Hospitais com custos fora do controle. Big techs afundadas em incidentes críticos. Fábricas perdendo dinheiro com máquinas paradas. Clubes, seleções e empresas tentando tomar decisões antes que o caos vire prejuízo.</p>
+            <p>Cada missão coloca você em um cenário diferente, contratado para resolver problemas sérios com uma única arma: SQL.</p>
+            <p>Leia o contexto, entenda o objetivo, investigue o schema disponível e escreva a consulta certa para revelar a resposta. Aqui, opinião não fecha diagnóstico, achismo não escala sistema e desculpa nenhuma sobrevive a um SELECT bem feito.</p>
+            <p>Você é o especialista chamado quando os dados precisam falar.</p>
+            <p>Sua missão começa agora.</p>
+          </div>
+
+          <div className="intro-actions">
+            <button type="button" className="start-missions-button" onClick={onStart}>
+              <Play size={18} />
+              Iniciar as tarefas
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -371,7 +437,7 @@ function GameOverModal({ streak, onRetry }) {
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 10 }}
-          transition={{ duration: 0.24, ease: "easeOut" }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
         >
           <div className="party-burst" aria-hidden="true">
             {Array.from({ length: 14 }, (_, index) => (
@@ -383,7 +449,7 @@ function GameOverModal({ streak, onRetry }) {
             className="result-icon success"
             initial={{ rotate: -8, scale: 0.82 }}
             animate={{ rotate: [0, -6, 6, 0], scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.08 }}
+            transition={{ duration: 0.34, delay: 0.05 }}
           >
             <PartyPopper size={30} />
           </motion.div>
@@ -525,7 +591,7 @@ function SqlHelpIntroModal({ open, loading, onCancel, onContinue }) {
         initial={{ opacity: 0, scale: 0.94, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 8 }}
-        transition={{ duration: 0.22, ease: "easeOut" }}
+        transition={{ duration: 0.16, ease: "easeOut" }}
       >
         <div className="help-modal-header">
           <span className="help-modal-icon" aria-hidden="true">
@@ -573,7 +639,7 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
         initial={{ opacity: 0, scale: 0.94, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 8 }}
-        transition={{ duration: 0.22, ease: "easeOut" }}
+        transition={{ duration: 0.16, ease: "easeOut" }}
       >
         {result ? (
           <>
@@ -594,7 +660,7 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
               className="help-query-panel"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.12, duration: 0.22 }}
+              transition={{ delay: 0.08, duration: 0.16 }}
             >
               <div className="help-query-header">
                 <TerminalSquare size={15} />
@@ -632,7 +698,7 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
                   disabled={loading}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.035, duration: 0.18 }}
+                  transition={{ delay: index * 0.025, duration: 0.14 }}
                   whileHover={loading ? undefined : { y: -1 }}
                   whileTap={loading ? undefined : { scale: 0.985 }}
                 >
