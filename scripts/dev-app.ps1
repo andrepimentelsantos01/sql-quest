@@ -61,7 +61,7 @@ function Get-ListeningProcessId {
   return $null
 }
 
-function Assert-PortAvailable {
+function Stop-ProcessOnPort {
   param(
     [string]$ServiceName,
     [int]$Port
@@ -69,16 +69,43 @@ function Assert-PortAvailable {
 
   $processId = Get-ListeningProcessId -Port $Port
   if ($processId) {
-    throw (Format-PtText "$ServiceName n{t}o foi iniciado: a porta $Port j{a} est{a} ocupada pelo processo $processId. Encerre esse processo e rode npm run dev:app novamente.")
+    Write-Host (Format-PtText "$ServiceName j{a} est{a} usando a porta $Port no processo $processId. Encerrando processo antigo...")
+    Stop-Process -Id $processId -Force
+    Start-Sleep -Milliseconds 500
   }
 }
 
+function Wait-HttpReady {
+  param(
+    [string]$Url,
+    [int]$TimeoutSeconds = 20
+  )
+
+  $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+  do {
+    try {
+      $response = Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec 2
+      if ($response.StatusCode -ge 200 -and $response.StatusCode -lt 500) {
+        return
+      }
+    }
+    catch {
+      Start-Sleep -Milliseconds 300
+    }
+  } while ((Get-Date) -lt $deadline)
+
+  throw "Backend não respondeu em $Url dentro de $TimeoutSeconds segundos."
+}
+
 try {
-  Assert-PortAvailable -ServiceName "Backend" -Port $backendPort
-  Assert-PortAvailable -ServiceName "Frontend" -Port $frontendPort
+  Stop-ProcessOnPort -ServiceName "Backend" -Port $backendPort
+  Stop-ProcessOnPort -ServiceName "Frontend" -Port $frontendPort
 
   Write-Host "Iniciando backend em http://localhost:$backendPort"
   $jobs += Start-DevJob -Name "backend" -WorkingDirectory $backendPath -Command "python" -CommandArguments @("-m", "uvicorn", "app.main:app", "--host", $backendHost, "--port", "$backendPort")
+
+  Write-Host "Aguardando API em http://localhost:$backendPort/api/health"
+  Wait-HttpReady -Url "http://$backendHost`:$backendPort/api/health"
 
   Write-Host "Iniciando frontend em http://localhost:$frontendPort"
   $jobs += Start-DevJob -Name "frontend" -WorkingDirectory $frontendPath -Command "npm.cmd" -CommandArguments @("run", "dev")

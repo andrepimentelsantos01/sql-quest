@@ -7,12 +7,26 @@
     "database": "saude.db",
     "story": "Olá, analista! Hoje o dia começou bem e você foi convocado para uma reunião, a diretoria chama de comitê de crise, o financeiro chama de última chance.\n\nO trimestre fechou com uma conta de internações alta demais para caber em justificativas elegantes. Antes que alguém escolha um culpado e transforme a reunião em teatro corporativo, os dados precisam falar.\n\nExiste um hospital puxando a despesa para cima e sua missão é descobrir qual.\n\nEncontre o maior responsável pelo custo de internações do período. Nesta sala opinião sem consulta SQL não passa de barulho.",
     "objective": "Sua tarefa: retorne o nome do hospital e o custo total de internações entre 2026-01-01 e 2026-04-01. Ordene do maior custo para o menor e traga apenas o primeiro resultado.",
+    "objective_steps": [
+      "Comece pelas internações registradas no período solicitado.",
+      "Relacione cada internação ao hospital responsável.",
+      "Some o custo total por hospital para medir o impacto financeiro.",
+      "Priorize o hospital com maior custo acumulado."
+    ],
     "expected_sql": "SELECT h.nome AS hospital, SUM(i.custo_total) AS custo_total FROM hospitais h JOIN internacoes i ON i.hospital_id = h.id WHERE i.data_entrada >= '2026-01-01' AND i.data_entrada < '2026-04-01' GROUP BY h.nome ORDER BY custo_total DESC LIMIT 1;",
     "expected_answer": {
       "query": "SELECT h.nome AS hospital, SUM(i.custo_total) AS custo_total FROM hospitais h JOIN internacoes i ON i.hospital_id = h.id WHERE i.data_entrada >= '2026-01-01' AND i.data_entrada < '2026-04-01' GROUP BY h.nome ORDER BY custo_total DESC LIMIT 1;",
       "result": {
-        "columns": ["hospital", "custo_total"],
-        "rows": [["Hospital Central", 733500.5]]
+        "columns": [
+          "hospital",
+          "custo_total"
+        ],
+        "rows": [
+          [
+            "Hospital Central",
+            733500.5
+          ]
+        ]
       }
     },
     "hint": "Ligue hospitais às internações. Depois filtre o período, agrupe por hospital, some custo_total e ordene pelo maior valor."
@@ -25,16 +39,37 @@
     "database": "saude.db",
     "story": "Olá, analista! Hoje você trabalha para um grande grupo do setor da saúde, a central de atendimento abriu o dia com pacientes cobrando retorno, médicos defendendo suas agendas e a ouvidoria usando a expressão prioridade máxima antes mesmo do café.\n\nA gestão quer abrir novos horários mas fazer isso às cegas é só uma forma mais cara de empurrar a fila para outro lugar.\n\nAlgumas especialidades estão deixando pacientes esperando mais do que deveriam e sua missão é revelar onde o gargalo está mais grave.\n\nA fila não vai andar sozinha e uma boa consulta SQL pode mostrar exatamente por onde começar a resolver esse problema.",
     "objective": "Sua tarefa: retorne a especialidade e o tempo médio de espera. Considere apenas consultas realizadas e ordene da maior média para a menor.",
+    "objective_steps": [
+      "Comece pelas consultas que realmente aconteceram.",
+      "Agrupe os atendimentos por especialidade.",
+      "Calcule o tempo médio de espera de cada grupo.",
+      "Organize a lista começando pelas maiores filas."
+    ],
     "expected_sql": "SELECT especialidade, ROUND(AVG(dias_espera), 2) AS media_espera FROM consultas WHERE status = 'realizada' GROUP BY especialidade ORDER BY media_espera DESC;",
     "expected_answer": {
       "query": "SELECT especialidade, ROUND(AVG(dias_espera), 2) AS media_espera FROM consultas WHERE status = 'realizada' GROUP BY especialidade ORDER BY media_espera DESC;",
       "result": {
-        "columns": ["especialidade", "media_espera"],
+        "columns": [
+          "especialidade",
+          "media_espera"
+        ],
         "rows": [
-          ["Neurologia", 28.5],
-          ["Cardiologia", 21.0],
-          ["Ortopedia", 14.0],
-          ["Dermatologia", 10.0]
+          [
+            "Neurologia",
+            28.5
+          ],
+          [
+            "Cardiologia",
+            21.0
+          ],
+          [
+            "Ortopedia",
+            14.0
+          ],
+          [
+            "Dermatologia",
+            10.0
+          ]
         ]
       }
     },
@@ -48,15 +83,34 @@
     "database": "tecnologia.db",
     "story": "Olá, analista! Hoje você está no centro de confiabilidade de uma big tech onde cada serviço parece estável no slide executivo e instável nos logs que ninguém quer abrir.\n\nMilhões de eventos passam pelos sistemas todos os dias, alertas piscam, dashboards disputam atenção e em algum lugar entre uma métrica agregada e um log ignorado existe um serviço causando mais dor do que deveria.\n\nA liderança quer uma resposta antes que a próxima reunião vire uma caça às bruxas com nomes bonitos e pouca evidência.\n\nSua missão é investigar os incidentes críticos do último mês fechado e revelar quais serviços concentraram mais falhas. Em escala gigante achismo não escala. SQL, sim!",
     "objective": "Sua tarefa: retorne o nome do serviço e a quantidade de incidentes críticos abertos entre 2026-04-01 e 2026-05-01. Ordene da maior quantidade para a menor.",
-    "expected_sql": "SELECT s.nome AS servico, COUNT(*) AS incidentes_criticos FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.severidade = 'crítica' AND i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.nome ORDER BY incidentes_criticos DESC;",
+    "objective_steps": [
+      "Comece pelos incidentes abertos no mês analisado.",
+      "Mantenha apenas os casos de maior severidade.",
+      "Relacione cada ocorrência ao serviço afetado.",
+      "Conte quantas falhas críticas cada serviço concentrou.",
+      "Organize a prioridade pelos serviços com mais incidentes."
+    ],
+    "expected_sql": "SELECT s.nome AS servico, COUNT(*) AS incidentes_criticos FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.severidade = 'crítica' AND i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.nome ORDER BY incidentes_criticos DESC, servico ASC;",
     "expected_answer": {
-      "query": "SELECT s.nome AS servico, COUNT(*) AS incidentes_criticos FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.severidade = 'crítica' AND i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.nome ORDER BY incidentes_criticos DESC;",
+      "query": "SELECT s.nome AS servico, COUNT(*) AS incidentes_criticos FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.severidade = 'crítica' AND i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.nome ORDER BY incidentes_criticos DESC, servico ASC;",
       "result": {
-        "columns": ["servico", "incidentes_criticos"],
+        "columns": [
+          "servico",
+          "incidentes_criticos"
+        ],
         "rows": [
-          ["Pagamentos", 2],
-          ["Autenticação", 1],
-          ["Relatórios", 1]
+          [
+            "Pagamentos",
+            2
+          ],
+          [
+            "Autenticação",
+            1
+          ],
+          [
+            "Relatórios",
+            1
+          ]
         ]
       }
     },
@@ -68,17 +122,36 @@
     "title": "Deploys instáveis",
     "difficulty": "Júnior",
     "database": "tecnologia.db",
-    "story": "Olá, CEO! Seu SaaS independente está crescendo e isso é ótimo, exceto pela parte em que cada deploy agora parece uma pequena aposta contra a tranquilidade do seu fim de dia.\n\nA semana foi cheia de publicações em produção, correções rápidas, mensagens no canal do produto e aquele silêncio perigoso depois de clicar em deploy. Alguns lançamentos seguiram em frente e outros voltaram correndo pelo caminho do rollback.\n\nVocê precisa descobrir quais aplicações abriram o bico antes que o roadmap vire uma coleção de remendos urgentes.\n\nSua missão é olhar para os deploys do período e revelar onde a instabilidade está se repetindo. Em uma aplicação em produção cada rollback custa tempo, confiança e um pouco da sua paz.",
+    "story": "Olá, analista! Seu SaaS independente está crescendo e isso é ótimo, exceto pela parte em que cada deploy agora parece uma pequena aposta contra a tranquilidade do fim de dia.\n\nA semana foi cheia de publicações em produção, correções rápidas, mensagens no canal do produto e aquele silêncio perigoso depois de clicar em deploy. Alguns lançamentos seguiram em frente e outros voltaram correndo pelo caminho do rollback.\n\nVocê precisa descobrir quais aplicações abriram o bico antes que o roadmap vire uma coleção de remendos urgentes.\n\nSua missão é olhar para os deploys do período e revelar onde a instabilidade está se repetindo. Em uma aplicação em produção cada rollback custa tempo, confiança e um pouco da paz de todo mundo.",
     "objective": "Sua tarefa: retorne a aplicação e a quantidade de deploys com rollback entre 2026-04-01 e 2026-05-01. Ordene da maior quantidade para a menor. Em caso de empate, ordene por aplicação em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelos deploys realizados no período solicitado.",
+      "Mantenha apenas os lançamentos que precisaram voltar atrás.",
+      "Agrupe os casos por aplicação afetada.",
+      "Conte a recorrência de instabilidade em cada aplicação.",
+      "Organize a lista pela maior quantidade e use o nome como desempate."
+    ],
     "expected_sql": "SELECT aplicacao, COUNT(*) AS rollbacks FROM deploys WHERE rollback = 1 AND criado_em >= '2026-04-01' AND criado_em < '2026-05-01' GROUP BY aplicacao ORDER BY rollbacks DESC, aplicacao ASC;",
     "expected_answer": {
       "query": "SELECT aplicacao, COUNT(*) AS rollbacks FROM deploys WHERE rollback = 1 AND criado_em >= '2026-04-01' AND criado_em < '2026-05-01' GROUP BY aplicacao ORDER BY rollbacks DESC, aplicacao ASC;",
       "result": {
-        "columns": ["aplicacao", "rollbacks"],
+        "columns": [
+          "aplicacao",
+          "rollbacks"
+        ],
         "rows": [
-          ["Checkout", 2],
-          ["API Parceiros", 1],
-          ["Portal Admin", 1]
+          [
+            "Checkout",
+            2
+          ],
+          [
+            "API Parceiros",
+            1
+          ],
+          [
+            "Portal Admin",
+            1
+          ]
         ]
       }
     },
@@ -92,16 +165,37 @@
     "database": "esporte.db",
     "story": "Olá, analista! Hoje você está na sala de desempenho da comissão técnica da Seleção Brasileira onde cada número pode pesar mais do que uma coletiva inteira antes da Copa do Mundo.\n\nA lista de convocados ainda não está fechada, o técnico tem nomes fortes na cabeça, a imprensa tem certezas barulhentas e a torcida já escalou metade do time nas redes sociais. Mas antes de levar alguém para o maior palco do futebol é preciso saber quem pode chegar inteiro e quem já está com o corpo no limite.\n\nAlguns atletas vêm acumulando cargas altas nos treinos concluídos e isso pode se transformar em risco de lesão.\n\nSua missão é revelar qual jogador teve a maior carga média de treino. Na Seleção talento chama atenção mas os dados ajudam a decidir quem aguenta a Copa inteira.",
     "objective": "Sua tarefa: retorne o atleta e a carga média de treino. Considere apenas treinos concluídos e ordene da maior média para a menor.",
+    "objective_steps": [
+      "Comece pelos treinos concluídos.",
+      "Agrupe os registros por atleta.",
+      "Calcule a carga média de treino de cada jogador.",
+      "Organize a lista começando pelas maiores cargas."
+    ],
     "expected_sql": "SELECT atleta, ROUND(AVG(carga_treino), 2) AS carga_media FROM treinos WHERE status = 'concluido' GROUP BY atleta ORDER BY carga_media DESC;",
     "expected_answer": {
       "query": "SELECT atleta, ROUND(AVG(carga_treino), 2) AS carga_media FROM treinos WHERE status = 'concluido' GROUP BY atleta ORDER BY carga_media DESC;",
       "result": {
-        "columns": ["atleta", "carga_media"],
+        "columns": [
+          "atleta",
+          "carga_media"
+        ],
         "rows": [
-          ["Rafa Nogueira", 87.5],
-          ["Lia Torres", 82.0],
-          ["Caio Lima", 75.33],
-          ["Bruno Reis", 69.0]
+          [
+            "Rafa Nogueira",
+            87.5
+          ],
+          [
+            "Lia Torres",
+            82.0
+          ],
+          [
+            "Caio Lima",
+            75.33
+          ],
+          [
+            "Bruno Reis",
+            69.0
+          ]
         ]
       }
     },
@@ -115,15 +209,34 @@
     "database": "esporte.db",
     "story": "Olá, analista! Hoje você trabalha ao lado de um atleta profissional de um grande clube daqueles em que cada finalização vira replay, cada erro vira debate e cada gol perdido ganha vida própria na arquibancada.\n\nO jogador sabe que está participando do jogo mas quer entender melhor o que seus números realmente dizem. Chutar muito pode parecer presença ofensiva, converter pouco pode virar problema.\n\nA comissão quer medir a eficiência real das finalizações no período e descobrir quais atletas estão transformando chances em gols com mais precisão.\n\nSua missão é calcular quem está sendo mais eficiente no ataque. Porque em clube grande desempenho não é só correr, é entender o número certo antes do próximo chute.",
     "objective": "Sua tarefa: retorne o atleta e a eficiência de chute percentual entre 2026-03-01 e 2026-04-01, calculada como gols divididos por finalizações. Ordene da maior eficiência para a menor. Em caso de empate, ordene por atleta em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas partidas dentro do período analisado.",
+      "Relacione as finalizações ao atleta responsável.",
+      "Some gols e tentativas para medir eficiência real.",
+      "Mantenha apenas atletas com volume válido de finalizações.",
+      "Organize a lista pela melhor conversão e use o nome como desempate."
+    ],
     "expected_sql": "SELECT j.nome AS atleta, ROUND(SUM(f.gols) * 100.0 / SUM(f.finalizacoes), 2) AS eficiencia_chute FROM jogadores j JOIN finalizacoes_partida f ON f.jogador_id = j.id WHERE f.data_jogo >= '2026-03-01' AND f.data_jogo < '2026-04-01' GROUP BY j.nome HAVING SUM(f.finalizacoes) > 0 ORDER BY eficiencia_chute DESC, atleta ASC;",
     "expected_answer": {
       "query": "SELECT j.nome AS atleta, ROUND(SUM(f.gols) * 100.0 / SUM(f.finalizacoes), 2) AS eficiencia_chute FROM jogadores j JOIN finalizacoes_partida f ON f.jogador_id = j.id WHERE f.data_jogo >= '2026-03-01' AND f.data_jogo < '2026-04-01' GROUP BY j.nome HAVING SUM(f.finalizacoes) > 0 ORDER BY eficiencia_chute DESC, atleta ASC;",
       "result": {
-        "columns": ["atleta", "eficiencia_chute"],
+        "columns": [
+          "atleta",
+          "eficiencia_chute"
+        ],
         "rows": [
-          ["Lia Torres", 46.15],
-          ["Bruno Reis", 33.33],
-          ["Caio Lima", 25.0]
+          [
+            "Lia Torres",
+            46.15
+          ],
+          [
+            "Bruno Reis",
+            33.33
+          ],
+          [
+            "Caio Lima",
+            25.0
+          ]
         ]
       }
     },
@@ -135,17 +248,35 @@
     "title": "Máquinas paradas",
     "difficulty": "Pleno",
     "database": "industria.db",
-    "story": "Olá analista! Hoje você está no chão de fábrica! Onde cada minuto parado custa dinheiro, atrasa entrega e faz alguém apontar para outra área com muita convicção.\n\nA produção ficou abaixo do planejado, manutenção fala em chamados acumulados, operação fala em gargalo, o PCP fala em replanejamento e a gerência só quer uma resposta antes que a reunião vire uma caça às bruxas.\n\nEm algum lugar da linha setores inteiros estão concentrando mais tempo de máquina parada do que deveriam.\n\nSua missão é descobrir onde o tempo realmente foi perdido. Na indústria máquina parada não espera opinião, ela acumula prejuízo.",
+    "story": "Olá, analista! Hoje você está no chão de fábrica, onde cada minuto parado custa dinheiro, atrasa entrega e faz alguém apontar para outra área com muita convicção.\n\nA produção ficou abaixo do planejado, manutenção fala em chamados acumulados, operação fala em gargalo, o PCP fala em replanejamento e a gerência só quer uma resposta antes que a reunião vire uma caça às bruxas.\n\nEm algum lugar da linha setores inteiros estão concentrando mais tempo de máquina parada do que deveriam.\n\nSua missão é descobrir onde o tempo realmente foi perdido. Na indústria máquina parada não espera opinião, ela acumula prejuízo.",
     "objective": "Sua tarefa: retorne o setor e o total de minutos parados entre 2026-05-01 e 2026-06-01. Ordene do maior total para o menor.",
+    "objective_steps": [
+      "Comece pelas paradas registradas no mês solicitado.",
+      "Relacione cada parada ao setor responsável.",
+      "Some o tempo perdido por setor.",
+      "Organize a lista começando pelos maiores impactos operacionais."
+    ],
     "expected_sql": "SELECT m.setor, SUM(p.minutos_parada) AS minutos_parados FROM maquinas m JOIN paradas p ON p.maquina_id = m.id WHERE p.inicio >= '2026-05-01' AND p.inicio < '2026-06-01' GROUP BY m.setor ORDER BY minutos_parados DESC;",
     "expected_answer": {
       "query": "SELECT m.setor, SUM(p.minutos_parada) AS minutos_parados FROM maquinas m JOIN paradas p ON p.maquina_id = m.id WHERE p.inicio >= '2026-05-01' AND p.inicio < '2026-06-01' GROUP BY m.setor ORDER BY minutos_parados DESC;",
       "result": {
-        "columns": ["setor", "minutos_parados"],
+        "columns": [
+          "setor",
+          "minutos_parados"
+        ],
         "rows": [
-          ["Pintura", 420],
-          ["Montagem", 310],
-          ["Corte", 120]
+          [
+            "Pintura",
+            420
+          ],
+          [
+            "Montagem",
+            310
+          ],
+          [
+            "Corte",
+            120
+          ]
         ]
       }
     },
@@ -157,67 +288,39 @@
     "title": "Refugo na linha",
     "difficulty": "Júnior",
     "database": "industria.db",
-    "story": "Olá, analista. Hoje você está no setor de qualidade de uma grande indústria, a linha de produção está entregando peças, relatórios e uma quantidade desconfortável de rejeições que ninguém quer chamar de problema ainda.\n\nO controle de qualidade percebeu refugo demais no dashboard para tratar como variação normal, algumas linhas parecem desperdiçar mais material do que deveriam e a gerência quer agir antes que o custo vire justificativa em planilha bonita.\n\nInspecionar tudo ao mesmo tempo parece eficiente até alguém lembrar que tempo, equipe e orçamento não são infinitos.\n\nSua missão é revelar quais linhas têm o maior percentual médio de refugo no período. No fim do turno defeito sem dado vira desculpa, defeito medido vira prioridade.",
+    "story": "Olá, analista! Hoje você está no setor de qualidade de uma grande indústria, a linha de produção está entregando peças, relatórios e uma quantidade desconfortável de rejeições que ninguém quer chamar de problema ainda.\n\nO controle de qualidade percebeu refugo demais no dashboard para tratar como variação normal, algumas linhas parecem desperdiçar mais material do que deveriam e a gerência quer agir antes que o custo vire justificativa em planilha bonita.\n\nInspecionar tudo ao mesmo tempo parece eficiente até alguém lembrar que tempo, equipe e orçamento não são infinitos.\n\nSua missão é revelar quais linhas têm o maior percentual médio de refugo no período. No fim do turno defeito sem dado vira desculpa, defeito medido vira prioridade.",
     "objective": "Sua tarefa: retorne a linha de produção e o percentual médio de refugo entre 2026-05-01 e 2026-06-01. Ordene da maior média para a menor.",
+    "objective_steps": [
+      "Comece pelos registros de produção do período solicitado.",
+      "Agrupe os resultados por linha produtiva.",
+      "Calcule o percentual médio de refugo de cada linha.",
+      "Organize a lista começando pelos maiores índices de perda."
+    ],
     "expected_sql": "SELECT linha, ROUND(AVG(percentual_refugo), 2) AS refugo_medio FROM producao_diaria WHERE data >= '2026-05-01' AND data < '2026-06-01' GROUP BY linha ORDER BY refugo_medio DESC;",
     "expected_answer": {
       "query": "SELECT linha, ROUND(AVG(percentual_refugo), 2) AS refugo_medio FROM producao_diaria WHERE data >= '2026-05-01' AND data < '2026-06-01' GROUP BY linha ORDER BY refugo_medio DESC;",
       "result": {
-        "columns": ["linha", "refugo_medio"],
+        "columns": [
+          "linha",
+          "refugo_medio"
+        ],
         "rows": [
-          ["Linha C", 6.1],
-          ["Linha A", 3.75],
-          ["Linha B", 2.4]
+          [
+            "Linha C",
+            6.1
+          ],
+          [
+            "Linha A",
+            3.75
+          ],
+          [
+            "Linha B",
+            2.4
+          ]
         ]
       }
     },
     "hint": "Filtre o período, agrupe por linha e calcule a média de percentual_refugo."
-  },
-  {
-    "id": "financas_001",
-    "category": "Finanças",
-    "title": "Faturas vencidas",
-    "difficulty": "Júnior",
-    "database": "financas.db",
-    "story": "O financeiro abriu a semana com uma pilha de cobranças e uma pergunta simples: quem precisa ser priorizado agora? Nem toda fatura aberta é urgente, mas as vencidas antes do fechamento já começam a pesar no caixa. Sua consulta vai organizar a fila de cobrança pelo maior valor em aberto.",
-    "objective": "Retorne cliente e valor em aberto das faturas vencidas antes de 2026-05-01, ordene do maior valor para o menor e traga apenas os 5 primeiros resultados.",
-    "expected_sql": "SELECT cliente, valor_em_aberto FROM faturas WHERE status = 'vencida' AND data_vencimento < '2026-05-01' ORDER BY valor_em_aberto DESC LIMIT 5;",
-    "expected_answer": {
-      "query": "SELECT cliente, valor_em_aberto FROM faturas WHERE status = 'vencida' AND data_vencimento < '2026-05-01' ORDER BY valor_em_aberto DESC LIMIT 5;",
-      "result": {
-        "columns": ["cliente", "valor_em_aberto"],
-        "rows": [
-          ["Grupo Alameda", 18400.0],
-          ["Clínica Norte", 12750.5],
-          ["Mercado Azul", 9200.0],
-          ["Studio Prisma", 6100.0],
-          ["Oficina Central", 4400.75]
-        ]
-      }
-    },
-    "hint": "Filtre faturas vencidas antes da data de corte, ordene por valor_em_aberto e limite o resultado."
-  },
-  {
-    "id": "financas_002",
-    "category": "Finanças",
-    "title": "Carteira em risco",
-    "difficulty": "Sênior",
-    "database": "financas.db",
-    "story": "A área de risco não quer olhar apenas o valor contratado dos empréstimos, porque parte da carteira já foi paga. O comitê precisa enxergar o saldo real ainda exposto em contratos ativos classificados como alto ou crítico. Antes de qualquer decisão sobre provisão, você precisa calcular o risco líquido por segmento.",
-    "objective": "Retorne o segmento e o saldo em risco dos empréstimos ativos com classificação alto ou crítico. Considere como saldo em risco o valor contratado menos os pagamentos realizados antes de 2026-05-01. Ordene do maior saldo para o menor.",
-    "expected_sql": "WITH pagamentos_por_emprestimo AS (SELECT emprestimo_id, SUM(valor_pago) AS total_pago FROM pagamentos WHERE data_pagamento < '2026-05-01' GROUP BY emprestimo_id) SELECT c.segmento, ROUND(SUM(e.valor_contratado - COALESCE(p.total_pago, 0)), 2) AS saldo_em_risco FROM clientes c JOIN emprestimos e ON e.cliente_id = c.id LEFT JOIN pagamentos_por_emprestimo p ON p.emprestimo_id = e.id WHERE e.status = 'ativo' AND e.classificacao_risco IN ('alto', 'crítico') GROUP BY c.segmento ORDER BY saldo_em_risco DESC;",
-    "expected_answer": {
-      "query": "WITH pagamentos_por_emprestimo AS (SELECT emprestimo_id, SUM(valor_pago) AS total_pago FROM pagamentos WHERE data_pagamento < '2026-05-01' GROUP BY emprestimo_id) SELECT c.segmento, ROUND(SUM(e.valor_contratado - COALESCE(p.total_pago, 0)), 2) AS saldo_em_risco FROM clientes c JOIN emprestimos e ON e.cliente_id = c.id LEFT JOIN pagamentos_por_emprestimo p ON p.emprestimo_id = e.id WHERE e.status = 'ativo' AND e.classificacao_risco IN ('alto', 'crítico') GROUP BY c.segmento ORDER BY saldo_em_risco DESC;",
-      "result": {
-        "columns": ["segmento", "saldo_em_risco"],
-        "rows": [
-          ["PME", 192000.0],
-          ["Pessoa Física", 87500.0],
-          ["Corporate", 74000.0]
-        ]
-      }
-    },
-    "hint": "Primeiro some os pagamentos por empréstimo. Depois subtraia esse total do valor contratado e agrupe por segmento."
   },
   {
     "id": "educacao_001",
@@ -225,17 +328,36 @@
     "title": "Presença em alerta",
     "difficulty": "Júnior",
     "database": "educacao.db",
-    "story": "A coordenação percebeu que alguns alunos estão sumindo aos poucos, uma falta por vez. Quando a evasão aparece no boletim, geralmente já é tarde para agir. A escola quer identificar quem está abaixo do limite mínimo de frequência para priorizar contato com as famílias.",
-    "objective": "Retorne o aluno e a frequência percentual entre 2026-04-01 e 2026-05-01, considerando apenas alunos com frequência abaixo de 75%. Ordene da menor frequência para a maior. Em caso de empate, ordene por aluno em ordem alfabética.",
+    "story": "Olá, analista! Hoje você está na coordenação de uma escola onde cada ausência começa pequena, silenciosa e aparentemente inofensiva até alguém perceber que metade da turma sumiu antes mesmo do fim do semestre.\n\nOs professores relatam alunos desmotivados, os responsáveis juram que os filhos estão frequentando normalmente e a direção quer agir antes que evasão vire indicador oficial no próximo conselho.\n\nAlguns estudantes já estão perigosamente abaixo da frequência mínima e precisam ser identificados rápido.\n\nSua missão é descobrir quais alunos estão mais próximos de desaparecer do mapa, porque em educação problema ignorado costuma chegar no boletim com atraso e reprovação.",
+    "objective": "Sua tarefa: retorne o aluno e a frequência percentual entre 2026-04-01 e 2026-05-01 considerando apenas alunos com frequência abaixo de 75%. Ordene da menor frequência para a maior. Em caso de empate ordene por aluno em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas presenças registradas no período analisado.",
+      "Agrupe os registros por aluno.",
+      "Calcule a frequência percentual de cada estudante.",
+      "Mantenha apenas quem ficou abaixo do limite mínimo.",
+      "Organize a lista pelos casos mais críticos primeiro."
+    ],
     "expected_sql": "SELECT aluno, ROUND(AVG(presente) * 100, 2) AS frequencia_percentual FROM presencas WHERE data >= '2026-04-01' AND data < '2026-05-01' GROUP BY aluno HAVING AVG(presente) * 100 < 75 ORDER BY frequencia_percentual ASC, aluno ASC;",
     "expected_answer": {
       "query": "SELECT aluno, ROUND(AVG(presente) * 100, 2) AS frequencia_percentual FROM presencas WHERE data >= '2026-04-01' AND data < '2026-05-01' GROUP BY aluno HAVING AVG(presente) * 100 < 75 ORDER BY frequencia_percentual ASC, aluno ASC;",
       "result": {
-        "columns": ["aluno", "frequencia_percentual"],
+        "columns": [
+          "aluno",
+          "frequencia_percentual"
+        ],
         "rows": [
-          ["Nina Lopes", 60.0],
-          ["João Mendes", 66.67],
-          ["Bia Rocha", 72.73]
+          [
+            "Nina Lopes",
+            60.0
+          ],
+          [
+            "João Mendes",
+            66.67
+          ],
+          [
+            "Bia Rocha",
+            72.73
+          ]
         ]
       }
     },
@@ -247,17 +369,36 @@
     "title": "Disciplinas em queda",
     "difficulty": "Pleno",
     "database": "educacao.db",
-    "story": "As notas do segundo bimestre chegaram com uma mensagem silenciosa: algumas disciplinas estão puxando a média da turma para baixo. A coordenação precisa saber onde reforçar monitorias antes das recuperações começarem. Sua análise vai mostrar quais matérias estão abaixo do desempenho esperado.",
-    "objective": "Retorne a disciplina e a média das notas do segundo bimestre, considerando apenas disciplinas com média abaixo de 7. Ordene da menor média para a maior.",
+    "story": "Olá, analista! Hoje você foi chamado pela coordenação pedagógica onde o segundo bimestre chegou trazendo notas baixas, reuniões emergenciais e professores tentando defender suas disciplinas como se estivessem em um tribunal acadêmico.\n\nAlgumas matérias começaram a puxar a média geral para baixo, os pedidos de monitoria aumentaram e a direção quer agir antes que recuperação vire o evento principal do semestre.\n\nExiste um grupo de disciplinas abaixo do desempenho esperado e alguém precisa mostrar exatamente onde a situação está pior.\n\nSua missão é revelar quais matérias ficaram com média abaixo de 7. Porque em época de boletim até gráfico de desempenho consegue assustar mais do que prova surpresa.",
+    "objective": "Sua tarefa: retorne a disciplina e a média das notas do segundo bimestre, considerando apenas disciplinas com média abaixo de 7. Ordene da menor média para a maior.",
+    "objective_steps": [
+      "Comece pelas avaliações do segundo bimestre.",
+      "Relacione cada avaliação à disciplina correspondente.",
+      "Calcule a média de desempenho por matéria.",
+      "Mantenha apenas disciplinas abaixo do patamar esperado.",
+      "Organize a lista começando pelas menores médias."
+    ],
     "expected_sql": "SELECT d.nome AS disciplina, ROUND(AVG(a.nota), 2) AS media_final FROM disciplinas d JOIN avaliacoes a ON a.disciplina_id = d.id WHERE a.bimestre = 2 GROUP BY d.nome HAVING AVG(a.nota) < 7 ORDER BY media_final ASC;",
     "expected_answer": {
       "query": "SELECT d.nome AS disciplina, ROUND(AVG(a.nota), 2) AS media_final FROM disciplinas d JOIN avaliacoes a ON a.disciplina_id = d.id WHERE a.bimestre = 2 GROUP BY d.nome HAVING AVG(a.nota) < 7 ORDER BY media_final ASC;",
       "result": {
-        "columns": ["disciplina", "media_final"],
+        "columns": [
+          "disciplina",
+          "media_final"
+        ],
         "rows": [
-          ["Matemática", 5.95],
-          ["Física", 6.4],
-          ["Química", 6.85]
+          [
+            "Matemática",
+            5.95
+          ],
+          [
+            "Física",
+            6.4
+          ],
+          [
+            "Química",
+            6.85
+          ]
         ]
       }
     },
@@ -269,18 +410,40 @@
     "title": "Obras mais desejadas",
     "difficulty": "Júnior",
     "database": "arte.db",
-    "story": "A galeria recebeu muitos visitantes, muitos elogios e poucas certezas. Algumas obras foram favoritadas várias vezes no catálogo digital, e a curadoria quer usar esse sinal para decidir quais peças devem ganhar destaque na próxima exposição.",
-    "objective": "Retorne a obra e a quantidade de favoritos, considerando apenas interações do tipo favorito, ordene da maior quantidade para a menor. Em caso de empate, ordene por obra em ordem alfabética.",
+    "story": "Olá, analista! Hoje você está nos bastidores de uma galeria de arte onde metade da curadoria fala sobre expressão artística e a outra metade acompanha métricas de engajamento escondida atrás de palavras sofisticadas.\n\nOs visitantes passaram pela exposição, favoritaram obras no catálogo digital e deixaram pistas suficientes para revelar quais peças realmente capturaram atenção.\n\nA próxima exposição terá destaque limitado e ninguém quer escolher apenas no argumento mais bonito da reunião.\n\nSua missão é descobrir quais obras despertaram mais interesse do público. Porque no mercado da arte até subjetividade gosta de um dashboard convincente.",
+    "objective": "Sua tarefa: retorne a obra e a quantidade de favoritos, considerando apenas interações do tipo favorito. Ordene da maior quantidade para a menor. Em caso de empate, ordene por obra em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas interações do catálogo digital.",
+      "Mantenha apenas os sinais reais de interesse do público.",
+      "Agrupe as interações por obra.",
+      "Conte quantas vezes cada peça foi escolhida.",
+      "Organize a lista pelas obras mais desejadas e use o título como desempate."
+    ],
     "expected_sql": "SELECT obra, COUNT(*) AS favoritos FROM interacoes_obras WHERE tipo_interacao = 'favorito' GROUP BY obra ORDER BY favoritos DESC, obra ASC;",
     "expected_answer": {
       "query": "SELECT obra, COUNT(*) AS favoritos FROM interacoes_obras WHERE tipo_interacao = 'favorito' GROUP BY obra ORDER BY favoritos DESC, obra ASC;",
       "result": {
-        "columns": ["obra", "favoritos"],
+        "columns": [
+          "obra",
+          "favoritos"
+        ],
         "rows": [
-          ["Cidade Submersa", 5],
-          ["Retrato em Azul", 4],
-          ["Jardim de Concreto", 3],
-          ["Silêncio Vermelho", 3]
+          [
+            "Cidade Submersa",
+            5
+          ],
+          [
+            "Retrato em Azul",
+            4
+          ],
+          [
+            "Jardim de Concreto",
+            3
+          ],
+          [
+            "Silêncio Vermelho",
+            3
+          ]
         ]
       }
     },
@@ -292,17 +455,35 @@
     "title": "Receita por artista",
     "difficulty": "Pleno",
     "database": "arte.db",
-    "story": "Depois da exposição, a galeria precisa prestar contas aos artistas e entender quem mais movimentou receita no trimestre. Nem toda reserva virou venda, e algumas negociações ficaram pelo caminho. Você deve considerar apenas vendas concluídas para mostrar o resultado real por artista.",
-    "objective": "Retorne o artista e a receita total de vendas concluídas entre 2026-01-01 e 2026-04-01, ordene da maior receita para a menor.",
+    "story": "Olá, analista! Hoje você está fechando os números de uma grande exposição onde elogios foram abundantes, taças circularam sem parar e alguns artistas já começaram discretamente a perguntar quanto exatamente aquela visibilidade incrível virou dinheiro.\n\nNem toda negociação terminou em venda algumas reservas evaporaram no meio do caminho e a galeria precisa separar intenção artística de receita real.\n\nA gestão da galeria quer entender quais artistas realmente movimentaram o caixa no trimestre.\n\nSua missão é calcular a receita total de vendas concluídas por artista. Porque no fim do evento aplauso é ótimo, mas boleto prefere transferência confirmada.",
+    "objective": "Sua tarefa: retorne o artista e a receita total de vendas concluídas entre 2026-01-01 e 2026-04-01. Ordene da maior receita para a menor.",
+    "objective_steps": [
+      "Comece pelas vendas concluídas no período solicitado.",
+      "Relacione cada venda à obra e ao artista responsável.",
+      "Some a receita confirmada de cada artista.",
+      "Organize a lista começando por quem mais movimentou caixa."
+    ],
     "expected_sql": "SELECT a.nome AS artista, ROUND(SUM(v.valor_venda), 2) AS receita FROM artistas a JOIN obras o ON o.artista_id = a.id JOIN vendas v ON v.obra_id = o.id WHERE v.status = 'concluida' AND v.data_venda >= '2026-01-01' AND v.data_venda < '2026-04-01' GROUP BY a.nome ORDER BY receita DESC;",
     "expected_answer": {
       "query": "SELECT a.nome AS artista, ROUND(SUM(v.valor_venda), 2) AS receita FROM artistas a JOIN obras o ON o.artista_id = a.id JOIN vendas v ON v.obra_id = o.id WHERE v.status = 'concluida' AND v.data_venda >= '2026-01-01' AND v.data_venda < '2026-04-01' GROUP BY a.nome ORDER BY receita DESC;",
       "result": {
-        "columns": ["artista", "receita"],
+        "columns": [
+          "artista",
+          "receita"
+        ],
         "rows": [
-          ["Maya Castro", 28500.0],
-          ["Theo Ramos", 19400.5],
-          ["Luna Alves", 13800.0]
+          [
+            "Maya Castro",
+            28500.0
+          ],
+          [
+            "Theo Ramos",
+            19400.5
+          ],
+          [
+            "Luna Alves",
+            13800.0
+          ]
         ]
       }
     },
@@ -314,17 +495,39 @@
     "title": "Talhões abaixo da meta",
     "difficulty": "Júnior",
     "database": "agricultura.db",
-    "story": "A colheita terminou, mas nem todo talhão entregou o que prometia no planejamento. Antes de culpar clima, solo ou manejo, a fazenda quer uma lista objetiva dos pontos que ficaram abaixo da meta de produtividade da safra.",
-    "objective": "Retorne o talhão, a cultura e a produtividade em kg por hectare dos registros da safra 2026 em que a produtividade ficou abaixo da meta. Ordene da menor produtividade para a maior.",
+    "story": "Olá, analista! Hoje você está em uma fazenda onde o clima virou suspeito oficial, o solo entrou na roda de acusações e cada setor possui uma teoria muito convincente sobre por que alguns talhões produziram menos do que deveriam.\n\nA safra terminou, os números chegaram e parte da operação ficou abaixo da meta estabelecida no planejamento.\n\nAntes que alguém tente resolver produtividade usando apenas opinião e previsão do tempo, os dados precisam mostrar exatamente onde o desempenho falhou.\n\nSua missão é identificar os talhões que ficaram abaixo da meta da safra 2026. Porque no agro até o clima entra na discussão, mas produtividade ruim sempre deixa rastro nos dados.",
+    "objective": "Sua tarefa: retorne o talhão, a cultura e a produtividade em kg por hectare dos registros da safra 2026 em que a produtividade ficou abaixo da meta. Ordene da menor produtividade para a maior.",
+    "objective_steps": [
+      "Comece pelos registros da safra solicitada.",
+      "Compare a produtividade realizada com a meta planejada.",
+      "Mantenha apenas os talhões que ficaram abaixo do esperado.",
+      "Organize a lista começando pelos piores desempenhos."
+    ],
     "expected_sql": "SELECT talhao, cultura, produtividade_kg_ha FROM colheitas WHERE safra = '2026' AND produtividade_kg_ha < meta_kg_ha ORDER BY produtividade_kg_ha ASC;",
     "expected_answer": {
       "query": "SELECT talhao, cultura, produtividade_kg_ha FROM colheitas WHERE safra = '2026' AND produtividade_kg_ha < meta_kg_ha ORDER BY produtividade_kg_ha ASC;",
       "result": {
-        "columns": ["talhao", "cultura", "produtividade_kg_ha"],
+        "columns": [
+          "talhao",
+          "cultura",
+          "produtividade_kg_ha"
+        ],
         "rows": [
-          ["T03", "Milho", 6100.0],
-          ["T01", "Soja", 7200.0],
-          ["T05", "Soja", 7350.0]
+          [
+            "T03",
+            "Milho",
+            6100.0
+          ],
+          [
+            "T01",
+            "Soja",
+            7200.0
+          ],
+          [
+            "T05",
+            "Soja",
+            7350.0
+          ]
         ]
       }
     },
@@ -336,18 +539,40 @@
     "title": "Irrigação eficiente",
     "difficulty": "Pleno",
     "database": "agricultura.db",
-    "story": "A água virou um recurso caro demais para ser tratada como detalhe operacional. A fazenda quer saber quais talhões transformaram melhor irrigação em produtividade na safra atual. O resultado vai orientar ajustes de manejo antes do próximo ciclo.",
-    "objective": "Retorne o talhão e a produtividade por metro cúbico de água, considerando a produtividade da safra 2026 dividida pelo volume total irrigado entre 2026-01-01 e 2026-05-01. Ordene da maior eficiência para a menor.",
+    "story": "Olá, analista! Hoje você trabalha com a equipe de manejo de uma grande fazenda onde água deixou de ser detalhe operacional faz tempo e passou a ser assunto sério em qualquer reunião que envolva custo.\n\nAlguns talhões parecem transformar irrigação em produtividade com eficiência impressionante, outros consomem recursos como se orçamento brotasse junto com a plantação.\n\nA gestão quer descobrir quais áreas estão aproveitando melhor cada metro cúbico irrigado antes da próxima safra começar.\n\nSua missão é medir a eficiência hídrica dos talhões no período analisado. Porque no agro desperdício pode até evaporar, mas o prejuízo continua registrado.",
+    "objective": "Sua tarefa: retorne o talhão e a produtividade por metro cúbico de água considerando a produtividade da safra 2026 dividida pelo volume total irrigado entre 2026-01-01 e 2026-05-01. Ordene da maior eficiência para a menor.",
+    "objective_steps": [
+      "Comece pela safra e pelo período de irrigação analisados.",
+      "Relacione cada talhão à sua produção e ao volume de água usado.",
+      "Calcule a produtividade obtida por unidade de água.",
+      "Mantenha apenas áreas com consumo válido para comparação.",
+      "Organize a lista começando pela maior eficiência hídrica."
+    ],
     "expected_sql": "SELECT t.nome AS talhao, ROUND(c.produtividade_kg_ha / SUM(i.volume_m3), 4) AS kg_por_m3 FROM talhoes t JOIN colheitas c ON c.talhao_id = t.id JOIN irrigacoes i ON i.talhao_id = t.id WHERE c.safra = '2026' AND i.data >= '2026-01-01' AND i.data < '2026-05-01' GROUP BY t.nome, c.produtividade_kg_ha HAVING SUM(i.volume_m3) > 0 ORDER BY kg_por_m3 DESC;",
     "expected_answer": {
       "query": "SELECT t.nome AS talhao, ROUND(c.produtividade_kg_ha / SUM(i.volume_m3), 4) AS kg_por_m3 FROM talhoes t JOIN colheitas c ON c.talhao_id = t.id JOIN irrigacoes i ON i.talhao_id = t.id WHERE c.safra = '2026' AND i.data >= '2026-01-01' AND i.data < '2026-05-01' GROUP BY t.nome, c.produtividade_kg_ha HAVING SUM(i.volume_m3) > 0 ORDER BY kg_por_m3 DESC;",
       "result": {
-        "columns": ["talhao", "kg_por_m3"],
+        "columns": [
+          "talhao",
+          "kg_por_m3"
+        ],
         "rows": [
-          ["T02", 3.8125],
-          ["T04", 3.25],
-          ["T01", 2.7692],
-          ["T03", 2.44]
+          [
+            "T02",
+            3.8125
+          ],
+          [
+            "T04",
+            3.25
+          ],
+          [
+            "T01",
+            2.7692
+          ],
+          [
+            "T03",
+            2.44
+          ]
         ]
       }
     },
@@ -359,18 +584,44 @@
     "title": "Rotas sob pressão",
     "difficulty": "Júnior",
     "database": "logistica.db",
-    "story": "O painel da transportadora está piscando em vermelho, que é como sistemas educados dizem que alguém vai perder a tarde em reunião. O comercial culpa o trânsito, operações culpa os centros de distribuição e os clientes só querem saber por que a promessa de entrega virou ficção. Você recebeu a base de entregas para separar desculpa de padrão e apontar quais rotas mais quebraram o combinado.",
-    "objective": "Retorne origem, destino e quantidade de entregas atrasadas por rota, ordene da maior quantidade para a menor. Em caso de empate, ordene por origem e destino em ordem alfabética.",
+    "story": "Olá, analista! Hoje você entrou na operação de uma transportadora onde o painel está vermelho, os clientes estão impacientes e cada área encontrou uma explicação extremamente conveniente para os atrasos.\n\nO comercial culpa trânsito, operações culpa distribuição, motoristas culpam planejamento e o planejamento provavelmente culpa o universo.\n\nEnquanto isso algumas rotas continuam acumulando entregas atrasadas acima do aceitável.\n\nSua missão é descobrir quais trajetos mais quebraram o prazo prometido. Porque na logística a mercadoria até pode atrasar, a cobrança do cliente nunca.",
+    "objective": "Sua tarefa: retorne origem, destino e quantidade de entregas atrasadas por rota. Ordene da maior quantidade para a menor. Em caso de empate, ordene por origem e destino em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas entregas que quebraram o prazo prometido.",
+      "Agrupe os atrasos por rota.",
+      "Conte quantas ocorrências cada trajeto acumulou.",
+      "Organize a lista pelas rotas mais problemáticas e use origem e destino como desempate."
+    ],
     "expected_sql": "SELECT origem, destino, COUNT(*) AS entregas_atrasadas FROM entregas WHERE dias_atraso > 0 GROUP BY origem, destino ORDER BY entregas_atrasadas DESC, origem ASC, destino ASC;",
     "expected_answer": {
       "query": "SELECT origem, destino, COUNT(*) AS entregas_atrasadas FROM entregas WHERE dias_atraso > 0 GROUP BY origem, destino ORDER BY entregas_atrasadas DESC, origem ASC, destino ASC;",
       "result": {
-        "columns": ["origem", "destino", "entregas_atrasadas"],
+        "columns": [
+          "origem",
+          "destino",
+          "entregas_atrasadas"
+        ],
         "rows": [
-          ["Campinas", "Goiania", 2],
-          ["Rio de Janeiro", "Salvador", 2],
-          ["São Paulo", "Curitiba", 2],
-          ["Belo Horizonte", "Vitoria", 1]
+          [
+            "Campinas",
+            "Goiania",
+            2
+          ],
+          [
+            "Rio de Janeiro",
+            "Salvador",
+            2
+          ],
+          [
+            "São Paulo",
+            "Curitiba",
+            2
+          ],
+          [
+            "Belo Horizonte",
+            "Vitoria",
+            1
+          ]
         ]
       }
     },
@@ -382,18 +633,39 @@
     "title": "Estoque parado",
     "difficulty": "Júnior",
     "database": "logistica.db",
-    "story": "No centro de distribuição, cada prateleira ocupada por tempo demais cobra aluguel em silêncio. Compras pede reposição, vendas reclama de ruptura e, no meio desse cabo de guerra, alguns produtos podem estar dormindo no estoque como se tivessem assinado contrato de permanência. A operação quer que você transforme a sensação de mercadoria parada em evidência mensurável.",
-    "objective": "Retorne o produto e a média de dias em estoque, ordene da maior média para a menor.",
+    "story": "Olá, analista! Hoje você está no centro de distribuição onde corredores lotados, empilhadeiras circulando e planilhas otimistas tentam esconder um problema clássico: produto parado ocupando espaço caro.\n\nCompras pede reposição, vendas reclama de ruptura e alguns itens parecem ter encontrado estabilidade emocional permanente dentro do estoque.\n\nA operação quer descobrir quais produtos estão ficando tempo demais armazenados antes que o armazém vire museu de mercadorias esquecidas.\n\nSua missão é revelar quais itens possuem a maior média de permanência em estoque. Porque espaço logístico parado custa dinheiro até quando ninguém está olhando.",
+    "objective": "Sua tarefa: retorne o produto e a média de dias em estoque. Ordene da maior média para a menor.",
+    "objective_steps": [
+      "Comece pelos movimentos de estoque disponíveis.",
+      "Agrupe os registros por produto.",
+      "Calcule o tempo médio de permanência de cada item.",
+      "Organize a lista começando pelos produtos mais parados."
+    ],
     "expected_sql": "SELECT produto, ROUND(AVG(dias_em_estoque), 2) AS media_dias FROM estoque_movimentos GROUP BY produto ORDER BY media_dias DESC;",
     "expected_answer": {
       "query": "SELECT produto, ROUND(AVG(dias_em_estoque), 2) AS media_dias FROM estoque_movimentos GROUP BY produto ORDER BY media_dias DESC;",
       "result": {
-        "columns": ["produto", "media_dias"],
+        "columns": [
+          "produto",
+          "media_dias"
+        ],
         "rows": [
-          ["Cadeira ergonômica", 58.0],
-          ["Monitor 27", 39.0],
-          ["Teclado mecânico", 20.0],
-          ["Webcam HD", 12.5]
+          [
+            "Cadeira ergonômica",
+            58.0
+          ],
+          [
+            "Monitor 27",
+            39.0
+          ],
+          [
+            "Teclado mecânico",
+            20.0
+          ],
+          [
+            "Webcam HD",
+            12.5
+          ]
         ]
       }
     },
@@ -405,17 +677,35 @@
     "title": "Fases abandonadas",
     "difficulty": "Júnior",
     "database": "games.db",
-    "story": "Bem-vindo ao pós-lançamento, onde todo gráfico parece calmo até alguém abrir o funil de progressão. Os jogadores entram animados, avançam algumas etapas e então desaparecem antes de completar certas fases. Design fala em desafio saudável, produto fala em retenção, suporte só encaminha mensagens cada vez menos educadas. Sua missão é localizar onde a desistência está se acumulando.",
-    "objective": "Retorne a fase e a taxa de abandono, ordene da maior taxa para a menor.",
+    "story": "Olá, analista! Hoje você está na equipe de um jogo recém-lançado onde todo mundo comemorou os downloads até alguém abrir o funil de progressão e perceber que os jogadores estão desaparecendo em massa no meio da jornada.\n\nDesign chama de dificuldade saudável, produto chama de retenção preocupante e a comunidade chama de rage quit sem qualquer delicadeza.\n\nExiste uma fase específica transformando entusiasmo em desistência e sua missão é descobrir qual.\n\nSua missão é localizar onde a taxa de abandono está mais alta. Porque no mercado de games perder jogador é mais rápido do que perder uma ranked em madrugada de patch novo.",
+    "objective": "Sua tarefa: retorne a fase e a taxa de abandono. Ordene da maior taxa para a menor.",
+    "objective_steps": [
+      "Comece pelas sessões registradas em cada fase.",
+      "Agrupe a jornada dos jogadores por etapa.",
+      "Calcule a taxa de abandono de cada fase.",
+      "Organize a lista começando pelos pontos de maior desistência."
+    ],
     "expected_sql": "SELECT fase, ROUND(AVG(abandonou) * 100, 2) AS taxa_abandono FROM sessoes_fase GROUP BY fase ORDER BY taxa_abandono DESC;",
     "expected_answer": {
       "query": "SELECT fase, ROUND(AVG(abandonou) * 100, 2) AS taxa_abandono FROM sessoes_fase GROUP BY fase ORDER BY taxa_abandono DESC;",
       "result": {
-        "columns": ["fase", "taxa_abandono"],
+        "columns": [
+          "fase",
+          "taxa_abandono"
+        ],
         "rows": [
-          ["Mina Congelada", 75.0],
-          ["Torre Solar", 33.33],
-          ["Prólogo", 0.0]
+          [
+            "Mina Congelada",
+            75.0
+          ],
+          [
+            "Torre Solar",
+            33.33
+          ],
+          [
+            "Prólogo",
+            0.0
+          ]
         ]
       }
     },
@@ -427,21 +717,1040 @@
     "title": "Balanceamento de personagens",
     "difficulty": "Júnior",
     "database": "games.db",
-    "story": "A comunidade descobriu uma palavra perigosa: roubado. Desde então, o fórum produz teorias, rankings improvisados e pedidos de nerf com a confiança de quem perdeu três partidas seguidas. A equipe de balanceamento não quer mexer no meta movida por barulho; quer a taxa real de vitória antes de encostar em qualquer personagem. Você vai mostrar quem está vencendo além da conta.",
-    "objective": "Retorne o personagem e a taxa de vitória percentual, ordene da maior taxa para a menor. Em caso de empate, ordene por personagem em ordem alfabética.",
+    "story": "Olá, analista! Hoje você foi convocado para uma reunião da equipe de balanceamento onde o fórum está pegando fogo, streamers estão jurando que o jogo morreu e metade da comunidade descobriu a palavra “apelão” ao mesmo tempo.\n\nPedidos de nerf aparecem mais rápido do que atualização de patch e alguns personagens estão vencendo partidas em uma frequência desconfortável demais para ser ignorada.\n\nA equipe quer separar histeria coletiva de problema real antes de mexer no meta inteiro por causa de três clips virais.\n\nSua missão é identificar quais personagens possuem as maiores taxas de vitória. Porque em jogo online opinião aparece instantaneamente, balanceamento ruim também.",
+    "objective": "Sua tarefa: retorne o personagem e a taxa de vitória percentual. Ordene da maior taxa para a menor. Em caso de empate, ordene por personagem em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas partidas registradas por personagem.",
+      "Agrupe os resultados de cada combatente.",
+      "Calcule a taxa de vitória de cada opção jogável.",
+      "Organize a lista pelos maiores índices e use o nome como desempate."
+    ],
     "expected_sql": "SELECT personagem, ROUND(AVG(venceu) * 100, 2) AS taxa_vitoria FROM partidas_personagem GROUP BY personagem ORDER BY taxa_vitoria DESC, personagem ASC;",
     "expected_answer": {
       "query": "SELECT personagem, ROUND(AVG(venceu) * 100, 2) AS taxa_vitoria FROM partidas_personagem GROUP BY personagem ORDER BY taxa_vitoria DESC, personagem ASC;",
       "result": {
-        "columns": ["personagem", "taxa_vitoria"],
+        "columns": [
+          "personagem",
+          "taxa_vitoria"
+        ],
         "rows": [
-          ["Nix", 75.0],
-          ["Astra", 66.67],
-          ["Bruma", 33.33],
-          ["Rook", 33.33]
+          [
+            "Nix",
+            75.0
+          ],
+          [
+            "Astra",
+            66.67
+          ],
+          [
+            "Bruma",
+            33.33
+          ],
+          [
+            "Rook",
+            33.33
+          ]
         ]
       }
     },
     "hint": "Use AVG em venceu, já que 1 representa vitória e 0 representa derrota. Inclua personagem na ordenação para resolver empates."
+  },
+  {
+    "id": "saude_003",
+    "category": "Saúde",
+    "title": "Custo médio por cidade",
+    "difficulty": "Pleno",
+    "database": "saude.db",
+    "story": "Olá, analista! Hoje você está em uma reunião regional de saúde onde cada cidade trouxe uma justificativa diferente para o aumento nas internações, todas muito bem apresentadas e nenhuma ainda comprovada.\n\nA diretoria precisa decidir onde revisar contratos, negociar repasses e apertar protocolos clínicos antes que o orçamento do trimestre vire uma coleção de exceções caras.\n\nO problema não é apenas saber quem gastou mais no total, mas onde cada internação está saindo mais pesada para a operação.\n\nSua missão é calcular o custo médio de internação por cidade. Porque em saúde custo agregado impressiona, mas média alta costuma mostrar onde a conta está realmente escapando.",
+    "objective": "Sua tarefa: retorne a cidade e o custo médio de internações entre 2026-01-01 e 2026-04-01. Ordene do maior custo médio para o menor.",
+    "objective_steps": [
+      "Comece pelas internações do trimestre analisado.",
+      "Relacione cada caso à cidade da unidade responsável.",
+      "Calcule o custo médio de internação por cidade.",
+      "Organize a lista começando pelas médias mais altas."
+    ],
+    "expected_sql": "SELECT h.cidade, ROUND(AVG(i.custo_total), 2) AS custo_medio FROM hospitais h JOIN internacoes i ON i.hospital_id = h.id WHERE i.data_entrada >= '2026-01-01' AND i.data_entrada < '2026-04-01' GROUP BY h.cidade ORDER BY custo_medio DESC;",
+    "expected_answer": {
+      "query": "SELECT h.cidade, ROUND(AVG(i.custo_total), 2) AS custo_medio FROM hospitais h JOIN internacoes i ON i.hospital_id = h.id WHERE i.data_entrada >= '2026-01-01' AND i.data_entrada < '2026-04-01' GROUP BY h.cidade ORDER BY custo_medio DESC;",
+      "result": {
+        "columns": [
+          "cidade",
+          "custo_medio"
+        ],
+        "rows": [
+          [
+            "São Paulo",
+            244500.17
+          ],
+          [
+            "Rio de Janeiro",
+            210050.0
+          ],
+          [
+            "Belo Horizonte",
+            160250.0
+          ],
+          [
+            "Campinas",
+            138400.0
+          ]
+        ]
+      }
+    },
+    "hint": "Junte hospitais com internações, filtre o período e calcule AVG de custo_total por cidade."
+  },
+  {
+    "id": "tecnologia_003",
+    "category": "Tecnologia",
+    "title": "Squads sob alerta",
+    "difficulty": "Pleno",
+    "database": "tecnologia.db",
+    "story": "Olá, analista! Hoje você entrou no war room de tecnologia onde os squads chegaram com dashboards próprios, explicações defensivas e uma vontade enorme de provar que o problema está sempre em outro serviço.\n\nA liderança quer olhar para os incidentes do mês sem separar responsabilidade em frases vagas como complexidade sistêmica ou comportamento intermitente.\n\nSe um squad concentra chamados demais, a próxima conversa precisa começar por ele, não por um slide genérico de estabilidade.\n\nSua missão é contar os incidentes por squad no último mês fechado. Porque em tecnologia incidente sem dono vira recorrência, e recorrência sem dado vira tradição.",
+    "objective": "Sua tarefa: retorne o squad e a quantidade de incidentes abertos entre 2026-04-01 e 2026-05-01. Ordene da maior quantidade para a menor. Em caso de empate, ordene por squad em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelos incidentes abertos no mês solicitado.",
+      "Relacione cada ocorrência ao time responsável pelo serviço.",
+      "Conte o volume de incidentes por equipe.",
+      "Organize a lista pela maior concentração e use o nome do time como desempate."
+    ],
+    "expected_sql": "SELECT s.squad, COUNT(*) AS incidentes FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.squad ORDER BY incidentes DESC, s.squad ASC;",
+    "expected_answer": {
+      "query": "SELECT s.squad, COUNT(*) AS incidentes FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.squad ORDER BY incidentes DESC, s.squad ASC;",
+      "result": {
+        "columns": [
+          "squad",
+          "incidentes"
+        ],
+        "rows": [
+          [
+            "Core",
+            3
+          ],
+          [
+            "Plataforma",
+            2
+          ],
+          [
+            "Dados",
+            1
+          ],
+          [
+            "Engajamento",
+            1
+          ]
+        ]
+      }
+    },
+    "hint": "Relacione serviços com incidentes, filtre o período e conte os registros por squad."
+  },
+  {
+    "id": "esporte_003",
+    "category": "Esporte",
+    "title": "Artilharia do mês",
+    "difficulty": "Júnior",
+    "database": "esporte.db",
+    "story": "Olá, analista! Hoje você está no departamento de desempenho de um clube que acabou uma sequência de jogos com a torcida discutindo escalação, a imprensa discutindo protagonismo e a comissão tentando discutir números.\n\nAlguns atletas aparecem muito no ataque, outros aparecem pouco mas resolvem mais, e a diretoria quer entender quem realmente colocou a bola na rede durante o mês.\n\nAntes de qualquer entrevista virar argumento definitivo, os gols precisam ser somados com calma e sem memória seletiva.\n\nSua missão é revelar os jogadores com gols no período analisado. Porque no futebol narrativa muda rápido, mas placar registrado não aceita revisão de opinião.",
+    "objective": "Sua tarefa: retorne o atleta e o total de gols entre 2026-03-01 e 2026-04-01, considerando apenas atletas com pelo menos um gol. Ordene do maior total para o menor. Em caso de empate, ordene por atleta em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas partidas dentro do mês analisado.",
+      "Relacione os registros ofensivos aos atletas.",
+      "Some os gols marcados por jogador.",
+      "Mantenha apenas quem balançou a rede no período.",
+      "Organize a lista pela artilharia e use o nome como desempate."
+    ],
+    "expected_sql": "SELECT j.nome AS atleta, SUM(f.gols) AS gols FROM jogadores j JOIN finalizacoes_partida f ON f.jogador_id = j.id WHERE f.data_jogo >= '2026-03-01' AND f.data_jogo < '2026-04-01' GROUP BY j.nome HAVING SUM(f.gols) > 0 ORDER BY gols DESC, atleta ASC;",
+    "expected_answer": {
+      "query": "SELECT j.nome AS atleta, SUM(f.gols) AS gols FROM jogadores j JOIN finalizacoes_partida f ON f.jogador_id = j.id WHERE f.data_jogo >= '2026-03-01' AND f.data_jogo < '2026-04-01' GROUP BY j.nome HAVING SUM(f.gols) > 0 ORDER BY gols DESC, atleta ASC;",
+      "result": {
+        "columns": [
+          "atleta",
+          "gols"
+        ],
+        "rows": [
+          [
+            "Lia Torres",
+            6
+          ],
+          [
+            "Bruno Reis",
+            3
+          ],
+          [
+            "Caio Lima",
+            2
+          ]
+        ]
+      }
+    },
+    "hint": "Junte jogadores com finalizações, filtre o mês, some os gols e use HAVING para manter quem marcou."
+  },
+  {
+    "id": "industria_003",
+    "category": "Indústria",
+    "title": "Motivos de parada",
+    "difficulty": "Júnior",
+    "database": "industria.db",
+    "story": "Olá, analista! Hoje você está no fechamento mensal da fábrica e a conversa começou com uma frase perigosa: foi só uma parada pontual.\n\nQuando várias paradas pontuais aparecem no mesmo relatório, a pontualidade deixa de ser conforto e começa a parecer padrão operacional.\n\nA gerência quer saber quais motivos consumiram tempo relevante em maio antes de abrir chamado, trocar fornecedor ou culpar o planejamento de novo.\n\nSua missão é agrupar os motivos de parada e mostrar onde o tempo perdido passou do aceitável. Na indústria, minuto parado pequeno demais para debate ainda pode ficar grande na soma.",
+    "objective": "Sua tarefa: retorne o motivo e o total de minutos parados entre 2026-05-01 e 2026-06-01, considerando apenas motivos com total maior ou igual a 150 minutos. Ordene do maior total para o menor. Em caso de empate, ordene por motivo em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas paradas do mês analisado.",
+      "Agrupe o tempo perdido por motivo operacional.",
+      "Some os minutos acumulados em cada causa.",
+      "Mantenha apenas motivos com impacto relevante.",
+      "Organize a lista pela maior perda de tempo e use o motivo como desempate."
+    ],
+    "expected_sql": "SELECT motivo, SUM(minutos_parada) AS minutos_parados FROM paradas WHERE inicio >= '2026-05-01' AND inicio < '2026-06-01' GROUP BY motivo HAVING SUM(minutos_parada) >= 150 ORDER BY minutos_parados DESC, motivo ASC;",
+    "expected_answer": {
+      "query": "SELECT motivo, SUM(minutos_parada) AS minutos_parados FROM paradas WHERE inicio >= '2026-05-01' AND inicio < '2026-06-01' GROUP BY motivo HAVING SUM(minutos_parada) >= 150 ORDER BY minutos_parados DESC, motivo ASC;",
+      "result": {
+        "columns": [
+          "motivo",
+          "minutos_parados"
+        ],
+        "rows": [
+          [
+            "setup prolongado",
+            240
+          ],
+          [
+            "ajuste de linha",
+            180
+          ],
+          [
+            "falha mecânica",
+            180
+          ]
+        ]
+      }
+    },
+    "hint": "Filtre o mês, agrupe por motivo, some minutos_parada e aplique HAVING para o corte mínimo."
+  },
+  {
+    "id": "educacao_003",
+    "category": "Educação",
+    "title": "Média por aluno",
+    "difficulty": "Júnior",
+    "database": "educacao.db",
+    "story": "Olá, analista! Hoje você está na secretaria acadêmica em semana de conselho de classe, quando cada nota baixa vem acompanhada de uma explicação longa e cada ata precisa de objetividade.\n\nA coordenação quer enxergar o desempenho dos alunos no segundo bimestre antes de decidir reforços, conversas com responsáveis e prioridades de acompanhamento.\n\nOlhar disciplina por disciplina ajuda, mas agora a pergunta é mais direta: quem ficou com a média geral mais apertada?\n\nSua missão é calcular a média por aluno no bimestre. Porque em escola alerta cedo costuma sair mais barato do que recuperação organizada às pressas.",
+    "objective": "Sua tarefa: retorne o aluno e a média das notas do segundo bimestre. Ordene da menor média para a maior. Em caso de empate, ordene por aluno em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas avaliações do segundo bimestre.",
+      "Agrupe as notas por aluno.",
+      "Calcule a média de desempenho de cada estudante.",
+      "Organize a lista começando pelas menores médias e use o nome como desempate."
+    ],
+    "expected_sql": "SELECT aluno, ROUND(AVG(nota), 2) AS media_bimestre FROM avaliacoes WHERE bimestre = 2 GROUP BY aluno ORDER BY media_bimestre ASC, aluno ASC;",
+    "expected_answer": {
+      "query": "SELECT aluno, ROUND(AVG(nota), 2) AS media_bimestre FROM avaliacoes WHERE bimestre = 2 GROUP BY aluno ORDER BY media_bimestre ASC, aluno ASC;",
+      "result": {
+        "columns": [
+          "aluno",
+          "media_bimestre"
+        ],
+        "rows": [
+          [
+            "João Mendes",
+            6.4
+          ],
+          [
+            "Nina Lopes",
+            6.4
+          ],
+          [
+            "Lara Dias",
+            6.7
+          ],
+          [
+            "Bia Rocha",
+            7.15
+          ]
+        ]
+      }
+    },
+    "hint": "Filtre o segundo bimestre, agrupe por aluno e calcule AVG de nota com arredondamento."
+  },
+  {
+    "id": "arte_003",
+    "category": "Arte",
+    "title": "Obra sem venda",
+    "difficulty": "Pleno",
+    "database": "arte.db",
+    "story": "Olá, analista! Hoje você está no pós-evento de uma galeria onde algumas obras receberam elogios intensos, promessas discretas e aquele tipo de entusiasmo que desaparece quando chega a hora de assinar a compra.\n\nA curadoria quer separar o que virou venda concluída do que ficou apenas em intenção, reserva ou conversa elegante perto do catálogo.\n\nExiste pelo menos uma obra ocupando espaço comercial sem receita confirmada, e a próxima agenda de negociação depende dessa lista.\n\nSua missão é encontrar as obras sem venda concluída. Porque no mercado da arte interesse é bonito, mas faturamento confirmado continua sendo o filtro mais honesto.",
+    "objective": "Sua tarefa: retorne o título das obras que não possuem venda concluída. Ordene por obra em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelo catálogo de obras da galeria.",
+      "Verifique quais peças não possuem venda concluída associada.",
+      "Mantenha apenas as obras sem receita confirmada.",
+      "Organize a lista pelo título da obra."
+    ],
+    "expected_sql": "SELECT o.titulo AS obra FROM obras o LEFT JOIN vendas v ON v.obra_id = o.id AND v.status = 'concluida' WHERE v.id IS NULL ORDER BY obra ASC;",
+    "expected_answer": {
+      "query": "SELECT o.titulo AS obra FROM obras o LEFT JOIN vendas v ON v.obra_id = o.id AND v.status = 'concluida' WHERE v.id IS NULL ORDER BY obra ASC;",
+      "result": {
+        "columns": [
+          "obra"
+        ],
+        "rows": [
+          [
+            "Horizonte Partido"
+          ]
+        ]
+      }
+    },
+    "hint": "Use LEFT JOIN entre obras e vendas concluídas, depois mantenha apenas registros sem venda correspondente."
+  },
+  {
+    "id": "agricultura_003",
+    "category": "Agricultura",
+    "title": "Produção estimada",
+    "difficulty": "Pleno",
+    "database": "agricultura.db",
+    "story": "Olá, analista! Hoje você está no escritório da fazenda, onde a conversa saiu da produtividade por hectare e foi direto para a pergunta que decide caminhão, silo e contrato: quanto isso representa em produção.\n\nAlguns talhões parecem bons no percentual, outros ganham força pelo tamanho da área, e a gestão precisa comparar impacto real antes de priorizar investimentos para a próxima safra.\n\nO mapa agrícola está aberto, mas quem vai responder não é a intuição de campo, é a combinação entre área e produtividade registrada.\n\nSua missão é estimar a produção por talhão na safra 2026. Porque no agro rendimento por hectare explica eficiência, mas volume final paga a operação.",
+    "objective": "Sua tarefa: retorne o talhão e a produção estimada da safra 2026, calculada como área em hectares multiplicada pela produtividade em kg por hectare. Ordene da maior produção estimada para a menor.",
+    "objective_steps": [
+      "Comece pelos talhões da safra solicitada.",
+      "Relacione área plantada e produtividade registrada.",
+      "Calcule a produção estimada de cada talhão.",
+      "Organize a lista começando pelos maiores volumes previstos."
+    ],
+    "expected_sql": "SELECT t.nome AS talhao, ROUND(t.area_ha * c.produtividade_kg_ha, 2) AS producao_estimada FROM talhoes t JOIN colheitas c ON c.talhao_id = t.id WHERE c.safra = '2026' ORDER BY producao_estimada DESC;",
+    "expected_answer": {
+      "query": "SELECT t.nome AS talhao, ROUND(t.area_ha * c.produtividade_kg_ha, 2) AS producao_estimada FROM talhoes t JOIN colheitas c ON c.talhao_id = t.id WHERE c.safra = '2026' ORDER BY producao_estimada DESC;",
+      "result": {
+        "columns": [
+          "talhao",
+          "producao_estimada"
+        ],
+        "rows": [
+          [
+            "T01",
+            306000.0
+          ],
+          [
+            "T04",
+            261300.0
+          ],
+          [
+            "T02",
+            225700.0
+          ],
+          [
+            "T05",
+            183750.0
+          ],
+          [
+            "T03",
+            176900.0
+          ]
+        ]
+      }
+    },
+    "hint": "Junte talhões com colheitas, filtre a safra e multiplique area_ha por produtividade_kg_ha."
+  },
+  {
+    "id": "logistica_003",
+    "category": "Logística",
+    "title": "Frete atrasado caro",
+    "difficulty": "Júnior",
+    "database": "logistica.db",
+    "story": "Olá, analista! Hoje você está na operação logística depois de uma semana em que atraso deixou de ser exceção e começou a aparecer junto com fretes cada vez mais caros.\n\nA transportadora precisa entender quais rotas atrasadas também estão pesando mais no custo médio, porque reclamar do prazo sem olhar o gasto é resolver metade do problema.\n\nAlgumas entregas chegaram depois do combinado e ainda cobraram caro pela experiência, o tipo de combinação que cliente nenhum costuma agradecer.\n\nSua missão é calcular o custo médio de frete das rotas com atraso. Porque na logística atrasar já é ruim; atrasar caro é relatório de prioridade.",
+    "objective": "Sua tarefa: retorne origem, destino e custo médio de frete considerando apenas entregas atrasadas. Ordene do maior custo médio para o menor. Em caso de empate, ordene por origem e destino em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas entregas que chegaram fora do prazo.",
+      "Agrupe os casos por rota.",
+      "Calcule o custo médio de frete de cada trajeto atrasado.",
+      "Organize a lista pelos maiores custos e use origem e destino como desempate."
+    ],
+    "expected_sql": "SELECT origem, destino, ROUND(AVG(custo_frete), 2) AS custo_medio FROM entregas WHERE dias_atraso > 0 GROUP BY origem, destino ORDER BY custo_medio DESC, origem ASC, destino ASC;",
+    "expected_answer": {
+      "query": "SELECT origem, destino, ROUND(AVG(custo_frete), 2) AS custo_medio FROM entregas WHERE dias_atraso > 0 GROUP BY origem, destino ORDER BY custo_medio DESC, origem ASC, destino ASC;",
+      "result": {
+        "columns": [
+          "origem",
+          "destino",
+          "custo_medio"
+        ],
+        "rows": [
+          [
+            "Rio de Janeiro",
+            "Salvador",
+            900.0
+          ],
+          [
+            "Campinas",
+            "Goiania",
+            740.0
+          ],
+          [
+            "São Paulo",
+            "Curitiba",
+            550.0
+          ],
+          [
+            "Belo Horizonte",
+            "Vitoria",
+            340.0
+          ]
+        ]
+      }
+    },
+    "hint": "Filtre dias_atraso maior que zero, agrupe por origem e destino e calcule AVG de custo_frete."
+  },
+  {
+    "id": "games_003",
+    "category": "Games",
+    "title": "Fases concluídas",
+    "difficulty": "Júnior",
+    "database": "games.db",
+    "story": "Olá, analista! Hoje você está acompanhando o funil de progressão de um jogo onde a equipe cansou de olhar apenas para abandono e quer entender também onde os jogadores estão conseguindo avançar.\n\nO design precisa separar fase difícil de fase bem dosada, produto quer números para a próxima atualização e suporte quer parar de responder reclamação usando sensação como evidência.\n\nSe uma etapa concentra conclusões, ela pode indicar ritmo saudável; se quase ninguém termina, talvez a curva esteja cobrando demais cedo demais.\n\nSua missão é contar as conclusões por fase. Porque em games retenção não se mede só pelo jogador que sai, mas também pelo caminho que ele consegue completar.",
+    "objective": "Sua tarefa: retorne a fase e a quantidade de conclusões, considerando apenas sessões em que o jogador não abandonou. Ordene da maior quantidade para a menor. Em caso de empate, ordene por fase em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas sessões em que o jogador avançou sem abandonar.",
+      "Agrupe as conclusões por fase.",
+      "Conte quantas vezes cada etapa foi finalizada.",
+      "Organize a lista pelas fases mais concluídas e use o nome como desempate."
+    ],
+    "expected_sql": "SELECT fase, COUNT(*) AS conclusoes FROM sessoes_fase WHERE abandonou = 0 GROUP BY fase ORDER BY conclusoes DESC, fase ASC;",
+    "expected_answer": {
+      "query": "SELECT fase, COUNT(*) AS conclusoes FROM sessoes_fase WHERE abandonou = 0 GROUP BY fase ORDER BY conclusoes DESC, fase ASC;",
+      "result": {
+        "columns": [
+          "fase",
+          "conclusoes"
+        ],
+        "rows": [
+          [
+            "Prólogo",
+            3
+          ],
+          [
+            "Torre Solar",
+            2
+          ],
+          [
+            "Mina Congelada",
+            1
+          ]
+        ]
+      }
+    },
+    "hint": "Filtre abandonou igual a 0, conte as sessões por fase e ordene pelo total de conclusões."
+  },
+  {
+    "id": "saude_004",
+    "category": "Saúde",
+    "title": "Hospitais acima da média",
+    "difficulty": "Sênior",
+    "database": "saude.db",
+    "story": "Olá, analista! Hoje você está em uma auditoria regional de saúde onde os hospitais chegaram com justificativas sofisticadas, planilhas coloridas e uma confiança perigosa de que ninguém vai comparar nada com média.\n\nA diretoria precisa descobrir quais unidades estão realmente acima do comportamento esperado no trimestre, porque cortar custo sem critério em saúde é uma ótima forma de criar outro problema maior.\n\nAntes que a reunião vire disputa de narrativa, os dados precisam mostrar quem passou da linha e quanto passou.\n\nSua missão é identificar os hospitais com custo total acima da média do grupo. Porque em hospital conta alta pode ter explicação, mas primeiro ela precisa sobreviver ao SQL.",
+    "objective": "Sua tarefa: retorne hospital, cidade, custo total e valor acima da média entre 2026-01-01 e 2026-04-01, considerando apenas hospitais com custo total acima da média dos hospitais no período. Ordene pelo maior valor acima da média.",
+    "objective_steps": [
+      "Comece pelas internações do trimestre analisado.",
+      "Relacione cada caso ao hospital e à cidade responsável.",
+      "Calcule o custo total de cada hospital.",
+      "Compare cada total com a média geral do grupo.",
+      "Mantenha apenas unidades acima da média.",
+      "Organize a lista pela maior diferença acima do esperado."
+    ],
+    "expected_sql": "WITH custos_hospital AS (SELECT h.nome AS hospital, h.cidade, SUM(i.custo_total) AS custo_total FROM hospitais h JOIN internacoes i ON i.hospital_id = h.id WHERE i.data_entrada >= '2026-01-01' AND i.data_entrada < '2026-04-01' GROUP BY h.nome, h.cidade), media_geral AS (SELECT AVG(custo_total) AS media_custo FROM custos_hospital) SELECT hospital, cidade, ROUND(custo_total, 2) AS custo_total, ROUND(custo_total - media_custo, 2) AS acima_da_media FROM custos_hospital CROSS JOIN media_geral WHERE custo_total > media_custo ORDER BY acima_da_media DESC;",
+    "expected_answer": {
+      "query": "WITH custos_hospital AS (SELECT h.nome AS hospital, h.cidade, SUM(i.custo_total) AS custo_total FROM hospitais h JOIN internacoes i ON i.hospital_id = h.id WHERE i.data_entrada >= '2026-01-01' AND i.data_entrada < '2026-04-01' GROUP BY h.nome, h.cidade), media_geral AS (SELECT AVG(custo_total) AS media_custo FROM custos_hospital) SELECT hospital, cidade, ROUND(custo_total, 2) AS custo_total, ROUND(custo_total - media_custo, 2) AS acima_da_media FROM custos_hospital CROSS JOIN media_geral WHERE custo_total > media_custo ORDER BY acima_da_media DESC;",
+      "result": {
+        "columns": [
+          "hospital",
+          "cidade",
+          "custo_total",
+          "acima_da_media"
+        ],
+        "rows": [
+          [
+            "Hospital Central",
+            "São Paulo",
+            733500.5,
+            335837.88
+          ],
+          [
+            "Hospital Atlântico",
+            "Rio de Janeiro",
+            420100.0,
+            22437.38
+          ]
+        ]
+      }
+    },
+    "hint": "Use uma CTE para somar custos por hospital, outra para calcular a média geral e depois compare cada total com essa média."
+  },
+  {
+    "id": "tecnologia_004",
+    "category": "Tecnologia",
+    "title": "Criticidade por serviço",
+    "difficulty": "Sênior",
+    "database": "tecnologia.db",
+    "story": "Olá, analista! Hoje você está em um centro de operações global onde o painel de incidentes está menos para dashboard e mais para pedido formal de socorro.\n\nOs times querem saber se o problema é volume geral ou concentração de falhas críticas, porque uma fila grande assusta, mas uma fila pequena cheia de alerta vermelho derruba fim de semana executivo.\n\nA liderança precisa priorizar serviços com recorrência suficiente para análise e criticidade alta o bastante para intervenção.\n\nSua missão é calcular o percentual de incidentes críticos por serviço no mês. Porque em tecnologia barulho todo sistema faz, mas criticidade é o barulho que vira prejuízo.",
+    "objective": "Sua tarefa: retorne serviço, squad, total de incidentes, incidentes críticos e percentual crítico entre 2026-04-01 e 2026-05-01, considerando apenas serviços com pelo menos 2 incidentes no período. Ordene por maior percentual crítico, depois maior total e serviço em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelos incidentes do mês analisado.",
+      "Relacione cada ocorrência ao serviço e ao time responsável.",
+      "Conte o volume total e os casos críticos de cada serviço.",
+      "Calcule o percentual de criticidade de cada grupo.",
+      "Mantenha apenas serviços com volume suficiente para análise.",
+      "Organize a lista pelos maiores percentuais, depois pelo maior volume e pelo nome."
+    ],
+    "expected_sql": "WITH incidentes_servico AS (SELECT s.nome AS servico, s.squad, COUNT(*) AS total_incidentes, SUM(CASE WHEN i.severidade = 'crítica' THEN 1 ELSE 0 END) AS incidentes_criticos FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.nome, s.squad) SELECT servico, squad, total_incidentes, incidentes_criticos, ROUND(incidentes_criticos * 100.0 / total_incidentes, 2) AS percentual_critico FROM incidentes_servico WHERE total_incidentes >= 2 ORDER BY percentual_critico DESC, total_incidentes DESC, servico ASC;",
+    "expected_answer": {
+      "query": "WITH incidentes_servico AS (SELECT s.nome AS servico, s.squad, COUNT(*) AS total_incidentes, SUM(CASE WHEN i.severidade = 'crítica' THEN 1 ELSE 0 END) AS incidentes_criticos FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.nome, s.squad) SELECT servico, squad, total_incidentes, incidentes_criticos, ROUND(incidentes_criticos * 100.0 / total_incidentes, 2) AS percentual_critico FROM incidentes_servico WHERE total_incidentes >= 2 ORDER BY percentual_critico DESC, total_incidentes DESC, servico ASC;",
+      "result": {
+        "columns": [
+          "servico",
+          "squad",
+          "total_incidentes",
+          "incidentes_criticos",
+          "percentual_critico"
+        ],
+        "rows": [
+          [
+            "Pagamentos",
+            "Core",
+            3,
+            2,
+            66.67
+          ],
+          [
+            "Autenticação",
+            "Plataforma",
+            2,
+            1,
+            50.0
+          ]
+        ]
+      }
+    },
+    "hint": "Calcule totais e críticos por serviço em uma CTE, depois divida críticos pelo total e filtre serviços com volume mínimo."
+  },
+  {
+    "id": "esporte_004",
+    "category": "Esporte",
+    "title": "Eficiência acima da média",
+    "difficulty": "Sênior",
+    "database": "esporte.db",
+    "story": "Olá, analista! Hoje você está em uma sala de análise de desempenho onde o técnico quer cortar o ruído entre finalizador decisivo, jogador esforçado e atleta que só aparece bem no clipe editado.\n\nA sequência de partidas gerou gols, finalizações e muita convicção de arquibancada mas a comissão precisa saber quem está acima da média real de eficiência.\n\nA lista de titulares para o próximo jogo não pode depender de memória afetiva nem de frase pronta em coletiva.\n\nSua missão é encontrar os atletas cuja eficiência de chute ficou acima da média do grupo no mês. Porque no esporte profissional feeling ajuda, mas porcentagem bem calculada evita escalação no escuro.",
+    "objective": "Sua tarefa: retorne atleta, gols, finalizações e eficiência de chute entre 2026-03-01 e 2026-04-01, considerando apenas atletas com finalizações e eficiência acima da média do grupo. Ordene da maior eficiência para a menor.",
+    "objective_steps": [
+      "Comece pelas partidas do período solicitado.",
+      "Relacione gols e tentativas aos atletas responsáveis.",
+      "Calcule a eficiência ofensiva de cada jogador.",
+      "Compare cada eficiência com a média do grupo.",
+      "Mantenha apenas atletas acima da média.",
+      "Organize a lista começando pela melhor conversão."
+    ],
+    "expected_sql": "WITH desempenho AS (SELECT j.nome AS atleta, SUM(f.gols) AS gols, SUM(f.finalizacoes) AS finalizacoes, ROUND(SUM(f.gols) * 100.0 / SUM(f.finalizacoes), 2) AS eficiencia_chute FROM jogadores j JOIN finalizacoes_partida f ON f.jogador_id = j.id WHERE f.data_jogo >= '2026-03-01' AND f.data_jogo < '2026-04-01' GROUP BY j.nome HAVING SUM(f.finalizacoes) > 0), media_eficiencia AS (SELECT AVG(eficiencia_chute) AS media FROM desempenho) SELECT atleta, gols, finalizacoes, eficiencia_chute FROM desempenho CROSS JOIN media_eficiencia WHERE eficiencia_chute > media ORDER BY eficiencia_chute DESC, atleta ASC;",
+    "expected_answer": {
+      "query": "WITH desempenho AS (SELECT j.nome AS atleta, SUM(f.gols) AS gols, SUM(f.finalizacoes) AS finalizacoes, ROUND(SUM(f.gols) * 100.0 / SUM(f.finalizacoes), 2) AS eficiencia_chute FROM jogadores j JOIN finalizacoes_partida f ON f.jogador_id = j.id WHERE f.data_jogo >= '2026-03-01' AND f.data_jogo < '2026-04-01' GROUP BY j.nome HAVING SUM(f.finalizacoes) > 0), media_eficiencia AS (SELECT AVG(eficiencia_chute) AS media FROM desempenho) SELECT atleta, gols, finalizacoes, eficiencia_chute FROM desempenho CROSS JOIN media_eficiencia WHERE eficiencia_chute > media ORDER BY eficiencia_chute DESC, atleta ASC;",
+      "result": {
+        "columns": [
+          "atleta",
+          "gols",
+          "finalizacoes",
+          "eficiencia_chute"
+        ],
+        "rows": [
+          [
+            "Lia Torres",
+            6,
+            13,
+            46.15
+          ]
+        ]
+      }
+    },
+    "hint": "Calcule a eficiência por atleta em uma CTE, tire a média dessas eficiências e filtre quem ficou acima dela."
+  },
+  {
+    "id": "industria_004",
+    "category": "Indústria",
+    "title": "Pior máquina por setor",
+    "difficulty": "Sênior",
+    "database": "industria.db",
+    "story": "Olá, analista! Hoje você está numa fábrica onde cada setor garante que o gargalo está na máquina ao lado, no turno anterior ou em algum detalhe que convenientemente não aparece na ata.\n\nA gerência quer uma visão cirúrgica: dentro de cada setor, qual equipamento concentrou mais minutos parados em maio.\n\nNão basta saber o setor problemático; a manutenção precisa sair da reunião com alvo claro, ordem de prioridade e menos espaço para desculpa técnica.\n\nSua missão é ranquear as máquinas dentro de cada setor e revelar a pior de cada um. Porque na indústria equipamento problemático adora se esconder atrás da média do setor.",
+    "objective": "Sua tarefa: retorne setor, máquina e minutos parados entre 2026-05-01 e 2026-06-01 para a máquina com maior parada dentro de cada setor. Ordene pelo maior total de minutos parados e depois setor em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas paradas do mês analisado.",
+      "Relacione cada ocorrência à máquina e ao setor responsável.",
+      "Some o tempo parado de cada equipamento.",
+      "Compare as máquinas dentro do próprio setor.",
+      "Mantenha apenas a pior máquina de cada área.",
+      "Organize a lista pelos maiores tempos perdidos."
+    ],
+    "expected_sql": "WITH paradas_maquina AS (SELECT m.nome AS maquina, m.setor, SUM(p.minutos_parada) AS minutos_parados FROM maquinas m JOIN paradas p ON p.maquina_id = m.id WHERE p.inicio >= '2026-05-01' AND p.inicio < '2026-06-01' GROUP BY m.nome, m.setor), ranking AS (SELECT maquina, setor, minutos_parados, RANK() OVER (PARTITION BY setor ORDER BY minutos_parados DESC) AS posicao_setor FROM paradas_maquina) SELECT setor, maquina, minutos_parados FROM ranking WHERE posicao_setor = 1 ORDER BY minutos_parados DESC, setor ASC;",
+    "expected_answer": {
+      "query": "WITH paradas_maquina AS (SELECT m.nome AS maquina, m.setor, SUM(p.minutos_parada) AS minutos_parados FROM maquinas m JOIN paradas p ON p.maquina_id = m.id WHERE p.inicio >= '2026-05-01' AND p.inicio < '2026-06-01' GROUP BY m.nome, m.setor), ranking AS (SELECT maquina, setor, minutos_parados, RANK() OVER (PARTITION BY setor ORDER BY minutos_parados DESC) AS posicao_setor FROM paradas_maquina) SELECT setor, maquina, minutos_parados FROM ranking WHERE posicao_setor = 1 ORDER BY minutos_parados DESC, setor ASC;",
+      "result": {
+        "columns": [
+          "setor",
+          "maquina",
+          "minutos_parados"
+        ],
+        "rows": [
+          [
+            "Montagem",
+            "Montagem 01",
+            310
+          ],
+          [
+            "Pintura",
+            "Pintura 02",
+            240
+          ],
+          [
+            "Corte",
+            "Corte 01",
+            120
+          ]
+        ]
+      }
+    },
+    "hint": "Some as paradas por máquina e use uma função de janela particionada por setor para achar a maior de cada grupo."
+  },
+  {
+    "id": "educacao_004",
+    "category": "Educação",
+    "title": "Risco acadêmico combinado",
+    "difficulty": "Sênior",
+    "database": "educacao.db",
+    "story": "Olá, analista! Hoje você está no conselho pedagógico de uma escola onde notas, faltas e justificativas chegaram juntas para tentar transformar prioridade em debate infinito.\n\nA coordenação precisa enxergar o aluno por dois lados ao mesmo tempo: desempenho e presença. Nota baixa sem ausência preocupa, ausência alta com nota razoável também.\n\nO plano de intervenção precisa sair da reunião com nomes, não com sensação geral de que a turma anda difícil.\n\nSua missão é cruzar média do bimestre com frequência e apontar quem está em risco. Porque em educação alerta bom é aquele que chega antes da recuperação virar mutirão.",
+    "objective": "Sua tarefa: retorne aluno, média do segundo bimestre e frequência percentual entre 2026-04-01 e 2026-05-01, considerando alunos com média abaixo de 7 ou frequência abaixo de 75%. Ordene pela menor média, depois menor frequência e aluno em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas notas do segundo bimestre.",
+      "Calcule a média de desempenho de cada aluno.",
+      "Calcule a frequência de cada estudante no período analisado.",
+      "Combine desempenho e presença em uma visão única de risco.",
+      "Mantenha alunos com nota baixa ou frequência insuficiente.",
+      "Organize a lista pelos casos mais delicados primeiro."
+    ],
+    "expected_sql": "WITH medias AS (SELECT aluno, ROUND(AVG(nota), 2) AS media_bimestre FROM avaliacoes WHERE bimestre = 2 GROUP BY aluno), frequencias AS (SELECT aluno, ROUND(AVG(presente) * 100, 2) AS frequencia_percentual FROM presencas WHERE data >= '2026-04-01' AND data < '2026-05-01' GROUP BY aluno) SELECT m.aluno, m.media_bimestre, f.frequencia_percentual FROM medias m JOIN frequencias f ON f.aluno = m.aluno WHERE m.media_bimestre < 7 OR f.frequencia_percentual < 75 ORDER BY m.media_bimestre ASC, f.frequencia_percentual ASC, m.aluno ASC;",
+    "expected_answer": {
+      "query": "WITH medias AS (SELECT aluno, ROUND(AVG(nota), 2) AS media_bimestre FROM avaliacoes WHERE bimestre = 2 GROUP BY aluno), frequencias AS (SELECT aluno, ROUND(AVG(presente) * 100, 2) AS frequencia_percentual FROM presencas WHERE data >= '2026-04-01' AND data < '2026-05-01' GROUP BY aluno) SELECT m.aluno, m.media_bimestre, f.frequencia_percentual FROM medias m JOIN frequencias f ON f.aluno = m.aluno WHERE m.media_bimestre < 7 OR f.frequencia_percentual < 75 ORDER BY m.media_bimestre ASC, f.frequencia_percentual ASC, m.aluno ASC;",
+      "result": {
+        "columns": [
+          "aluno",
+          "media_bimestre",
+          "frequencia_percentual"
+        ],
+        "rows": [
+          [
+            "Nina Lopes",
+            6.4,
+            60.0
+          ],
+          [
+            "João Mendes",
+            6.4,
+            66.67
+          ],
+          [
+            "Lara Dias",
+            6.7,
+            100.0
+          ],
+          [
+            "Bia Rocha",
+            7.15,
+            72.73
+          ]
+        ]
+      }
+    },
+    "hint": "Crie uma CTE para médias e outra para frequências, junte por aluno e aplique a regra de risco combinada."
+  },
+  {
+    "id": "arte_004",
+    "category": "Arte",
+    "title": "Receita e desejo",
+    "difficulty": "Sênior",
+    "database": "arte.db",
+    "story": "Olá, analista! Hoje você está numa galeria internacional onde a curadoria fala em impacto cultural, o comercial fala em caixa e os artistas querem saber por que elogio ainda não paga aluguel.\n\nA direção precisa cruzar duas pistas: obras que venderam e obras que despertaram desejo no catálogo digital. Uma peça pode ser valiosa pelo dinheiro que entrou ou pelo interesse que ainda pode virar negociação.\n\nA próxima parede de destaque é pequena demais para acomodar vaidade, então a decisão precisa sair dos dados.\n\nSua missão é combinar receita concluída e favoritos por obra. Porque no mercado da arte subjetividade encanta, mas ranking bem feito escolhe a iluminação.",
+    "objective": "Sua tarefa: retorne artista, obra, receita e favoritos, considerando obras com receita concluída maior que zero ou pelo menos 3 favoritos. Ordene pela maior receita, depois maior quantidade de favoritos e obra em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelo catálogo completo de obras.",
+      "Relacione cada peça ao artista responsável.",
+      "Calcule a receita confirmada por obra.",
+      "Conte também os sinais de interesse do público.",
+      "Mantenha obras com venda ou interesse relevante.",
+      "Organize a lista por maior receita, depois por maior desejo do público."
+    ],
+    "expected_sql": "WITH receita_obra AS (SELECT o.id AS obra_id, o.titulo AS obra, a.nome AS artista, SUM(CASE WHEN v.status = 'concluida' THEN v.valor_venda ELSE 0 END) AS receita FROM obras o JOIN artistas a ON a.id = o.artista_id LEFT JOIN vendas v ON v.obra_id = o.id GROUP BY o.id, o.titulo, a.nome), favoritos AS (SELECT interacoes_obras.obra AS obra, COUNT(*) AS favoritos FROM interacoes_obras WHERE tipo_interacao = 'favorito' GROUP BY interacoes_obras.obra) SELECT r.artista, r.obra, ROUND(r.receita, 2) AS receita, COALESCE(f.favoritos, 0) AS favoritos FROM receita_obra r LEFT JOIN favoritos f ON f.obra = r.obra WHERE r.receita > 0 OR COALESCE(f.favoritos, 0) >= 3 ORDER BY receita DESC, favoritos DESC, r.obra ASC;",
+    "expected_answer": {
+      "query": "WITH receita_obra AS (SELECT o.id AS obra_id, o.titulo AS obra, a.nome AS artista, SUM(CASE WHEN v.status = 'concluida' THEN v.valor_venda ELSE 0 END) AS receita FROM obras o JOIN artistas a ON a.id = o.artista_id LEFT JOIN vendas v ON v.obra_id = o.id GROUP BY o.id, o.titulo, a.nome), favoritos AS (SELECT interacoes_obras.obra AS obra, COUNT(*) AS favoritos FROM interacoes_obras WHERE tipo_interacao = 'favorito' GROUP BY interacoes_obras.obra) SELECT r.artista, r.obra, ROUND(r.receita, 2) AS receita, COALESCE(f.favoritos, 0) AS favoritos FROM receita_obra r LEFT JOIN favoritos f ON f.obra = r.obra WHERE r.receita > 0 OR COALESCE(f.favoritos, 0) >= 3 ORDER BY receita DESC, favoritos DESC, r.obra ASC;",
+      "result": {
+        "columns": [
+          "artista",
+          "obra",
+          "receita",
+          "favoritos"
+        ],
+        "rows": [
+          [
+            "Theo Ramos",
+            "Retrato em Azul",
+            31400.5,
+            4
+          ],
+          [
+            "Maya Castro",
+            "Cidade Submersa",
+            15000.0,
+            5
+          ],
+          [
+            "Maya Castro",
+            "Mapa do Vento",
+            13500.0,
+            0
+          ],
+          [
+            "Luna Alves",
+            "Jardim de Concreto",
+            10000.0,
+            3
+          ],
+          [
+            "Luna Alves",
+            "Silêncio Vermelho",
+            3800.0,
+            3
+          ]
+        ]
+      }
+    },
+    "hint": "Calcule receita por obra em uma CTE, favoritos em outra e use LEFT JOIN para combinar as duas leituras."
+  },
+  {
+    "id": "agricultura_004",
+    "category": "Agricultura",
+    "title": "Ranking hídrico total",
+    "difficulty": "Sênior",
+    "database": "agricultura.db",
+    "story": "Olá, analista! Hoje você está numa fazenda em que água virou pauta de diretoria, planilha de custo e assunto delicado no rádio da operação.\n\nA equipe não quer mais olhar só produtividade por hectare nem só volume irrigado. O que importa agora é a produção estimada que cada talhão entrega para cada metro cúbico aplicado.\n\nA próxima safra vai receber investimento seletivo, e ninguém quer premiar talhão bonito no mapa que bebe água como se orçamento fosse chuva.\n\nSua missão é ranquear os talhões por eficiência hídrica total. Porque no agro eficiência boa não aparece no discurso, aparece quando produção e recurso entram na mesma conta.",
+    "objective": "Sua tarefa: retorne talhão, cultura, kg por metro cúbico total e posição no ranking para a safra 2026, usando produção estimada dividida pelo volume irrigado entre 2026-01-01 e 2026-05-01. Ordene pela posição e talhão.",
+    "objective_steps": [
+      "Comece pelos talhões da safra analisada.",
+      "Some o volume de água usado no período solicitado.",
+      "Relacione produção estimada e consumo hídrico de cada área.",
+      "Calcule a eficiência total por volume de água.",
+      "Crie uma posição de desempenho para cada talhão.",
+      "Organize a lista pela melhor posição no ranking."
+    ],
+    "expected_sql": "WITH irrigacao AS (SELECT talhao_id, SUM(volume_m3) AS volume_total FROM irrigacoes WHERE data >= '2026-01-01' AND data < '2026-05-01' GROUP BY talhao_id), eficiencia AS (SELECT t.nome AS talhao, c.cultura, ROUND((t.area_ha * c.produtividade_kg_ha) / i.volume_total, 2) AS kg_por_m3_total FROM talhoes t JOIN colheitas c ON c.talhao_id = t.id JOIN irrigacao i ON i.talhao_id = t.id WHERE c.safra = '2026'), ranking AS (SELECT talhao, cultura, kg_por_m3_total, RANK() OVER (ORDER BY kg_por_m3_total DESC) AS posicao FROM eficiencia) SELECT talhao, cultura, kg_por_m3_total, posicao FROM ranking ORDER BY posicao ASC, talhao ASC;",
+    "expected_answer": {
+      "query": "WITH irrigacao AS (SELECT talhao_id, SUM(volume_m3) AS volume_total FROM irrigacoes WHERE data >= '2026-01-01' AND data < '2026-05-01' GROUP BY talhao_id), eficiencia AS (SELECT t.nome AS talhao, c.cultura, ROUND((t.area_ha * c.produtividade_kg_ha) / i.volume_total, 2) AS kg_por_m3_total FROM talhoes t JOIN colheitas c ON c.talhao_id = t.id JOIN irrigacao i ON i.talhao_id = t.id WHERE c.safra = '2026'), ranking AS (SELECT talhao, cultura, kg_por_m3_total, RANK() OVER (ORDER BY kg_por_m3_total DESC) AS posicao FROM eficiencia) SELECT talhao, cultura, kg_por_m3_total, posicao FROM ranking ORDER BY posicao ASC, talhao ASC;",
+      "result": {
+        "columns": [
+          "talhao",
+          "cultura",
+          "kg_por_m3_total",
+          "posicao"
+        ],
+        "rows": [
+          [
+            "T02",
+            "Milho",
+            141.06,
+            1
+          ],
+          [
+            "T01",
+            "Soja",
+            117.69,
+            2
+          ],
+          [
+            "T04",
+            "Soja",
+            108.88,
+            3
+          ],
+          [
+            "T03",
+            "Milho",
+            70.76,
+            4
+          ]
+        ]
+      }
+    },
+    "hint": "Some a irrigação por talhão, calcule produção estimada com área vezes produtividade e aplique RANK sobre a eficiência."
+  },
+  {
+    "id": "logistica_004",
+    "category": "Logística",
+    "title": "Ranking de risco por rota",
+    "difficulty": "Sênior",
+    "database": "logistica.db",
+    "story": "Olá, analista! Hoje você está na sala de gestão de uma transportadora onde atraso, custo e cliente irritado decidiram aparecer juntos no mesmo relatório.\n\nA operação precisa parar de olhar só quantidade de atrasos e começar a enxergar a taxa por rota junto com custo médio, porque algumas rotas pequenas conseguem ser grandes problemas com poucos registros.\n\nO plano de renegociação de transportadores depende de uma lista objetiva de risco.\n\nSua missão é ranquear rotas por taxa de atraso e custo médio. Porque em logística o caminhão atrasa uma vez, mas o cliente lembra em todas as próximas cotações.",
+    "objective": "Sua tarefa: retorne origem, destino, taxa de atraso, custo médio e posição de risco por rota. Calcule a taxa como entregas atrasadas divididas pelo total de entregas da rota. Ordene pela posição, origem e destino.",
+    "objective_steps": [
+      "Comece pelo histórico completo de entregas por rota.",
+      "Calcule o total de entregas e os atrasos de cada trajeto.",
+      "Calcule a taxa de atraso e o custo médio de cada rota.",
+      "Crie uma posição de risco combinando atraso e custo.",
+      "Organize a lista pela prioridade de risco definida."
+    ],
+    "expected_sql": "WITH rotas AS (SELECT origem, destino, COUNT(*) AS entregas, SUM(CASE WHEN dias_atraso > 0 THEN 1 ELSE 0 END) AS atrasadas, ROUND(AVG(custo_frete), 2) AS custo_medio FROM entregas GROUP BY origem, destino), ranking AS (SELECT origem, destino, entregas, atrasadas, custo_medio, ROUND(atrasadas * 100.0 / entregas, 2) AS taxa_atraso, RANK() OVER (ORDER BY atrasadas * 100.0 / entregas DESC, custo_medio DESC) AS posicao_risco FROM rotas) SELECT origem, destino, taxa_atraso, custo_medio, posicao_risco FROM ranking ORDER BY posicao_risco ASC, origem ASC, destino ASC;",
+    "expected_answer": {
+      "query": "WITH rotas AS (SELECT origem, destino, COUNT(*) AS entregas, SUM(CASE WHEN dias_atraso > 0 THEN 1 ELSE 0 END) AS atrasadas, ROUND(AVG(custo_frete), 2) AS custo_medio FROM entregas GROUP BY origem, destino), ranking AS (SELECT origem, destino, entregas, atrasadas, custo_medio, ROUND(atrasadas * 100.0 / entregas, 2) AS taxa_atraso, RANK() OVER (ORDER BY atrasadas * 100.0 / entregas DESC, custo_medio DESC) AS posicao_risco FROM rotas) SELECT origem, destino, taxa_atraso, custo_medio, posicao_risco FROM ranking ORDER BY posicao_risco ASC, origem ASC, destino ASC;",
+      "result": {
+        "columns": [
+          "origem",
+          "destino",
+          "taxa_atraso",
+          "custo_medio",
+          "posicao_risco"
+        ],
+        "rows": [
+          [
+            "Rio de Janeiro",
+            "Salvador",
+            100.0,
+            900.0,
+            1
+          ],
+          [
+            "Campinas",
+            "Goiania",
+            66.67,
+            726.67,
+            2
+          ],
+          [
+            "São Paulo",
+            "Curitiba",
+            66.67,
+            536.67,
+            3
+          ],
+          [
+            "Belo Horizonte",
+            "Vitoria",
+            50.0,
+            320.0,
+            4
+          ]
+        ]
+      }
+    },
+    "hint": "Agregue entregas por rota, calcule taxa de atraso e use RANK para montar a posição de risco."
+  },
+  {
+    "id": "games_004",
+    "category": "Games",
+    "title": "Abandono acima da média",
+    "difficulty": "Sênior",
+    "database": "games.db",
+    "story": "Olá, analista! Hoje você está no estúdio de um jogo onde o time de design jura que a dificuldade está divertida e a comunidade jura exatamente o contrário com caps lock ligado.\n\nA equipe já sabe a taxa de abandono por fase, mas agora precisa descobrir quais etapas estão acima da média geral para priorizar ajustes sem transformar o jogo inteiro em tutorial.\n\nA próxima atualização precisa mexer onde há evidência, não onde o fórum gritou mais alto ontem à noite.\n\nSua missão é encontrar fases com abandono acima da média. Porque em games dificuldade boa desafia; dificuldade mal calibrada vira desinstalação com review criativo.",
+    "objective": "Sua tarefa: retorne fase, taxa de abandono e quanto ela ficou acima da média geral, considerando apenas fases com taxa acima da média. Ordene pelo maior valor acima da média e depois fase em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas sessões registradas em cada fase.",
+      "Calcule a taxa de abandono de cada etapa.",
+      "Compare cada taxa com a média geral do jogo.",
+      "Mantenha apenas fases acima da média de abandono.",
+      "Organize a lista pelos maiores desvios acima do esperado."
+    ],
+    "expected_sql": "WITH abandono AS (SELECT fase, ROUND(AVG(abandonou) * 100, 2) AS taxa_abandono FROM sessoes_fase GROUP BY fase), media AS (SELECT AVG(taxa_abandono) AS media_abandono FROM abandono) SELECT fase, taxa_abandono, ROUND(taxa_abandono - media_abandono, 2) AS acima_da_media FROM abandono CROSS JOIN media WHERE taxa_abandono > media_abandono ORDER BY acima_da_media DESC, fase ASC;",
+    "expected_answer": {
+      "query": "WITH abandono AS (SELECT fase, ROUND(AVG(abandonou) * 100, 2) AS taxa_abandono FROM sessoes_fase GROUP BY fase), media AS (SELECT AVG(taxa_abandono) AS media_abandono FROM abandono) SELECT fase, taxa_abandono, ROUND(taxa_abandono - media_abandono, 2) AS acima_da_media FROM abandono CROSS JOIN media WHERE taxa_abandono > media_abandono ORDER BY acima_da_media DESC, fase ASC;",
+      "result": {
+        "columns": [
+          "fase",
+          "taxa_abandono",
+          "acima_da_media"
+        ],
+        "rows": [
+          [
+            "Mina Congelada",
+            75.0,
+            38.89
+          ]
+        ]
+      }
+    },
+    "hint": "Calcule a taxa por fase, tire a média geral em outra CTE e compare cada fase contra essa média."
+  },
+  {
+    "id": "financas_001",
+    "category": "Finanças",
+    "title": "Faturas vencidas",
+    "difficulty": "Júnior",
+    "database": "financas.db",
+    "story": "Olá, analista! Hoje você está no financeiro de uma empresa que começou a segunda-feira com cobrança, caixa apertado e um silêncio desconfortável quando alguém perguntou quem exatamente deve ser priorizado.\n\nNem toda fatura aberta é urgente, mas as vencidas antes do fechamento já estão pesando na previsão de caixa e deixando a diretoria com aquele otimismo de planilha que ninguém compra.\n\nA equipe precisa transformar uma fila confusa de cobrança em uma lista objetiva de ataque.\n\nSua missão é encontrar os maiores valores vencidos antes do corte. Porque em finanças atraso pequeno vira ruído, atraso grande vira reunião com café ruim.",
+    "objective": "Sua tarefa: retorne cliente e valor em aberto das faturas vencidas antes de 2026-05-01. Ordene do maior valor para o menor e traga apenas os 5 primeiros resultados.",
+    "objective_steps": [
+      "Comece pelas faturas vencidas antes da data de corte.",
+      "Priorize os clientes pelo valor ainda em aberto.",
+      "Mantenha apenas os maiores casos para ação imediata.",
+      "Organize a fila de cobrança do maior impacto para o menor."
+    ],
+    "expected_sql": "SELECT cliente, valor_em_aberto FROM faturas WHERE status = 'vencida' AND data_vencimento < '2026-05-01' ORDER BY valor_em_aberto DESC LIMIT 5;",
+    "expected_answer": {
+      "query": "SELECT cliente, valor_em_aberto FROM faturas WHERE status = 'vencida' AND data_vencimento < '2026-05-01' ORDER BY valor_em_aberto DESC LIMIT 5;",
+      "result": {
+        "columns": [
+          "cliente",
+          "valor_em_aberto"
+        ],
+        "rows": [
+          [
+            "Grupo Alameda",
+            18400.0
+          ],
+          [
+            "Clínica Norte",
+            12750.5
+          ],
+          [
+            "Mercado Azul",
+            9200.0
+          ],
+          [
+            "Studio Prisma",
+            6100.0
+          ],
+          [
+            "Oficina Central",
+            4400.75
+          ]
+        ]
+      }
+    },
+    "hint": "Filtre faturas vencidas antes da data de corte, ordene por valor_em_aberto e limite o resultado."
+  },
+  {
+    "id": "financas_002",
+    "category": "Finanças",
+    "title": "Carteira em risco",
+    "difficulty": "Pleno",
+    "database": "financas.db",
+    "story": "Olá, analista! Hoje você foi chamado para um comitê de crédito onde todo mundo fala baixo, exceto a planilha de exposição, que está praticamente gritando.\n\nA área de risco não quer olhar apenas o valor contratado dos empréstimos, porque parte da carteira já foi paga e outra parte continua aberta com classificação preocupante.\n\nAntes de provisionar dinheiro demais ou de menos, o comitê precisa enxergar o saldo real ainda exposto por segmento.\n\nSua missão é calcular o saldo em risco líquido. Porque em finanças risco bruto assusta, mas risco líquido decide quanto dinheiro fica preso na gaveta.",
+    "objective": "Sua tarefa: retorne o segmento e o saldo em risco dos empréstimos ativos com classificação alto ou crítico. Considere como saldo em risco o valor contratado menos os pagamentos realizados antes de 2026-05-01. Ordene do maior saldo para o menor.",
+    "objective_steps": [
+      "Comece pela carteira de empréstimos ativos em situação de maior risco.",
+      "Considere os pagamentos realizados antes da data de corte para apurar o saldo ainda exposto.",
+      "Agrupe a exposição por segmento de cliente.",
+      "Some o saldo em risco de cada segmento.",
+      "Organize a lista priorizando as maiores exposições."
+    ],
+    "expected_sql": "WITH pagamentos_por_emprestimo AS (SELECT emprestimo_id, SUM(valor_pago) AS total_pago FROM pagamentos WHERE data_pagamento < '2026-05-01' GROUP BY emprestimo_id) SELECT c.segmento, ROUND(SUM(e.valor_contratado - COALESCE(p.total_pago, 0)), 2) AS saldo_em_risco FROM clientes c JOIN emprestimos e ON e.cliente_id = c.id LEFT JOIN pagamentos_por_emprestimo p ON p.emprestimo_id = e.id WHERE e.status = 'ativo' AND e.classificacao_risco IN ('alto', 'crítico') GROUP BY c.segmento ORDER BY saldo_em_risco DESC;",
+    "expected_answer": {
+      "query": "WITH pagamentos_por_emprestimo AS (SELECT emprestimo_id, SUM(valor_pago) AS total_pago FROM pagamentos WHERE data_pagamento < '2026-05-01' GROUP BY emprestimo_id) SELECT c.segmento, ROUND(SUM(e.valor_contratado - COALESCE(p.total_pago, 0)), 2) AS saldo_em_risco FROM clientes c JOIN emprestimos e ON e.cliente_id = c.id LEFT JOIN pagamentos_por_emprestimo p ON p.emprestimo_id = e.id WHERE e.status = 'ativo' AND e.classificacao_risco IN ('alto', 'crítico') GROUP BY c.segmento ORDER BY saldo_em_risco DESC;",
+      "result": {
+        "columns": [
+          "segmento",
+          "saldo_em_risco"
+        ],
+        "rows": [
+          [
+            "PME",
+            192000.0
+          ],
+          [
+            "Pessoa Física",
+            87500.0
+          ],
+          [
+            "Corporate",
+            74000.0
+          ]
+        ]
+      }
+    },
+    "hint": "Some pagamentos por empréstimo em uma CTE, subtraia do valor contratado e agregue por segmento."
+  },
+  {
+    "id": "financas_003",
+    "category": "Finanças",
+    "title": "Caixa por status",
+    "difficulty": "Júnior",
+    "database": "financas.db",
+    "story": "Olá, analista! Hoje você está no fechamento financeiro e a diretoria quer saber se o problema do caixa é atraso real, valor ainda aberto ou só aquele pânico saudável de fim de mês.\n\nAs faturas anteriores ao corte precisam ser agrupadas por status para mostrar onde o dinheiro está parado e onde a cobrança precisa ganhar prioridade.\n\nO time comercial trouxe otimismo, o financeiro trouxe boletos e alguém precisa trazer números que não dependam de entusiasmo.\n\nSua missão é resumir a carteira de faturas por status antes do fechamento. Porque em finanças esperança não entra no fluxo de caixa, mas vencimento entra.",
+    "objective": "Sua tarefa: retorne status, quantidade de faturas e valor total das faturas com vencimento antes de 2026-05-01. Ordene do maior valor total para o menor.",
+    "objective_steps": [
+      "Comece pelas faturas com vencimento antes da data de corte.",
+      "Agrupe a carteira pela situação financeira atual.",
+      "Conte quantos documentos existem em cada grupo.",
+      "Some o valor em aberto de cada situação.",
+      "Organize a lista pelo maior impacto financeiro."
+    ],
+    "expected_sql": "SELECT status, COUNT(*) AS faturas, ROUND(SUM(valor_em_aberto), 2) AS valor_total FROM faturas WHERE data_vencimento < '2026-05-01' GROUP BY status ORDER BY valor_total DESC;",
+    "expected_answer": {
+      "query": "SELECT status, COUNT(*) AS faturas, ROUND(SUM(valor_em_aberto), 2) AS valor_total FROM faturas WHERE data_vencimento < '2026-05-01' GROUP BY status ORDER BY valor_total DESC;",
+      "result": {
+        "columns": [
+          "status",
+          "faturas",
+          "valor_total"
+        ],
+        "rows": [
+          [
+            "vencida",
+            6,
+            54751.25
+          ],
+          [
+            "aberta",
+            1,
+            25000.0
+          ]
+        ]
+      }
+    },
+    "hint": "Filtre o vencimento antes do corte, agrupe por status e some valor_em_aberto."
+  },
+  {
+    "id": "financas_004",
+    "category": "Finanças",
+    "title": "Maior exposição por segmento",
+    "difficulty": "Sênior",
+    "database": "financas.db",
+    "story": "Olá, analista! Hoje você está em uma sala de risco onde cada segmento jura que sua exposição está sob controle, uma frase que em finanças costuma significar exatamente o contrário até prova em dados.\n\nO comitê quer saber qual cliente concentra o maior saldo aberto dentro de cada segmento de risco alto ou crítico, já descontando pagamentos feitos antes do corte.\n\nA decisão envolve renegociação, provisão e algumas ligações que ninguém quer fazer sem evidência muito bem calculada.\n\nSua missão é apontar o maior saldo em aberto por segmento. Porque em crédito cliente grande sem acompanhamento vira surpresa, e surpresa em balanço raramente é boa.",
+    "objective": "Sua tarefa: retorne segmento, cliente, classificação de risco e saldo aberto do maior saldo em cada segmento para empréstimos ativos de risco alto ou crítico. Considere pagamentos antes de 2026-05-01 e ordene pelo maior saldo aberto.",
+    "objective_steps": [
+      "Comece pela carteira de empréstimos ativos em situação de maior risco.",
+      "Considere os pagamentos realizados antes da data de corte para apurar o saldo ainda exposto.",
+      "Compare os clientes dentro de cada segmento para localizar a maior exposição.",
+      "Retorne apenas o principal caso de risco por segmento.",
+      "Organize a lista priorizando os maiores saldos em aberto."
+    ],
+    "expected_sql": "WITH pagamentos_ate_corte AS (SELECT emprestimo_id, SUM(valor_pago) AS total_pago FROM pagamentos WHERE data_pagamento < '2026-05-01' GROUP BY emprestimo_id), saldos AS (SELECT c.nome AS cliente, c.segmento, e.classificacao_risco, ROUND(e.valor_contratado - COALESCE(p.total_pago, 0), 2) AS saldo_aberto FROM clientes c JOIN emprestimos e ON e.cliente_id = c.id LEFT JOIN pagamentos_ate_corte p ON p.emprestimo_id = e.id WHERE e.status = 'ativo'), ranking AS (SELECT cliente, segmento, classificacao_risco, saldo_aberto, RANK() OVER (PARTITION BY segmento ORDER BY saldo_aberto DESC) AS posicao_segmento FROM saldos WHERE classificacao_risco IN ('alto', 'crítico')) SELECT segmento, cliente, classificacao_risco, saldo_aberto FROM ranking WHERE posicao_segmento = 1 ORDER BY saldo_aberto DESC, segmento ASC;",
+    "expected_answer": {
+      "query": "WITH pagamentos_ate_corte AS (SELECT emprestimo_id, SUM(valor_pago) AS total_pago FROM pagamentos WHERE data_pagamento < '2026-05-01' GROUP BY emprestimo_id), saldos AS (SELECT c.nome AS cliente, c.segmento, e.classificacao_risco, ROUND(e.valor_contratado - COALESCE(p.total_pago, 0), 2) AS saldo_aberto FROM clientes c JOIN emprestimos e ON e.cliente_id = c.id LEFT JOIN pagamentos_ate_corte p ON p.emprestimo_id = e.id WHERE e.status = 'ativo'), ranking AS (SELECT cliente, segmento, classificacao_risco, saldo_aberto, RANK() OVER (PARTITION BY segmento ORDER BY saldo_aberto DESC) AS posicao_segmento FROM saldos WHERE classificacao_risco IN ('alto', 'crítico')) SELECT segmento, cliente, classificacao_risco, saldo_aberto FROM ranking WHERE posicao_segmento = 1 ORDER BY saldo_aberto DESC, segmento ASC;",
+      "result": {
+        "columns": [
+          "segmento",
+          "cliente",
+          "classificacao_risco",
+          "saldo_aberto"
+        ],
+        "rows": [
+          [
+            "PME",
+            "Mercado Sul",
+            "crítico",
+            102000.0
+          ],
+          [
+            "Pessoa Física",
+            "Ana Pereira",
+            "alto",
+            87500.0
+          ],
+          [
+            "Corporate",
+            "Grupo Orion",
+            "crítico",
+            74000.0
+          ]
+        ]
+      }
+    },
+    "hint": "Calcule pagamentos por empréstimo, derive saldo aberto e use RANK particionado por segmento para escolher o maior saldo."
   }
 ]

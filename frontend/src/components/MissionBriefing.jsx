@@ -18,7 +18,7 @@ export default function MissionBriefing({ scenario, onAcceptTask, onRejectTask, 
         </div>
       </div>
       <p>{scenario.story}</p>
-      <ObjectivePanel objective={scenario.objective} />
+      <ObjectivePanel objective={scenario.objective} objectiveSteps={scenario.objective_steps} />
       <AnimatePresence mode="wait">
         {!accepted ? (
           <motion.div
@@ -45,8 +45,8 @@ export default function MissionBriefing({ scenario, onAcceptTask, onRejectTask, 
   );
 }
 
-function ObjectivePanel({ objective }) {
-  const steps = getObjectiveSteps(objective);
+function ObjectivePanel({ objective, objectiveSteps }) {
+  const steps = getObjectiveSteps(objective, objectiveSteps);
 
   return (
     <section className="objective" aria-labelledby="objective-title">
@@ -60,8 +60,8 @@ function ObjectivePanel({ objective }) {
       </div>
 
       <ul className="objective-list">
-        {steps.map((step) => (
-          <li key={step}>
+        {steps.map((step, index) => (
+          <li key={`${index}-${step}`}>
             <CheckCircle2 size={16} aria-hidden="true" />
             <span>{step}</span>
           </li>
@@ -71,12 +71,10 @@ function ObjectivePanel({ objective }) {
   );
 }
 
-function getObjectiveSteps(objective) {
-  const steps = objective
-    .replace(/\.$/, "")
-    .split(",")
-    .map((step) => step.trim())
-    .filter(Boolean);
+function getObjectiveSteps(objective, objectiveSteps) {
+  const steps = Array.isArray(objectiveSteps)
+    ? objectiveSteps.map((step) => step.trim()).filter(Boolean)
+    : [];
 
   return steps.length ? steps : [objective];
 }

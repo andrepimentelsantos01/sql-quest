@@ -395,12 +395,12 @@ function IntroModal({ open, onStart }) {
           </div>
 
           <div className="intro-copy">
-            <p>Você não é apenas um estudante praticando consultas. Você é o analista chamado quando a reunião já falhou, o dashboard não convenceu ninguém e alguém precisa encontrar a verdade escondida no banco de dados.</p>
-            <p>Hospitais com custos fora do controle. Big techs afundadas em incidentes críticos. Fábricas perdendo dinheiro com máquinas paradas. Clubes, seleções e empresas tentando tomar decisões antes que o caos vire prejuízo.</p>
+            <p>Você é o(a) analista chamado(a) quando a reunião já falhou, o dashboard não convenceu ninguém e alguém precisa encontrar a verdade escondida no banco de dados.</p>
+            <p>Hospitais com custos fora do controle, big techs afundadas em incidentes críticos, fábricas perdendo dinheiro com máquinas paradas, clubes e empresas tentando tomar decisões antes que o caos vire prejuízo.</p>
             <p>Cada missão coloca você em um cenário diferente, contratado para resolver problemas sérios com uma única arma: SQL.</p>
-            <p>Leia o contexto, entenda o objetivo, investigue o schema disponível e escreva a consulta certa para revelar a resposta. Aqui, opinião não fecha diagnóstico, achismo não escala sistema e desculpa nenhuma sobrevive a um SELECT bem feito.</p>
-            <p>Você é o especialista chamado quando os dados precisam falar.</p>
-            <p>Sua missão começa agora.</p>
+            <p>Leia o contexto, entenda o objetivo, investigue o schema disponível e escreva a consulta certa para revelar a resposta, aqui opinião não fecha diagnóstico, achismo não escala sistema e desculpa nenhuma sobrevive a um SELECT bem feito.</p>
+            <p>Você é o(a) especialista chamado(a) quando os dados precisam falar.</p>
+            <p>Sua missão começa agora!</p>
           </div>
 
           <div className="intro-actions">

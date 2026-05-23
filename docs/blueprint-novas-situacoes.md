@@ -1,260 +1,182 @@
-# Blueprint para novas situações
+# Blueprint para inserir novo cenário
 
-Use este blueprint sempre que for criar uma nova situação para o SQL Quest. A situação precisa funcionar como um caso profissional simulado: o jogador recebe um contexto, consulta um banco SQLite real e precisa escrever uma query que gere a resposta esperada.
+Use este blueprint sempre que criar um cenário para o SQL Quest. O cenário deve colocar o jogador como uma espécie de hitman da análise de dados: um analista acionado para entrar em situações urgentes, importantes e variadas pelo mundo, resolver o problema com SQL e sair deixando evidência objetiva no lugar de achismo.
 
-## Elementos obrigatórios
+## Padrão narrativo
 
-### Categoria
+Todo cenário deve seguir este tom:
 
-Área profissional da situação.
+- Começar obrigatoriamente com: `Olá, analista!`
+- Colocar o analista dentro de uma situação realista e simulada.
+- Dar sensação de urgência: reunião crítica, crise operacional, risco financeiro, decisão esportiva, pressão de cliente, falha de produto, investigação interna, auditoria, campanha, safra, exposição, operação logística etc.
+- Variar lugares, setores e contextos. O analista pode estar em hospital, fábrica, estádio, galeria, fazenda, escola, transportadora, startup, multinacional, estúdio de games ou qualquer ambiente profissional plausível.
+- Manter humor leve, seco e corporativo, sem virar piada solta.
+- Mostrar que SQL é a ferramenta decisiva para separar narrativa, desculpa e opinião de evidência.
+- Encerrar a história deixando clara a missão antes do objetivo técnico.
 
-Exemplos:
+Evite:
+
+- Texto genérico como "consulte a tabela".
+- História sem consequência real.
+- Humor que atrapalhe clareza.
+- Cenário fantástico, mágico ou desconectado de um problema profissional.
+- Objetivo ambíguo ou sem recorte verificável.
+
+## Estrutura recomendada da história
+
+A `story` deve ter 3 ou 4 parágrafos curtos:
+
+1. Abertura: coloque o analista no local e na tensão do caso.
+2. Contexto: explique o problema real, quem está pressionando e por quê.
+3. Dados como virada: mostre que opinião não basta e que a consulta SQL precisa revelar a resposta.
+4. Missão: diga o que precisa ser descoberto, em linguagem narrativa.
+
+Modelo:
+
+```text
+Olá, analista! Hoje você está em [lugar realista] onde [situação urgente] colocou todo mundo em modo reunião crítica.
+
+[Área/personagens] estão pressionando porque [problema concreto] começou a afetar [custo, prazo, cliente, risco, receita, desempenho ou operação].
+
+Antes que alguém transforme a reunião em teatro corporativo, os dados precisam mostrar exatamente onde está o problema.
+
+Sua missão é [descoberta esperada em linguagem de negócio]. Porque em [categoria] [frase curta bem-humorada reforçando que SQL resolve melhor que achismo].
+```
+
+## Campos obrigatórios
+
+Cada item em `backend/app/data/scenarios.json` deve conter:
+
+- `id`: único, previsível e incremental. Exemplo: `tecnologia_004`.
+- `category`: área profissional. Exemplo: `Tecnologia`.
+- `title`: título curto e específico.
+- `difficulty`: `Júnior`, `Pleno` ou `Sênior`.
+- `database`: arquivo SQLite em `backend/app/data/databases`.
+- `story`: narrativa no padrão acima.
+- `objective`: instrução técnica precisa do que retornar.
+- `expected_sql`: consulta SQL ideal.
+- `expected_answer`: colunas e linhas esperadas.
+- `hint`: dica curta, sem entregar a consulta inteira.
+
+## Categorias
+
+Categorias atuais:
 
 - Saúde
 - Tecnologia
 - Esporte
 - Indústria
-- Logística
-- Finanças
 - Educação
-- Games
 - Arte
 - Agricultura
+- Logística
+- Games
 
-### Nível da situação
+Ao adicionar novas categorias, mantenha o mesmo padrão de experiência: contexto profissional, problema urgente, dados simulados reais e SQL como ferramenta central.
 
-Complexidade esperada da consulta.
+## Níveis de dificuldade
 
-Use um destes níveis:
+- `Júnior`: filtros simples, `ORDER BY`, `LIMIT`, `COUNT`, `SUM`, `AVG`, uma tabela ou join muito direto.
+- `Pleno`: `JOIN`, `GROUP BY`, `HAVING`, filtros por data, métricas calculadas, aliases e regras de negócio simples.
+- `Sênior`: CTEs, múltiplos joins, subconsultas, janelas analíticas, regras encadeadas ou cálculo com etapas.
 
-- Júnior: filtros simples, ordenação, `LIMIT`, agregações básicas ou uma única tabela.
-- Pleno: `JOIN`, `GROUP BY`, métricas calculadas, filtros por data, subconsultas simples ou múltiplas tabelas.
-- Sênior: múltiplos `JOINs`, CTEs, janelas analíticas, regras de negócio com várias etapas ou validações mais exigentes.
+O nível deve refletir a complexidade real da query, não a importância narrativa do problema.
 
-No arquivo `backend/app/data/scenarios.json`, o campo equivalente é `difficulty`. Se o app ainda estiver usando os valores antigos, mantenha consistência com a interface atual ou atualize a conversão antes de trocar a nomenclatura.
+## Objetivo técnico
 
-### Situação
+O `objective` deve ser direto e testável:
 
-Descrição narrativa da situação simulada. Ela deve explicar:
+- Diga exatamente quais colunas retornar.
+- Informe filtros de data, status, categoria ou recorte.
+- Defina agregações e arredondamentos.
+- Defina ordenação completa, incluindo desempate.
+- Informe `LIMIT` quando houver.
+- Use aliases esperados quando forem relevantes para validação.
 
-- Quem está pedindo a análise.
-- Qual problema precisa ser investigado.
-- Qual decisão será apoiada pela consulta SQL.
-- Qual recorte deve ser considerado, quando houver datas, status ou filtros.
+Modelo:
 
-Boa situação:
-
-> Uma rede de clínicas quer identificar quais especialidades têm maior tempo médio de espera em consultas realizadas, para priorizar a contratação de novos profissionais.
-
-Situação fraca:
-
-> Consulte as especialidades.
-
-### Banco de dados
-
-Banco SQLite simulado com schema e dados necessários para executar a situação.
-
-Defina:
-
-- Nome do arquivo `.db`, salvo em `backend/app/data/databases`.
-- Tabelas necessárias.
-- Colunas, tipos e chaves.
-- Dados de exemplo suficientes para validar a consulta.
-- Casos de borda que provem a regra da situação, como status cancelado, data fora do período ou registro que não deve entrar no cálculo.
-
-Os bancos são criados e populados em `backend/scripts/seed_databases.py`. Sempre que criar ou alterar um banco, execute novamente o script de seed para regenerar os arquivos SQLite.
-
-### Resposta adequada
-
-Resposta esperada da situação, incluindo:
-
-- Query correta em SQL.
-- Colunas esperadas.
-- Linhas esperadas.
-- Ordenação esperada.
-- Arredondamentos, aliases e limites necessários.
-
-O jogo valida o resultado retornado, não apenas o texto da SQL. Mesmo assim, a `expected_sql` precisa ser uma consulta clara, determinística e representativa da solução ideal.
-
-## Modelo de documentação da situação
-
-Preencha este modelo antes de implementar:
-
-````md
-## [categoria] - [título da situação]
-
-Categoria: [área profissional]
-
-Nível da situação: [Júnior | Pleno | Sênior]
-
-Situação:
-[descrição narrativa do problema]
-
-Objetivo da consulta:
-[o que o jogador precisa retornar]
-
-Banco de dados:
-- Arquivo: [nome_do_banco.db]
-- Tabelas:
-  - [tabela_1]: [descrição]
-  - [tabela_2]: [descrição]
-- Schema:
-
-```sql
-CREATE TABLE exemplo (
-    id INTEGER PRIMARY KEY,
-    nome TEXT NOT NULL
-);
+```text
+Sua tarefa: retorne [colunas] considerando [filtros]. Calcule [métrica], ordene por [regra] e, em caso de empate, ordene por [desempate].
 ```
 
-Dados relevantes:
+## SQL e resposta esperada
 
-```sql
-INSERT INTO exemplo (id, nome) VALUES
-(1, 'Registro de exemplo');
-```
+A `expected_sql` precisa ser:
 
-Resposta adequada:
+- Determinística.
+- Compatível com SQLite.
+- Clara o suficiente para servir como solução de referência.
+- Ordenada explicitamente quando retornar múltiplas linhas.
+- Com aliases iguais aos nomes definidos em `expected_answer.result.columns`.
+- Com arredondamento definido quando houver `REAL`, porcentagem ou média.
 
-```sql
-SELECT nome
-FROM exemplo
-ORDER BY nome;
-```
+O `expected_answer` deve bater exatamente com a execução da `expected_sql` no banco informado.
 
-Resultado esperado:
+## Banco de dados
 
-| nome |
-| --- |
-| Registro de exemplo |
+Preferência:
 
-Dica:
-[dica curta para orientar sem entregar a resposta inteira]
-````
+1. Reaproveitar tabelas existentes quando a nova missão puder ser resolvida com dados atuais.
+2. Alterar `backend/scripts/seed_databases.py` somente quando o novo cenário precisar de dados ou tabelas novas.
+3. Regenerar o banco SQLite após qualquer alteração no seed.
 
-## Como implementar no projeto
+Todo banco deve conter casos que provem a regra:
 
-1. Adicione ou atualize o banco em `backend/scripts/seed_databases.py`.
-2. Garanta que o banco seja salvo em `backend/app/data/databases`.
-3. Adicione a nova situação em `backend/app/data/scenarios.json`.
-4. Use um `id` único e previsível, como `tecnologia_001`.
-5. Preencha `category`, `title`, `difficulty`, `database`, `story`, `objective`, `expected_sql`, `expected_answer` e `hint`.
-6. Execute `python backend/scripts/seed_databases.py` a partir da raiz do projeto.
-7. Teste a `expected_sql` no banco gerado e confirme se o resultado bate com a resposta adequada.
+- Registros dentro e fora do período.
+- Status que entram e status que não entram.
+- Empates quando o objetivo exigir desempate.
+- Valores nulos ou ausentes se a missão envolver `LEFT JOIN` ou `COALESCE`.
+- Dados suficientes para o resultado não parecer artificial demais.
 
-## Exemplo completo
-
-### Tecnologia - Incidentes críticos
-
-Categoria: Tecnologia
-
-Nível da situação: Pleno
-
-Situação:
-Uma empresa SaaS quer descobrir quais serviços concentraram mais incidentes críticos no último mês fechado. O time de confiabilidade vai usar o resultado para priorizar ações de estabilidade.
-
-Objetivo da consulta:
-Retorne o nome do serviço e a quantidade de incidentes críticos abertos entre `2026-04-01` e `2026-05-01`, ordenando da maior quantidade para a menor.
-
-Banco de dados:
-
-- Arquivo: `tecnologia.db`
-- Tabela `servicos`: catálogo de serviços monitorados.
-- Tabela `incidentes`: registros de incidentes por serviço.
-
-Schema:
-
-```sql
-CREATE TABLE servicos (
-    id INTEGER PRIMARY KEY,
-    nome TEXT NOT NULL,
-    squad TEXT NOT NULL
-);
-
-CREATE TABLE incidentes (
-    id INTEGER PRIMARY KEY,
-    servico_id INTEGER NOT NULL,
-    severidade TEXT NOT NULL,
-    aberto_em TEXT NOT NULL,
-    FOREIGN KEY (servico_id) REFERENCES servicos(id)
-);
-```
-
-Dados relevantes:
-
-```sql
-INSERT INTO servicos (id, nome, squad) VALUES
-(1, 'Pagamentos', 'Core'),
-(2, 'Autenticação', 'Plataforma'),
-(3, 'Relatórios', 'Dados');
-
-INSERT INTO incidentes (servico_id, severidade, aberto_em) VALUES
-(1, 'crítica', '2026-04-03'),
-(1, 'crítica', '2026-04-18'),
-(1, 'média', '2026-04-20'),
-(2, 'crítica', '2026-04-12'),
-(2, 'baixa', '2026-04-15'),
-(3, 'crítica', '2026-03-29');
-```
-
-Resposta adequada:
-
-```sql
-SELECT s.nome AS servico, COUNT(*) AS incidentes_criticos
-FROM servicos s
-JOIN incidentes i ON i.servico_id = s.id
-WHERE i.severidade = 'crítica'
-  AND i.aberto_em >= '2026-04-01'
-  AND i.aberto_em < '2026-05-01'
-GROUP BY s.nome
-ORDER BY incidentes_criticos DESC;
-```
-
-Resultado esperado:
-
-| servico | incidentes_criticos |
-| --- | ---: |
-| Pagamentos | 2 |
-| Autenticação | 1 |
-
-Dica:
-Junte serviços com incidentes, filtre severidade e período, depois agrupe por serviço.
-
-Entrada equivalente em `scenarios.json`:
+## Exemplo de cenário
 
 ```json
 {
-  "id": "tecnologia_001",
+  "id": "tecnologia_004",
   "category": "Tecnologia",
-  "title": "Incidentes críticos",
+  "title": "Squads sob alerta",
   "difficulty": "Pleno",
   "database": "tecnologia.db",
-  "story": "Uma empresa SaaS quer descobrir quais serviços concentraram mais incidentes críticos no último mês fechado. O time de confiabilidade vai usar o resultado para priorizar ações de estabilidade.",
-  "objective": "Retorne o nome do serviço e a quantidade de incidentes críticos abertos entre 2026-04-01 e 2026-05-01, ordenando da maior quantidade para a menor.",
-  "expected_sql": "SELECT s.nome AS servico, COUNT(*) AS incidentes_criticos FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.severidade = 'crítica' AND i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.nome ORDER BY incidentes_criticos DESC;",
+  "story": "Olá, analista! Hoje você entrou no war room de uma empresa global de tecnologia onde os squads chegaram com dashboards próprios, explicações defensivas e uma vontade enorme de provar que o problema está sempre em outro serviço.\n\nA liderança quer olhar para os incidentes do mês sem separar responsabilidade em frases vagas como complexidade sistêmica ou comportamento intermitente.\n\nSe um squad concentra chamados demais, a próxima conversa precisa começar por ele, não por um slide genérico de estabilidade.\n\nSua missão é contar os incidentes por squad no último mês fechado. Porque em tecnologia incidente sem dono vira recorrência, e recorrência sem dado vira tradição.",
+  "objective": "Sua tarefa: retorne o squad e a quantidade de incidentes abertos entre 2026-04-01 e 2026-05-01. Ordene da maior quantidade para a menor. Em caso de empate, ordene por squad em ordem alfabética.",
+  "expected_sql": "SELECT s.squad, COUNT(*) AS incidentes FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.squad ORDER BY incidentes DESC, s.squad ASC;",
   "expected_answer": {
-    "query": "SELECT s.nome AS servico, COUNT(*) AS incidentes_criticos FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.severidade = 'crítica' AND i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.nome ORDER BY incidentes_criticos DESC;",
+    "query": "SELECT s.squad, COUNT(*) AS incidentes FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.squad ORDER BY incidentes DESC, s.squad ASC;",
     "result": {
-      "columns": ["servico", "incidentes_criticos"],
+      "columns": ["squad", "incidentes"],
       "rows": [
-        ["Pagamentos", 2],
-        ["Autenticação", 1]
+        ["Core", 3],
+        ["Plataforma", 2],
+        ["Dados", 1],
+        ["Engajamento", 1]
       ]
     }
   },
-  "hint": "Junte serviços com incidentes, filtre severidade e período, depois agrupe por serviço."
+  "hint": "Relacione serviços com incidentes, filtre o período e conte os registros por squad."
 }
 ```
 
+## Como implementar
+
+1. Escolha categoria, título e nível.
+2. Defina a missão narrativa no padrão `Olá, analista!`.
+3. Confirme se o banco existente já contém dados suficientes.
+4. Se necessário, atualize `backend/scripts/seed_databases.py` e regenere os bancos.
+5. Insira o cenário em `backend/app/data/scenarios.json`.
+6. Execute a `expected_sql` no SQLite correspondente.
+7. Compare colunas e linhas com `expected_answer`.
+8. Garanta que a ordenação seja determinística.
+
 ## Checklist de qualidade
 
-- A categoria está clara e representa uma área profissional.
-- O nível combina com a complexidade real da query.
-- A situação parece um pedido de análise plausível.
-- O banco contém todos os dados necessários para resolver o caso.
-- Existem registros que testam filtros importantes.
-- A query esperada retorna resultado determinístico.
-- A ordenação está explícita quando houver múltiplas linhas.
-- Aliases e arredondamentos estão definidos no objetivo.
-- A dica ajuda sem entregar a query completa.
-- O cenário foi testado no SQLite gerado.
+- A história começa com `Olá, analista!`.
+- O analista foi colocado em uma situação concreta, urgente e importante.
+- O contexto parece real e profissional.
+- O tom é bem-humorado sem perder clareza.
+- A missão depende de SQL para separar evidência de opinião.
+- O objetivo técnico é preciso e testável.
+- O nível combina com a complexidade da consulta.
+- A query roda em SQLite.
+- O resultado esperado bate exatamente com a query.
+- A ordenação inclui desempate quando necessário.
+- A dica ajuda sem entregar a solução inteira.

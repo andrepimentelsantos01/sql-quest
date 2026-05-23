@@ -16,7 +16,7 @@
       "level": "Júnior",
       "question": "Qual comando é usado para consultar dados de uma tabela?",
       "correct_option_id": "e",
-      "explanation": "SELECT é o comando usado para consultar dados e escolher quais colunas ou expressões entram no resultado.",
+      "explanation": "SELECT é o comando usado para consultar dados de uma tabela e definir quais colunas ou expressões aparecem no resultado.",
       "source_id": 1,
       "options": [
         {
@@ -46,7 +46,7 @@
       "level": "Júnior",
       "question": "Qual cláusula é usada para filtrar linhas antes do resultado final?",
       "correct_option_id": "e",
-      "explanation": "WHERE filtra linhas antes de agrupamentos e agregações, por isso reduz o conjunto de dados analisado pela consulta.",
+      "explanation": "WHERE aplica condições sobre as linhas antes do resultado final, reduzindo o conjunto analisado pela consulta.",
       "source_id": 2,
       "options": [
         {
@@ -76,7 +76,7 @@
       "level": "Júnior",
       "question": "Qual cláusula organiza o resultado de uma consulta em ordem crescente ou decrescente?",
       "correct_option_id": "c",
-      "explanation": "ORDER BY define a ordenação final do resultado, podendo usar ASC para crescente ou DESC para decrescente.",
+      "explanation": "ORDER BY organiza as linhas retornadas pela consulta, usando ASC para ordem crescente ou DESC para ordem decrescente.",
       "source_id": 3,
       "options": [
         {
@@ -106,7 +106,7 @@
       "level": "Júnior",
       "question": "Qual função conta a quantidade de linhas ou valores em uma consulta?",
       "correct_option_id": "c",
-      "explanation": "COUNT é uma função agregadora que conta registros ou valores não nulos, dependendo da expressão usada.",
+      "explanation": "COUNT conta linhas ou valores. COUNT(*) conta registros, enquanto COUNT(coluna) conta apenas valores não nulos daquela coluna.",
       "source_id": 4,
       "options": [
         {
@@ -136,7 +136,7 @@
       "level": "Júnior",
       "question": "Qual função calcula a média de uma coluna numérica?",
       "correct_option_id": "e",
-      "explanation": "AVG calcula a média dos valores numéricos de uma coluna ou expressão.",
+      "explanation": "AVG calcula a média aritmética de valores numéricos em uma coluna ou expressão.",
       "source_id": 5,
       "options": [
         {
@@ -166,7 +166,7 @@
       "level": "Júnior",
       "question": "Qual função soma os valores de uma coluna numérica?",
       "correct_option_id": "a",
-      "explanation": "SUM soma valores numéricos dentro do conjunto filtrado ou de cada grupo.",
+      "explanation": "SUM soma valores numéricos no conjunto filtrado ou dentro de cada grupo da consulta.",
       "source_id": 6,
       "options": [
         {
@@ -256,7 +256,7 @@
       "level": "Júnior",
       "question": "Qual palavra-chave remove valores duplicados do resultado?",
       "correct_option_id": "e",
-      "explanation": "DISTINCT remove linhas duplicadas do resultado considerando as colunas selecionadas.",
+      "explanation": "DISTINCT remove duplicidades do resultado considerando a combinação das colunas selecionadas.",
       "source_id": 9,
       "options": [
         {
@@ -286,7 +286,7 @@
       "level": "Júnior",
       "question": "Qual cláusula agrupa linhas para aplicar funções como COUNT, SUM ou AVG?",
       "correct_option_id": "c",
-      "explanation": "GROUP BY reúne linhas com o mesmo valor em grupos, permitindo calcular métricas como COUNT, SUM e AVG por grupo.",
+      "explanation": "GROUP BY junta linhas com valores equivalentes para permitir cálculos por grupo, como contagens, somas e médias.",
       "source_id": 10,
       "options": [
         {
@@ -316,7 +316,7 @@
       "level": "Júnior",
       "question": "Qual cláusula filtra grupos depois de uma agregação?",
       "correct_option_id": "d",
-      "explanation": "HAVING filtra grupos depois do GROUP BY, especialmente quando o filtro depende de uma função agregada.",
+      "explanation": "HAVING filtra grupos depois da agregação, sendo usado quando a condição depende de uma métrica agregada.",
       "source_id": 11,
       "options": [
         {
@@ -346,7 +346,7 @@
       "level": "Júnior",
       "question": "Qual cláusula limita a quantidade de linhas retornadas em muitos bancos SQL?",
       "correct_option_id": "a",
-      "explanation": "LIMIT restringe a quantidade de linhas retornadas pela consulta.",
+      "explanation": "LIMIT restringe quantas linhas a consulta devolve, útil para trazer apenas os primeiros resultados após a ordenação.",
       "source_id": 12,
       "options": [
         {
@@ -376,7 +376,7 @@
       "level": "Júnior",
       "question": "Qual palavra-chave pode criar um apelido para uma coluna no resultado?",
       "correct_option_id": "a",
-      "explanation": "A resposta correta é AS porque esse recurso atende diretamente ao conceito SQL descrito na pergunta.",
+      "explanation": "AS cria um apelido para uma coluna, expressão ou tabela, deixando o resultado mais legível.",
       "source_id": 13,
       "options": [
         {
@@ -406,7 +406,7 @@
       "level": "Júnior",
       "question": "Qual JOIN retorna apenas registros que possuem correspondência nas duas tabelas?",
       "correct_option_id": "c",
-      "explanation": "INNER JOIN retorna apenas linhas que possuem correspondência nas duas tabelas pela condição definida no ON.",
+      "explanation": "INNER JOIN retorna somente as linhas que encontram correspondência nas duas tabelas pela condição de relacionamento.",
       "source_id": 14,
       "options": [
         {
@@ -436,7 +436,7 @@
       "level": "Júnior",
       "question": "Qual JOIN retorna todos os registros da tabela da esquerda e os correspondentes da direita?",
       "correct_option_id": "d",
-      "explanation": "LEFT JOIN preserva todas as linhas da tabela à esquerda e completa com NULL quando não há correspondência à direita.",
+      "explanation": "LEFT JOIN preserva todas as linhas da tabela à esquerda e preenche com NULL quando não há correspondência à direita.",
       "source_id": 15,
       "options": [
         {
@@ -466,7 +466,7 @@
       "level": "Júnior",
       "question": "Como verificar corretamente se uma coluna está nula?",
       "correct_option_id": "e",
-      "explanation": "NULL representa ausência de valor; ele não é igual a zero nem a texto vazio.",
+      "explanation": "Para testar ausência de valor, use IS NULL. Comparar com = NULL não funciona corretamente na lógica SQL.",
       "source_id": 16,
       "options": [
         {
@@ -496,7 +496,7 @@
       "level": "Júnior",
       "question": "Como verificar corretamente se uma coluna não está nula?",
       "correct_option_id": "d",
-      "explanation": "NULL representa ausência de valor; ele não é igual a zero nem a texto vazio.",
+      "explanation": "Para manter apenas valores presentes, use IS NOT NULL. Esse teste remove registros em que a coluna está sem valor.",
       "source_id": 17,
       "options": [
         {
@@ -526,7 +526,7 @@
       "level": "Júnior",
       "question": "Qual operador é usado com curingas para buscar padrões em textos?",
       "correct_option_id": "a",
-      "explanation": "LIKE compara textos com padrões, normalmente usando % para qualquer sequência de caracteres.",
+      "explanation": "LIKE compara textos com padrões e permite usar curingas para buscas parciais.",
       "source_id": 18,
       "options": [
         {
@@ -556,7 +556,7 @@
       "level": "Júnior",
       "question": "Em uma busca com LIKE, qual curinga costuma representar qualquer sequência de caracteres?",
       "correct_option_id": "c",
-      "explanation": "LIKE compara textos com padrões, normalmente usando % para qualquer sequência de caracteres.",
+      "explanation": "O curinga % representa qualquer sequência de caracteres em padrões usados com LIKE.",
       "source_id": 19,
       "options": [
         {
@@ -586,7 +586,7 @@
       "level": "Júnior",
       "question": "Qual operador verifica se um valor está dentro de uma lista de valores?",
       "correct_option_id": "e",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "IN verifica se um valor pertence a uma lista de valores ou ao resultado de uma subconsulta.",
       "source_id": 20,
       "options": [
         {
@@ -616,7 +616,7 @@
       "level": "Júnior",
       "question": "Qual operador verifica se um valor está dentro de um intervalo?",
       "correct_option_id": "c",
-      "explanation": "BETWEEN testa se um valor está dentro de um intervalo, incluindo os limites na maioria dos bancos SQL.",
+      "explanation": "BETWEEN testa se um valor está dentro de um intervalo, normalmente incluindo os limites inferior e superior.",
       "source_id": 21,
       "options": [
         {
@@ -646,7 +646,7 @@
       "level": "Júnior",
       "question": "Qual função é usada para limitar casas decimais de uma média ou taxa calculada?",
       "correct_option_id": "a",
-      "explanation": "LIMIT restringe a quantidade de linhas retornadas pela consulta.",
+      "explanation": "ROUND arredonda um número para a quantidade desejada de casas decimais, útil em médias e percentuais.",
       "source_id": 22,
       "options": [
         {
@@ -676,7 +676,7 @@
       "level": "Júnior",
       "question": "Qual comando adiciona novas linhas em uma tabela?",
       "correct_option_id": "a",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "INSERT INTO adiciona novas linhas em uma tabela, informando os valores que serão gravados.",
       "source_id": 23,
       "options": [
         {
@@ -706,7 +706,7 @@
       "level": "Júnior",
       "question": "Qual comando altera valores já existentes em uma tabela?",
       "correct_option_id": "d",
-      "explanation": "A resposta correta é UPDATE porque esse recurso atende diretamente ao conceito SQL descrito na pergunta.",
+      "explanation": "UPDATE altera valores de linhas já existentes. Normalmente deve ser usado com filtro para evitar atualizar a tabela inteira.",
       "source_id": 24,
       "options": [
         {
@@ -736,7 +736,7 @@
       "level": "Júnior",
       "question": "Qual comando remove linhas de uma tabela?",
       "correct_option_id": "a",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "DELETE remove linhas de uma tabela. Um filtro define quais registros serão apagados.",
       "source_id": 25,
       "options": [
         {
@@ -766,7 +766,7 @@
       "level": "Júnior",
       "question": "Qual comando cria uma nova tabela?",
       "correct_option_id": "c",
-      "explanation": "A resposta correta é CREATE TABLE porque esse recurso atende diretamente ao conceito SQL descrito na pergunta.",
+      "explanation": "CREATE TABLE cria uma nova tabela e define sua estrutura, como colunas, tipos e restrições.",
       "source_id": 26,
       "options": [
         {
@@ -796,7 +796,7 @@
       "level": "Júnior",
       "question": "Qual comando remove uma tabela inteira do banco de dados?",
       "correct_option_id": "b",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "DROP TABLE remove a tabela inteira do banco, incluindo sua estrutura e os dados armazenados nela.",
       "source_id": 27,
       "options": [
         {
@@ -826,7 +826,7 @@
       "level": "Júnior",
       "question": "Qual tipo de chave identifica unicamente cada registro de uma tabela?",
       "correct_option_id": "d",
-      "explanation": "A resposta correta é PRIMARY KEY porque esse recurso atende diretamente ao conceito SQL descrito na pergunta.",
+      "explanation": "PRIMARY KEY identifica de forma única cada registro de uma tabela e não deve repetir valores.",
       "source_id": 28,
       "options": [
         {
@@ -856,7 +856,7 @@
       "level": "Júnior",
       "question": "Qual chave cria uma referência entre uma tabela e outra?",
       "correct_option_id": "b",
-      "explanation": "A resposta correta é FOREIGN KEY porque esse recurso atende diretamente ao conceito SQL descrito na pergunta.",
+      "explanation": "FOREIGN KEY cria uma referência entre tabelas, ligando valores de uma tabela aos registros de outra.",
       "source_id": 29,
       "options": [
         {
@@ -886,7 +886,7 @@
       "level": "Júnior",
       "question": "Qual operador lógico exige que duas condições sejam verdadeiras ao mesmo tempo?",
       "correct_option_id": "c",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "AND exige que todas as condições combinadas sejam verdadeiras para a linha passar no filtro.",
       "source_id": 30,
       "options": [
         {
@@ -916,7 +916,7 @@
       "level": "Júnior",
       "question": "Qual operador lógico retorna verdadeiro quando pelo menos uma condição é verdadeira?",
       "correct_option_id": "b",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "OR aceita a linha quando pelo menos uma das condições combinadas é verdadeira.",
       "source_id": 31,
       "options": [
         {
@@ -946,7 +946,7 @@
       "level": "Júnior",
       "question": "Qual operador lógico inverte o resultado de uma condição?",
       "correct_option_id": "b",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "NOT inverte o resultado de uma condição, mantendo o que não atende ao teste original.",
       "source_id": 32,
       "options": [
         {
@@ -976,7 +976,7 @@
       "level": "Júnior",
       "question": "Qual símbolo costuma ser usado para comentário de uma linha em SQL?",
       "correct_option_id": "d",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "Dois hífens iniciam um comentário de uma linha em muitos bancos SQL; o texto depois deles não é executado.",
       "source_id": 33,
       "options": [
         {
@@ -1006,7 +1006,7 @@
       "level": "Júnior",
       "question": "Qual comando remove todos os dados de uma tabela, mantendo a estrutura, em muitos bancos SQL?",
       "correct_option_id": "c",
-      "explanation": "TRUNCATE remove todos os dados de uma tabela mantendo sua estrutura, quando o banco oferece esse comando.",
+      "explanation": "TRUNCATE remove todos os dados de uma tabela, preservando sua estrutura, quando o banco oferece esse comando.",
       "source_id": 34,
       "options": [
         {
@@ -1036,7 +1036,7 @@
       "level": "Pleno",
       "question": "Em uma consulta agregada, quando você deve usar HAVING em vez de WHERE?",
       "correct_option_id": "b",
-      "explanation": "WHERE filtra linhas antes de agrupamentos e agregações, por isso reduz o conjunto de dados analisado pela consulta.",
+      "explanation": "HAVING deve ser usado quando o filtro depende do resultado de uma agregação, como grupos com soma ou contagem acima de um limite.",
       "source_id": 35,
       "options": [
         {
@@ -1066,7 +1066,7 @@
       "level": "Pleno",
       "question": "Em uma query com GROUP BY, o que deve acontecer com colunas no SELECT que não usam agregação?",
       "correct_option_id": "b",
-      "explanation": "SELECT é o comando usado para consultar dados e escolher quais colunas ou expressões entram no resultado.",
+      "explanation": "Em consultas agrupadas, colunas exibidas sem agregação precisam participar do GROUP BY para que o banco saiba como formar os grupos.",
       "source_id": 36,
       "options": [
         {
@@ -1096,7 +1096,7 @@
       "level": "Pleno",
       "question": "Qual expressão permite criar regras condicionais dentro de uma consulta SQL?",
       "correct_option_id": "e",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "CASE WHEN cria regras condicionais na consulta, permitindo retornar valores diferentes conforme cada condição.",
       "source_id": 37,
       "options": [
         {
@@ -1126,7 +1126,7 @@
       "level": "Pleno",
       "question": "Qual função retorna o primeiro valor não nulo entre várias expressões?",
       "correct_option_id": "c",
-      "explanation": "COALESCE retorna o primeiro valor não nulo da lista, sendo útil para tratar valores ausentes.",
+      "explanation": "COALESCE avalia as expressões em ordem e retorna o primeiro valor que não seja NULL.",
       "source_id": 38,
       "options": [
         {
@@ -1156,7 +1156,7 @@
       "level": "Pleno",
       "question": "Qual função retorna NULL quando duas expressões são iguais?",
       "correct_option_id": "b",
-      "explanation": "NULL representa ausência de valor; ele não é igual a zero nem a texto vazio.",
+      "explanation": "NULLIF compara duas expressões e retorna NULL quando elas são iguais; caso contrário, retorna a primeira expressão.",
       "source_id": 39,
       "options": [
         {
@@ -1186,7 +1186,7 @@
       "level": "Pleno",
       "question": "Qual é a diferença mais correta entre COUNT(*) e COUNT(coluna)?",
       "correct_option_id": "d",
-      "explanation": "COUNT é uma função agregadora que conta registros ou valores não nulos, dependendo da expressão usada.",
+      "explanation": "COUNT(*) conta todas as linhas do grupo; COUNT(coluna) ignora linhas em que aquela coluna está NULL.",
       "source_id": 40,
       "options": [
         {
@@ -1216,7 +1216,7 @@
       "level": "Pleno",
       "question": "Em um LEFT JOIN, colocar uma condição da tabela da direita no WHERE pode causar qual efeito?",
       "correct_option_id": "d",
-      "explanation": "WHERE filtra linhas antes de agrupamentos e agregações, por isso reduz o conjunto de dados analisado pela consulta.",
+      "explanation": "Ao filtrar no WHERE uma coluna da tabela direita, um LEFT JOIN pode perder linhas sem correspondência e se comportar como INNER JOIN.",
       "source_id": 41,
       "options": [
         {
@@ -1246,7 +1246,7 @@
       "level": "Pleno",
       "question": "Qual técnica permite juntar uma tabela com ela mesma?",
       "correct_option_id": "e",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "SELF JOIN é a técnica de relacionar uma tabela com ela mesma usando apelidos diferentes.",
       "source_id": 42,
       "options": [
         {
@@ -1276,7 +1276,7 @@
       "level": "Pleno",
       "question": "Qual recurso permite nomear uma subconsulta temporária usando WITH?",
       "correct_option_id": "d",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Uma CTE usa WITH para nomear uma consulta temporária que pode ser referenciada pela consulta principal.",
       "source_id": 43,
       "options": [
         {
@@ -1306,7 +1306,7 @@
       "level": "Pleno",
       "question": "Qual diferença entre UNION e UNION ALL está correta?",
       "correct_option_id": "e",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "UNION combina resultados removendo duplicados; UNION ALL combina mantendo todas as linhas, inclusive repetições.",
       "source_id": 44,
       "options": [
         {
@@ -1336,7 +1336,7 @@
       "level": "Pleno",
       "question": "Qual cláusula costuma ser usada junto com LIMIT para pular uma quantidade de linhas?",
       "correct_option_id": "c",
-      "explanation": "LIMIT restringe a quantidade de linhas retornadas pela consulta.",
+      "explanation": "OFFSET pula uma quantidade de linhas antes de retornar o resultado, sendo comum em paginação junto com LIMIT.",
       "source_id": 45,
       "options": [
         {
@@ -1366,7 +1366,7 @@
       "level": "Pleno",
       "question": "Qual função de janela numera linhas sequencialmente dentro de uma ordenação?",
       "correct_option_id": "b",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "ROW_NUMBER numera as linhas sequencialmente conforme a ordenação definida na janela.",
       "source_id": 46,
       "options": [
         {
@@ -1396,7 +1396,7 @@
       "level": "Pleno",
       "question": "Em funções de janela, o que PARTITION BY define?",
       "correct_option_id": "a",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "PARTITION BY divide os dados em grupos independentes para que a função de janela seja calculada dentro de cada grupo.",
       "source_id": 47,
       "options": [
         {
@@ -1426,7 +1426,7 @@
       "level": "Pleno",
       "question": "Qual diferença entre RANK e DENSE_RANK está correta?",
       "correct_option_id": "c",
-      "explanation": "RANK cria posições em um ranking e deixa lacunas quando há empate.",
+      "explanation": "RANK deixa lacunas depois de empates no ranking; DENSE_RANK mantém a sequência sem pular posições.",
       "source_id": 48,
       "options": [
         {
@@ -1456,7 +1456,7 @@
       "level": "Pleno",
       "question": "Qual expressão calcula um total acumulado ao longo de uma ordenação?",
       "correct_option_id": "d",
-      "explanation": "ORDER BY define a ordenação final do resultado, podendo usar ASC para crescente ou DESC para decrescente.",
+      "explanation": "SUM(valor) OVER (ORDER BY data) calcula uma soma acumulada seguindo a ordem definida na janela.",
       "source_id": 49,
       "options": [
         {
@@ -1486,7 +1486,7 @@
       "level": "Pleno",
       "question": "Qual padrão é comum para fazer contagem condicional em SQL?",
       "correct_option_id": "a",
-      "explanation": "SUM soma valores numéricos dentro do conjunto filtrado ou de cada grupo.",
+      "explanation": "SUM(CASE WHEN ... THEN 1 ELSE 0 END) transforma condições em 1 ou 0 e soma os casos que atendem ao critério.",
       "source_id": 50,
       "options": [
         {
@@ -1516,7 +1516,7 @@
       "level": "Pleno",
       "question": "Qual abordagem é comum para pegar o primeiro registro de cada grupo?",
       "correct_option_id": "c",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "ROW_NUMBER com PARTITION BY permite numerar registros dentro de cada grupo; filtrar a primeira posição retorna um registro por grupo.",
       "source_id": 51,
       "options": [
         {
@@ -1576,7 +1576,7 @@
       "level": "Pleno",
       "question": "Qual comando confirma definitivamente uma transação?",
       "correct_option_id": "d",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "COMMIT confirma definitivamente as alterações feitas dentro de uma transação.",
       "source_id": 53,
       "options": [
         {
@@ -1606,7 +1606,7 @@
       "level": "Pleno",
       "question": "Qual comando desfaz alterações ainda não confirmadas em uma transação?",
       "correct_option_id": "d",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "ROLLBACK desfaz alterações ainda não confirmadas, retornando a transação ao estado anterior.",
       "source_id": 54,
       "options": [
         {
@@ -1636,7 +1636,7 @@
       "level": "Pleno",
       "question": "Qual propriedade ACID garante que uma transação acontece por completo ou não acontece?",
       "correct_option_id": "c",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Atomicidade garante que uma transação seja aplicada por completo ou não seja aplicada.",
       "source_id": 55,
       "options": [
         {
@@ -1666,7 +1666,7 @@
       "level": "Pleno",
       "question": "Qual objetivo principal da normalização em banco relacional?",
       "correct_option_id": "b",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Normalização organiza dados para reduzir redundância e melhorar consistência entre tabelas relacionadas.",
       "source_id": 56,
       "options": [
         {
@@ -1696,7 +1696,7 @@
       "level": "Pleno",
       "question": "Qual afirmação sobre índices é mais correta?",
       "correct_option_id": "d",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "Índices podem acelerar consultas de leitura, mas geram custo adicional em escritas porque também precisam ser mantidos.",
       "source_id": 57,
       "options": [
         {
@@ -1726,7 +1726,7 @@
       "level": "Pleno",
       "question": "Em um índice composto, por que a ordem das colunas importa?",
       "correct_option_id": "b",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "Em índices compostos, a ordem das colunas afeta quais filtros conseguem aproveitar melhor o prefixo do índice.",
       "source_id": 58,
       "options": [
         {
@@ -1756,7 +1756,7 @@
       "level": "Pleno",
       "question": "Qual restrição garante que não existam valores repetidos em uma coluna ou conjunto de colunas?",
       "correct_option_id": "d",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "UNIQUE impede valores repetidos em uma coluna ou combinação de colunas, preservando unicidade.",
       "source_id": 59,
       "options": [
         {
@@ -1786,7 +1786,7 @@
       "level": "Pleno",
       "question": "Qual restrição valida se um valor atende a uma condição definida?",
       "correct_option_id": "e",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "CHECK valida se os valores inseridos ou atualizados atendem a uma condição definida na tabela.",
       "source_id": 60,
       "options": [
         {
@@ -1816,7 +1816,7 @@
       "level": "Pleno",
       "question": "O que ON DELETE CASCADE faz em uma chave estrangeira?",
       "correct_option_id": "a",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "ON DELETE CASCADE apaga automaticamente registros filhos quando o registro pai relacionado é excluído.",
       "source_id": 61,
       "options": [
         {
@@ -1846,7 +1846,7 @@
       "level": "Pleno",
       "question": "Qual operador é geralmente adequado para testar existência de linhas em uma subconsulta correlacionada?",
       "correct_option_id": "a",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "EXISTS testa se a subconsulta retorna pelo menos uma linha, sendo útil em subconsultas correlacionadas.",
       "source_id": 62,
       "options": [
         {
@@ -1876,7 +1876,7 @@
       "level": "Pleno",
       "question": "Qual agregação ignora valores NULL da coluna informada?",
       "correct_option_id": "c",
-      "explanation": "COUNT é uma função agregadora que conta registros ou valores não nulos, dependendo da expressão usada.",
+      "explanation": "COUNT(coluna) conta apenas valores não nulos daquela coluna, ignorando registros em que ela está NULL.",
       "source_id": 63,
       "options": [
         {
@@ -1906,7 +1906,7 @@
       "level": "Pleno",
       "question": "Qual função pode substituir NULL por um valor padrão em uma consulta?",
       "correct_option_id": "d",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "COALESCE pode substituir NULL por um valor padrão ao retornar o primeiro valor não nulo da lista.",
       "source_id": 64,
       "options": [
         {
@@ -1936,7 +1936,7 @@
       "level": "Pleno",
       "question": "Qual comando altera a estrutura de uma tabela, como adicionar uma coluna?",
       "correct_option_id": "c",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "ALTER TABLE modifica a estrutura de uma tabela existente, como adicionar, remover ou alterar colunas conforme o banco.",
       "source_id": 65,
       "options": [
         {
@@ -1966,7 +1966,7 @@
       "level": "Pleno",
       "question": "Qual conversão é feita por CAST(valor AS tipo)?",
       "correct_option_id": "a",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "CAST converte um valor para outro tipo de dado, como texto para número ou data para texto.",
       "source_id": 66,
       "options": [
         {
@@ -1996,7 +1996,7 @@
       "level": "Pleno",
       "question": "Qual é o uso mais correto de uma VIEW?",
       "correct_option_id": "e",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Uma VIEW guarda uma consulta reutilizável como objeto lógico, facilitando consultas frequentes ou padronizadas.",
       "source_id": 67,
       "options": [
         {
@@ -2026,7 +2026,7 @@
       "level": "Sênior",
       "question": "Qual comando é usado para inspecionar o plano de execução de uma consulta em muitos bancos SQL?",
       "correct_option_id": "b",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "EXPLAIN mostra como o banco pretende executar uma consulta, incluindo operações como leituras, junções e uso de índices.",
       "source_id": 68,
       "options": [
         {
@@ -2056,7 +2056,7 @@
       "level": "Sênior",
       "question": "O que EXPLAIN ANALYZE normalmente adiciona em relação ao EXPLAIN simples?",
       "correct_option_id": "c",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "EXPLAIN ANALYZE executa a consulta e mostra métricas reais, como tempos e linhas processadas, além do plano.",
       "source_id": 69,
       "options": [
         {
@@ -2086,7 +2086,7 @@
       "level": "Sênior",
       "question": "O que significa uma condição ser sargable?",
       "correct_option_id": "d",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Uma condição sargable permite que o banco aproveite melhor índices, evitando transformações que escondem a coluna filtrada.",
       "source_id": 70,
       "options": [
         {
@@ -2116,7 +2116,7 @@
       "level": "Sênior",
       "question": "Qual filtro tende a prejudicar o uso direto de índice em uma coluna de data?",
       "correct_option_id": "e",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "Aplicar função diretamente na coluna de data pode dificultar o uso de índice, porque o banco precisa transformar cada valor antes de comparar.",
       "source_id": 71,
       "options": [
         {
@@ -2146,7 +2146,7 @@
       "level": "Sênior",
       "question": "Em um índice B-tree, qual tipo de busca costuma ser bem atendida?",
       "correct_option_id": "d",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "Índices B-tree costumam atender bem buscas por igualdade e intervalos ordenados.",
       "source_id": 72,
       "options": [
         {
@@ -2176,7 +2176,7 @@
       "level": "Sênior",
       "question": "Em um índice composto (cliente_id, data_pedido), qual filtro tende a aproveitar melhor o prefixo do índice?",
       "correct_option_id": "c",
-      "explanation": "WHERE filtra linhas antes de agrupamentos e agregações, por isso reduz o conjunto de dados analisado pela consulta.",
+      "explanation": "Em um índice composto, filtrar pela primeira coluna costuma aproveitar melhor o prefixo do índice.",
       "source_id": 73,
       "options": [
         {
@@ -2206,7 +2206,7 @@
       "level": "Sênior",
       "question": "O que é seletividade de um índice?",
       "correct_option_id": "a",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "Seletividade indica o quanto um filtro reduz o conjunto de linhas candidatas; quanto melhor a redução, mais útil tende a ser o índice.",
       "source_id": 74,
       "options": [
         {
@@ -2236,7 +2236,7 @@
       "level": "Sênior",
       "question": "Qual índice é criado apenas para um subconjunto de linhas que atende a uma condição?",
       "correct_option_id": "e",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Índice parcial cobre apenas linhas que atendem a uma condição, economizando espaço e focando consultas específicas.",
       "source_id": 75,
       "options": [
         {
@@ -2266,7 +2266,7 @@
       "level": "Sênior",
       "question": "O que uma materialized view normalmente armazena?",
       "correct_option_id": "c",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Uma materialized view armazena fisicamente o resultado pré-calculado de uma consulta para acelerar leituras.",
       "source_id": 76,
       "options": [
         {
@@ -2296,7 +2296,7 @@
       "level": "Sênior",
       "question": "Qual nível de isolamento permite leituras sujas no modelo clássico de isolamento?",
       "correct_option_id": "e",
-      "explanation": "COMMIT confirma definitivamente as alterações feitas dentro de uma transação.",
+      "explanation": "READ UNCOMMITTED permite que uma transação leia dados ainda não confirmados por outra, gerando leitura suja.",
       "source_id": 77,
       "options": [
         {
@@ -2326,7 +2326,7 @@
       "level": "Sênior",
       "question": "Qual nível de isolamento evita leitura suja, mas ainda pode permitir leituras não repetíveis em muitos bancos?",
       "correct_option_id": "e",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "READ COMMITTED evita leitura suja ao mostrar apenas dados confirmados, mas ainda pode permitir mudanças entre leituras na mesma transação.",
       "source_id": 78,
       "options": [
         {
@@ -2356,7 +2356,7 @@
       "level": "Sênior",
       "question": "Qual nível de isolamento busca o comportamento equivalente à execução serial das transações?",
       "correct_option_id": "e",
-      "explanation": "A resposta correta é SERIALIZABLE porque esse recurso atende diretamente ao conceito SQL descrito na pergunta.",
+      "explanation": "SERIALIZABLE busca o maior isolamento, fazendo as transações se comportarem como se fossem executadas em ordem serial.",
       "source_id": 79,
       "options": [
         {
@@ -2386,7 +2386,7 @@
       "level": "Sênior",
       "question": "O que caracteriza um deadlock?",
       "correct_option_id": "b",
-      "explanation": "Uma CTE criada com WITH torna uma consulta intermediária nomeada e reutilizável dentro da query principal.",
+      "explanation": "Deadlock ocorre quando transações ficam presas esperando recursos umas das outras em ciclo.",
       "source_id": 80,
       "options": [
         {
@@ -2416,7 +2416,7 @@
       "level": "Sênior",
       "question": "Qual técnica é comum em controle de concorrência otimista?",
       "correct_option_id": "a",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Controle otimista usa uma versão ou timestamp para detectar se o registro mudou antes de confirmar a gravação.",
       "source_id": 81,
       "options": [
         {
@@ -2446,7 +2446,7 @@
       "level": "Sênior",
       "question": "Qual padrão é usado para inserir ou atualizar quando já existe conflito de chave em alguns bancos?",
       "correct_option_id": "c",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "UPSERT é o padrão de inserir um registro novo ou atualizar o existente quando há conflito de chave.",
       "source_id": 82,
       "options": [
         {
@@ -2476,7 +2476,7 @@
       "level": "Sênior",
       "question": "Qual algoritmo de JOIN costuma ser eficiente para grandes conjuntos em igualdade, sem depender de ordenação prévia?",
       "correct_option_id": "d",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Hash Join costuma ser eficiente em junções por igualdade em grandes conjuntos, sem exigir que as entradas já estejam ordenadas.",
       "source_id": 83,
       "options": [
         {
@@ -2506,7 +2506,7 @@
       "level": "Sênior",
       "question": "Qual algoritmo de JOIN tende a ser eficiente quando a entrada externa é pequena e a interna tem índice adequado?",
       "correct_option_id": "a",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "Nested Loop Join tende a funcionar bem quando a entrada externa é pequena e a busca na tabela interna pode usar índice.",
       "source_id": 84,
       "options": [
         {
@@ -2536,7 +2536,7 @@
       "level": "Sênior",
       "question": "Qual algoritmo de JOIN se beneficia de entradas já ordenadas pelas chaves de junção?",
       "correct_option_id": "e",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "Merge Join se beneficia de entradas ordenadas pelas chaves de junção, comparando os fluxos em sequência.",
       "source_id": 85,
       "options": [
         {
@@ -2566,7 +2566,7 @@
       "level": "Sênior",
       "question": "Em função de janela, o que uma cláusula ROWS BETWEEN define?",
       "correct_option_id": "d",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "ROWS BETWEEN define o quadro de linhas da janela considerado para calcular o valor de cada linha.",
       "source_id": 86,
       "options": [
         {
@@ -2596,7 +2596,7 @@
       "level": "Sênior",
       "question": "Qual função de janela acessa o valor de uma linha anterior dentro da ordenação?",
       "correct_option_id": "b",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "LAG acessa o valor de uma linha anterior dentro da ordenação da janela.",
       "source_id": 87,
       "options": [
         {
@@ -2626,7 +2626,7 @@
       "level": "Sênior",
       "question": "Qual função de janela acessa o valor de uma linha posterior dentro da ordenação?",
       "correct_option_id": "e",
-      "explanation": "IN verifica se um valor pertence a uma lista ou ao resultado de uma subconsulta.",
+      "explanation": "LEAD acessa o valor de uma linha posterior dentro da ordenação da janela.",
       "source_id": 88,
       "options": [
         {
@@ -2656,7 +2656,7 @@
       "level": "Sênior",
       "question": "Qual recurso permite consultar hierarquias, como árvore de categorias, repetindo uma consulta sobre si mesma?",
       "correct_option_id": "b",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Recursive CTE permite repetir uma consulta sobre o próprio resultado, recurso comum para hierarquias e árvores.",
       "source_id": 89,
       "options": [
         {
@@ -2686,7 +2686,7 @@
       "level": "Sênior",
       "question": "Qual padrão é mais seguro para fazer anti-join quando a subconsulta pode retornar NULL?",
       "correct_option_id": "e",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "NOT EXISTS é seguro para anti-join porque testa ausência de linhas sem sofrer com valores NULL na subconsulta.",
       "source_id": 90,
       "options": [
         {
@@ -2716,7 +2716,7 @@
       "level": "Sênior",
       "question": "Qual problema pode ocorrer com NOT IN quando a lista ou subconsulta contém NULL?",
       "correct_option_id": "d",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "NOT IN pode retornar nenhum resultado quando existe NULL na lista, por causa da lógica SQL de três valores.",
       "source_id": 91,
       "options": [
         {
@@ -2746,7 +2746,7 @@
       "level": "Sênior",
       "question": "O que estatísticas desatualizadas podem causar no otimizador de consultas?",
       "correct_option_id": "c",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Estatísticas desatualizadas podem fazer o otimizador estimar mal a quantidade de linhas e escolher um plano ruim.",
       "source_id": 92,
       "options": [
         {
@@ -2776,7 +2776,7 @@
       "level": "Sênior",
       "question": "Em modelagem dimensional, o que geralmente é uma tabela fato?",
       "correct_option_id": "d",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Tabela fato guarda medidas do processo de negócio e chaves que apontam para dimensões descritivas.",
       "source_id": 93,
       "options": [
         {
@@ -2806,7 +2806,7 @@
       "level": "Sênior",
       "question": "Em Slowly Changing Dimension tipo 2, qual é a ideia principal?",
       "correct_option_id": "e",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "SCD tipo 2 preserva histórico criando uma nova versão do registro quando um atributo relevante muda.",
       "source_id": 94,
       "options": [
         {
@@ -2836,7 +2836,7 @@
       "level": "Sênior",
       "question": "O que significa uma carga ETL ser idempotente?",
       "correct_option_id": "c",
-      "explanation": "A alternativa correta é \"Executar várias vezes com a mesma entrada gera o mesmo resultado esperado\" porque descreve com mais precisão o comportamento pedido pela pergunta em SQL.",
+      "explanation": "Uma carga idempotente pode ser executada novamente com a mesma entrada e produzir o mesmo estado esperado, sem duplicar ou corromper dados.",
       "source_id": 95,
       "options": [
         {
@@ -2866,7 +2866,7 @@
       "level": "Sênior",
       "question": "Qual prática reduz risco de SQL injection?",
       "correct_option_id": "e",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Queries parametrizadas separam dados de comando SQL, reduzindo o risco de injeção por entrada maliciosa.",
       "source_id": 96,
       "options": [
         {
@@ -2896,7 +2896,7 @@
       "level": "Sênior",
       "question": "Qual estratégia ajuda a processar grandes volumes sem carregar tudo em memória?",
       "correct_option_id": "b",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Processar em páginas ou lotes controlados evita carregar todo o volume de dados em memória de uma vez.",
       "source_id": 97,
       "options": [
         {
@@ -2926,7 +2926,7 @@
       "level": "Sênior",
       "question": "Qual técnica divide fisicamente ou logicamente uma tabela grande por faixa, lista ou hash?",
       "correct_option_id": "b",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "Particionamento divide uma tabela grande por regra física ou lógica, como faixa, lista ou hash.",
       "source_id": 98,
       "options": [
         {
@@ -2956,7 +2956,7 @@
       "level": "Sênior",
       "question": "Qual benefício comum do particionamento por data em tabelas muito grandes?",
       "correct_option_id": "d",
-      "explanation": "MIN retorna o menor valor encontrado em uma coluna ou expressão.",
+      "explanation": "Particionamento por data permite eliminar partições irrelevantes quando o filtro temporal restringe o período consultado.",
       "source_id": 99,
       "options": [
         {
@@ -2986,7 +2986,7 @@
       "level": "Sênior",
       "question": "Qual abordagem é mais adequada para atualizar uma tabela de destino a partir de uma origem incremental?",
       "correct_option_id": "a",
-      "explanation": "ON define a condição que relaciona as tabelas em um JOIN, geralmente comparando chave estrangeira com chave primária.",
+      "explanation": "MERGE, ou lógica equivalente de insert/update controlado, aplica mudanças incrementais criando novos registros ou atualizando existentes conforme a chave.",
       "source_id": 100,
       "options": [
         {

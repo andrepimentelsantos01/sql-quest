@@ -76,6 +76,7 @@ def get_public_scenario(scenario: dict[str, Any]) -> dict[str, Any]:
         "title": scenario["title"],
         "story": scenario["story"],
         "objective": scenario["objective"],
+        "objective_steps": scenario.get("objective_steps"),
         "difficulty": scenario["difficulty"],
         "hint": scenario.get("hint"),
         "schema": get_scenario_schema(scenario),
