@@ -890,7 +890,7 @@
     "title": "Motivos de parada",
     "difficulty": "Júnior",
     "database": "industria.db",
-    "story": "Olá, analista! Hoje você está no fechamento mensal da fábrica e a conversa começou com uma frase perigosa: foi só uma parada pontual.\n\nQuando várias paradas pontuais aparecem no mesmo relatório, a pontualidade deixa de ser conforto e começa a parecer padrão operacional.\n\nA gerência quer saber quais motivos consumiram tempo relevante em maio antes de abrir chamado, trocar fornecedor ou culpar o planejamento de novo.\n\nSua missão é agrupar os motivos de parada e mostrar onde o tempo perdido passou do aceitável. Na indústria, minuto parado pequeno demais para debate ainda pode ficar grande na soma.",
+    "story": "Olá, analista! Hoje você está no fechamento mensal da fábrica e a conversa começou com uma frase perigosa: foi só uma parada pontual.\n\nQuando várias paradas pontuais aparecem no mesmo relatório a pontualidade deixa de ser conforto e começa a parecer padrão operacional.\n\nA gerência quer saber quais motivos consumiram tempo relevante em maio antes de abrir chamado, trocar fornecedor ou culpar o planejamento de novo.\n\nSua missão é agrupar os motivos de parada e mostrar onde o tempo perdido passou do aceitável. Na indústria cada minuto parado pode ficar grande na soma do prejuízo.",
     "objective": "Sua tarefa: retorne o motivo e o total de minutos parados entre 2026-05-01 e 2026-06-01, considerando apenas motivos com total maior ou igual a 150 minutos. Ordene do maior total para o menor. Em caso de empate, ordene por motivo em ordem alfabética.",
     "objective_steps": [
       "Comece pelas paradas do mês analisado.",
@@ -931,7 +931,7 @@
     "title": "Média por aluno",
     "difficulty": "Júnior",
     "database": "educacao.db",
-    "story": "Olá, analista! Hoje você está na secretaria acadêmica em semana de conselho de classe, quando cada nota baixa vem acompanhada de uma explicação longa e cada ata precisa de objetividade.\n\nA coordenação quer enxergar o desempenho dos alunos no segundo bimestre antes de decidir reforços, conversas com responsáveis e prioridades de acompanhamento.\n\nOlhar disciplina por disciplina ajuda, mas agora a pergunta é mais direta: quem ficou com a média geral mais apertada?\n\nSua missão é calcular a média por aluno no bimestre. Porque em escola alerta cedo costuma sair mais barato do que recuperação organizada às pressas.",
+    "story": "Olá, analista! Hoje você está na secretaria acadêmica de uma grande rede de escolas em semana de conselho de classe, quando cada nota baixa vem acompanhada de uma explicação longa e cada ata precisa de objetividade.\n\nA coordenação quer enxergar o desempenho dos alunos no segundo bimestre antes de decidir reforços, conversas com responsáveis e prioridades de acompanhamento.\n\nOlhar disciplina por disciplina ajuda mas agora a pergunta é mais direta: quem ficou com a média geral mais apertada?\n\nSua missão é calcular a média por aluno no bimestre. Porque nesse tipo de negócio, o alerta cedo costuma sair mais barato do que os custos para lidar com alunos em recuperação.",
     "objective": "Sua tarefa: retorne o aluno e a média das notas do segundo bimestre. Ordene da menor média para a maior. Em caso de empate, ordene por aluno em ordem alfabética.",
     "objective_steps": [
       "Comece pelas avaliações do segundo bimestre.",
@@ -973,9 +973,9 @@
     "id": "arte_003",
     "category": "Arte",
     "title": "Obra sem venda",
-    "difficulty": "Pleno",
+    "difficulty": "Júnior",
     "database": "arte.db",
-    "story": "Olá, analista! Hoje você está no pós-evento de uma galeria onde algumas obras receberam elogios intensos, promessas discretas e aquele tipo de entusiasmo que desaparece quando chega a hora de assinar a compra.\n\nA curadoria quer separar o que virou venda concluída do que ficou apenas em intenção, reserva ou conversa elegante perto do catálogo.\n\nExiste pelo menos uma obra ocupando espaço comercial sem receita confirmada, e a próxima agenda de negociação depende dessa lista.\n\nSua missão é encontrar as obras sem venda concluída. Porque no mercado da arte interesse é bonito, mas faturamento confirmado continua sendo o filtro mais honesto.",
+    "story": "Olá, analista! Hoje você está no fechamento do evento principal de uma grande galeria de arte onde algumas obras receberam elogios intensos, promessas de compra e aquele tipo de entusiasmo que desaparece quando chega a hora de assinar a compra.\n\nA gestão da galeria quer separar o que virou venda concluída do que ficou apenas em intenção, reserva ou conversa ao lado do catálogo.\n\nExiste pelo menos uma obra ocupando espaço comercial sem receita confirmada e a próxima agenda de negociação depende dessa lista.\n\nSua missão é encontrar as obras sem venda concluída. Porque no mercado da arte, interesse é bonito mas faturamento continua mantendo a galeria aberta.",
     "objective": "Sua tarefa: retorne o título das obras que não possuem venda concluída. Ordene por obra em ordem alfabética.",
     "objective_steps": [
       "Comece pelo catálogo de obras da galeria.",
@@ -1005,7 +1005,7 @@
     "title": "Produção estimada",
     "difficulty": "Pleno",
     "database": "agricultura.db",
-    "story": "Olá, analista! Hoje você está no escritório da fazenda, onde a conversa saiu da produtividade por hectare e foi direto para a pergunta que decide caminhão, silo e contrato: quanto isso representa em produção.\n\nAlguns talhões parecem bons no percentual, outros ganham força pelo tamanho da área, e a gestão precisa comparar impacto real antes de priorizar investimentos para a próxima safra.\n\nO mapa agrícola está aberto, mas quem vai responder não é a intuição de campo, é a combinação entre área e produtividade registrada.\n\nSua missão é estimar a produção por talhão na safra 2026. Porque no agro rendimento por hectare explica eficiência, mas volume final paga a operação.",
+    "story": "Olá, analista! Hoje você está no escritório de gestão de uma grande fazenda, onde a conversa saiu da produtividade por hectare e foi direto para a pergunta que decide logística, armazenamento e contrato: quanto isso representa em produção real?\n\nAlguns talhões parecem bons no percentual, outros ganham força pelo tamanho da área e a gestão precisa comparar impacto real antes de priorizar investimentos para a próxima safra.\n\nO mapa agrícola está aberto mas quem vai responder não é a intuição e sim a combinação entre área e produtividade registrada.\n\nSua missão é estimar a produção por talhão na safra 2026. Porque no agro rendimento por hectare explica eficiência mas volume final paga a operação.",
     "objective": "Sua tarefa: retorne o talhão e a produção estimada da safra 2026, calculada como área em hectares multiplicada pela produtividade em kg por hectare. Ordene da maior produção estimada para a menor.",
     "objective_steps": [
       "Comece pelos talhões da safra solicitada.",
@@ -1053,7 +1053,7 @@
     "title": "Frete atrasado caro",
     "difficulty": "Júnior",
     "database": "logistica.db",
-    "story": "Olá, analista! Hoje você está na operação logística depois de uma semana em que atraso deixou de ser exceção e começou a aparecer junto com fretes cada vez mais caros.\n\nA transportadora precisa entender quais rotas atrasadas também estão pesando mais no custo médio, porque reclamar do prazo sem olhar o gasto é resolver metade do problema.\n\nAlgumas entregas chegaram depois do combinado e ainda cobraram caro pela experiência, o tipo de combinação que cliente nenhum costuma agradecer.\n\nSua missão é calcular o custo médio de frete das rotas com atraso. Porque na logística atrasar já é ruim; atrasar caro é relatório de prioridade.",
+    "story": "Olá, analista! Hoje você está na operação logística depois de uma semana em que atraso deixou de ser exceção e começou a aparecer junto com fretes cada vez mais caros.\n\nA transportadora precisa entender quais rotas atrasadas também estão pesando mais no custo médio, porque reclamar do prazo sem olhar o gasto é resolver somente metade do problema.\n\nAlgumas entregas chegaram depois do combinado e ainda cobraram caro pela experiência, o tipo de combinação que cliente nenhum costuma agradecer.\n\nSua missão é calcular o custo médio de frete das rotas com atraso. Porque na logística atrasar já é ruim mas atrasar caro prioridade máxima.",
     "objective": "Sua tarefa: retorne origem, destino e custo médio de frete considerando apenas entregas atrasadas. Ordene do maior custo médio para o menor. Em caso de empate, ordene por origem e destino em ordem alfabética.",
     "objective_steps": [
       "Comece pelas entregas que chegaram fora do prazo.",
@@ -1102,7 +1102,7 @@
     "title": "Fases concluídas",
     "difficulty": "Júnior",
     "database": "games.db",
-    "story": "Olá, analista! Hoje você está acompanhando o funil de progressão de um jogo onde a equipe cansou de olhar apenas para abandono e quer entender também onde os jogadores estão conseguindo avançar.\n\nO design precisa separar fase difícil de fase bem dosada, produto quer números para a próxima atualização e suporte quer parar de responder reclamação usando sensação como evidência.\n\nSe uma etapa concentra conclusões, ela pode indicar ritmo saudável; se quase ninguém termina, talvez a curva esteja cobrando demais cedo demais.\n\nSua missão é contar as conclusões por fase. Porque em games retenção não se mede só pelo jogador que sai, mas também pelo caminho que ele consegue completar.",
+    "story": "Olá, analista! Hoje você está acompanhando o funil de progressão de um jogo AAA recém lançado onde a equipe cansou de olhar apenas para o gráfico de abandono e quer entender também onde os jogadores estão conseguindo avançar.\n\nO design precisa separar fase difícil de fase balanceada, o time de produto quer números para a próxima atualização e o suporte quer parar de responder reclamação usando achismo como evidência.\n\nSe uma etapa concentra conclusões ela pode indicar ritmo saudável, se quase ninguém termina talvez a curva esteja cobrando demais cedo demais.\n\nSua missão é contar as conclusões por fase, porque em games retenção não se mede só pelo jogador que sai mas também pelo caminho que ele consegue completar.",
     "objective": "Sua tarefa: retorne a fase e a quantidade de conclusões, considerando apenas sessões em que o jogador não abandonou. Ordene da maior quantidade para a menor. Em caso de empate, ordene por fase em ordem alfabética.",
     "objective_steps": [
       "Comece pelas sessões em que o jogador avançou sem abandonar.",
@@ -1142,7 +1142,7 @@
     "title": "Hospitais acima da média",
     "difficulty": "Sênior",
     "database": "saude.db",
-    "story": "Olá, analista! Hoje você está em uma auditoria regional de saúde onde os hospitais chegaram com justificativas sofisticadas, planilhas coloridas e uma confiança perigosa de que ninguém vai comparar nada com média.\n\nA diretoria precisa descobrir quais unidades estão realmente acima do comportamento esperado no trimestre, porque cortar custo sem critério em saúde é uma ótima forma de criar outro problema maior.\n\nAntes que a reunião vire disputa de narrativa, os dados precisam mostrar quem passou da linha e quanto passou.\n\nSua missão é identificar os hospitais com custo total acima da média do grupo. Porque em hospital conta alta pode ter explicação, mas primeiro ela precisa sobreviver ao SQL.",
+    "story": "Olá, analista! Hoje você está em uma auditoria regional de saúde onde os hospitais chegaram com justificativas sofisticadas, planilhas coloridas e uma confiança perigosa de que ninguém vai checar de fato os dados.\n\nA diretoria precisa descobrir quais unidades estão realmente acima do comportamento esperado no trimestre, porque cortar custo sem critério em saúde é uma ótima forma de criar outro problema maior.\n\nAntes que a reunião vire disputa de narrativa, os dados precisam mostrar quem passou da linha e quanto passou.\n\nSua missão é identificar os hospitais com custo total acima da média do grupo. Porque ma área da saúde conta alta pode ter explicação mas primeiro ela precisa sobreviver ao SQL.",
     "objective": "Sua tarefa: retorne hospital, cidade, custo total e valor acima da média entre 2026-01-01 e 2026-04-01, considerando apenas hospitais com custo total acima da média dos hospitais no período. Ordene pelo maior valor acima da média.",
     "objective_steps": [
       "Comece pelas internações do trimestre analisado.",
@@ -1186,7 +1186,7 @@
     "title": "Criticidade por serviço",
     "difficulty": "Sênior",
     "database": "tecnologia.db",
-    "story": "Olá, analista! Hoje você está em um centro de operações global onde o painel de incidentes está menos para dashboard e mais para pedido formal de socorro.\n\nOs times querem saber se o problema é volume geral ou concentração de falhas críticas, porque uma fila grande assusta, mas uma fila pequena cheia de alerta vermelho derruba fim de semana executivo.\n\nA liderança precisa priorizar serviços com recorrência suficiente para análise e criticidade alta o bastante para intervenção.\n\nSua missão é calcular o percentual de incidentes críticos por serviço no mês. Porque em tecnologia barulho todo sistema faz, mas criticidade é o barulho que vira prejuízo.",
+    "story": "Olá, analista! Hoje você está em um centro de operações global de uma big tech onde o painel de incidentes está menos para dashboard e mais para pedido formal de socorro.\n\nOs times querem saber se o problema é volume geral ou concentração de falhas críticas, porque uma fila grande assusta mas uma fila pequena cheia de alerta vermelho derruba o fim de semana do time.\n\nA liderança precisa priorizar serviços com recorrência suficiente para análise e criticidade alta o bastante para intervenção.\n\nSua missão é calcular o percentual de incidentes críticos por serviço no mês. Porque em tecnologia barulho todo sistema faz mas criticidade é o barulho que vira prejuízo.",
     "objective": "Sua tarefa: retorne serviço, squad, total de incidentes, incidentes críticos e percentual crítico entre 2026-04-01 e 2026-05-01, considerando apenas serviços com pelo menos 2 incidentes no período. Ordene por maior percentual crítico, depois maior total e serviço em ordem alfabética.",
     "objective_steps": [
       "Comece pelos incidentes do mês analisado.",
@@ -1271,7 +1271,7 @@
     "title": "Pior máquina por setor",
     "difficulty": "Sênior",
     "database": "industria.db",
-    "story": "Olá, analista! Hoje você está numa fábrica onde cada setor garante que o gargalo está na máquina ao lado, no turno anterior ou em algum detalhe que convenientemente não aparece na ata.\n\nA gerência quer uma visão cirúrgica: dentro de cada setor, qual equipamento concentrou mais minutos parados em maio.\n\nNão basta saber o setor problemático; a manutenção precisa sair da reunião com alvo claro, ordem de prioridade e menos espaço para desculpa técnica.\n\nSua missão é ranquear as máquinas dentro de cada setor e revelar a pior de cada um. Porque na indústria equipamento problemático adora se esconder atrás da média do setor.",
+    "story": "Olá, analista! Hoje você está numa indústria onde cada gerencia garante que o gargalo está na máquina ao lado, no turno anterior ou em algum detalhe que convenientemente nunca faz parte da sua gestão.\n\nA gerência quer uma visão cirúrgica dentro de cada setor de qual equipamento concentrou mais minutos parados em maio.\n\nNão basta saber o setor problemático, a manutenção precisa sair da reunião com alvo claro, ordem de prioridade e menos espaço para desculpa técnica.\n\nSua missão é ranquear as máquinas dentro de cada setor e revelar a pior de cada um. Porque na indústria equipamento problemático adora se esconder atrás da média do setor.",
     "objective": "Sua tarefa: retorne setor, máquina e minutos parados entre 2026-05-01 e 2026-06-01 para a máquina com maior parada dentro de cada setor. Ordene pelo maior total de minutos parados e depois setor em ordem alfabética.",
     "objective_steps": [
       "Comece pelas paradas do mês analisado.",
@@ -1317,7 +1317,7 @@
     "title": "Risco acadêmico combinado",
     "difficulty": "Sênior",
     "database": "educacao.db",
-    "story": "Olá, analista! Hoje você está no conselho pedagógico de uma escola onde notas, faltas e justificativas chegaram juntas para tentar transformar prioridade em debate infinito.\n\nA coordenação precisa enxergar o aluno por dois lados ao mesmo tempo: desempenho e presença. Nota baixa sem ausência preocupa, ausência alta com nota razoável também.\n\nO plano de intervenção precisa sair da reunião com nomes, não com sensação geral de que a turma anda difícil.\n\nSua missão é cruzar média do bimestre com frequência e apontar quem está em risco. Porque em educação alerta bom é aquele que chega antes da recuperação virar mutirão.",
+    "story": "Olá, analista! Hoje você está no conselho pedagógico de uma rede de educação onde notas, faltas e justificativas chegaram juntas para tentar transformar prioridade em reuniões que não terminam nunca mais.\n\nA coordenação precisa enxergar o aluno por dois lados ao mesmo tempo por desempenho e presença. Nota baixa sem ausência preocupa e ausência alta com nota razoável também.\n\nO plano de intervenção precisa sair da reunião com nomes, não com sensação geral de que a turma anda difícil.\n\nSua missão é cruzar média do bimestre com frequência e apontar quem está em risco. Porque em educação alerta bom é aquele que chega antes da recuperação virar dor de cabeça e custo.",
     "objective": "Sua tarefa: retorne aluno, média do segundo bimestre e frequência percentual entre 2026-04-01 e 2026-05-01, considerando alunos com média abaixo de 7 ou frequência abaixo de 75%. Ordene pela menor média, depois menor frequência e aluno em ordem alfabética.",
     "objective_steps": [
       "Comece pelas notas do segundo bimestre.",
@@ -1368,7 +1368,7 @@
     "title": "Receita e desejo",
     "difficulty": "Sênior",
     "database": "arte.db",
-    "story": "Olá, analista! Hoje você está numa galeria internacional onde a curadoria fala em impacto cultural, o comercial fala em caixa e os artistas querem saber por que elogio ainda não paga aluguel.\n\nA direção precisa cruzar duas pistas: obras que venderam e obras que despertaram desejo no catálogo digital. Uma peça pode ser valiosa pelo dinheiro que entrou ou pelo interesse que ainda pode virar negociação.\n\nA próxima parede de destaque é pequena demais para acomodar vaidade, então a decisão precisa sair dos dados.\n\nSua missão é combinar receita concluída e favoritos por obra. Porque no mercado da arte subjetividade encanta, mas ranking bem feito escolhe a iluminação.",
+    "story": "Olá, analista! Hoje você está numa galeria internacional onde a curadoria fala em impacto cultural, o comercial fala em caixa e os artistas querem saber por que elogio ainda não paga aluguel.\n\nA direção precisa cruzar duas pistas: obras que venderam e obras que despertaram desejo no catálogo digital. Uma peça pode ser valiosa pelo dinheiro que entrou ou pelo interesse que ainda pode virar negociação.\n\nA próxima parede de destaque é pequena demais para acomodar vaidade então a decisão precisa sair dos dados.\n\nSua missão é combinar receita concluída e favoritos por obra. Porque no mercado da arte subjetividade encanta mas os dados ditam a realidade.",
     "objective": "Sua tarefa: retorne artista, obra, receita e favoritos, considerando obras com receita concluída maior que zero ou pelo menos 3 favoritos. Ordene pela maior receita, depois maior quantidade de favoritos e obra em ordem alfabética.",
     "objective_steps": [
       "Comece pelo catálogo completo de obras.",
@@ -1430,7 +1430,7 @@
     "title": "Ranking hídrico total",
     "difficulty": "Sênior",
     "database": "agricultura.db",
-    "story": "Olá, analista! Hoje você está numa fazenda em que água virou pauta de diretoria, planilha de custo e assunto delicado no rádio da operação.\n\nA equipe não quer mais olhar só produtividade por hectare nem só volume irrigado. O que importa agora é a produção estimada que cada talhão entrega para cada metro cúbico aplicado.\n\nA próxima safra vai receber investimento seletivo, e ninguém quer premiar talhão bonito no mapa que bebe água como se orçamento fosse chuva.\n\nSua missão é ranquear os talhões por eficiência hídrica total. Porque no agro eficiência boa não aparece no discurso, aparece quando produção e recurso entram na mesma conta.",
+    "story": "Olá, analista! Hoje você está numa grande fazenda em que água virou pauta da gestão, planilha de custo e assunto delicado no rádio da operação.\n\nA equipe não quer mais olhar só produtividade por hectare nem só volume irrigado, o que importa agora é a produção estimada que cada talhão entrega para cada metro cúbico aplicado.\n\nA próxima safra vai receber investimento seletivo e ninguém quer premiar talhão bonito no mapa que bebe água como se orçamento fosse chuva.\n\nSua missão é ranquear os talhões por eficiência hídrica total. Porque no agro eficiência boa não aparece no discurso, aparece quando produção e recurso entram na mesma conta.",
     "objective": "Sua tarefa: retorne talhão, cultura, kg por metro cúbico total e posição no ranking para a safra 2026, usando produção estimada dividida pelo volume irrigado entre 2026-01-01 e 2026-05-01. Ordene pela posição e talhão.",
     "objective_steps": [
       "Comece pelos talhões da safra analisada.",
@@ -1486,7 +1486,7 @@
     "title": "Ranking de risco por rota",
     "difficulty": "Sênior",
     "database": "logistica.db",
-    "story": "Olá, analista! Hoje você está na sala de gestão de uma transportadora onde atraso, custo e cliente irritado decidiram aparecer juntos no mesmo relatório.\n\nA operação precisa parar de olhar só quantidade de atrasos e começar a enxergar a taxa por rota junto com custo médio, porque algumas rotas pequenas conseguem ser grandes problemas com poucos registros.\n\nO plano de renegociação de transportadores depende de uma lista objetiva de risco.\n\nSua missão é ranquear rotas por taxa de atraso e custo médio. Porque em logística o caminhão atrasa uma vez, mas o cliente lembra em todas as próximas cotações.",
+    "story": "Olá, analista! Hoje você está na sala de gestão de uma transportadora onde atraso, custo e cliente irritado decidiram aparecer juntos no mesmo relatório.\n\nA operação precisa parar de olhar só quantidade de atrasos e começar a enxergar a taxa por rota junto com custo médio porque algumas rotas pequenas conseguem ser grandes problemas com poucos registros.\n\nO plano de renegociação de transportadores depende de uma lista objetiva de risco.\n\nSua missão é ranquear rotas por taxa de atraso e custo médio. Porque em logística o caminhão atrasa uma vez apeanas mas o cliente lembra em todas as próximas cotações.",
     "objective": "Sua tarefa: retorne origem, destino, taxa de atraso, custo médio e posição de risco por rota. Calcule a taxa como entregas atrasadas divididas pelo total de entregas da rota. Ordene pela posição, origem e destino.",
     "objective_steps": [
       "Comece pelo histórico completo de entregas por rota.",
@@ -1546,7 +1546,7 @@
     "title": "Abandono acima da média",
     "difficulty": "Sênior",
     "database": "games.db",
-    "story": "Olá, analista! Hoje você está no estúdio de um jogo onde o time de design jura que a dificuldade está divertida e a comunidade jura exatamente o contrário com caps lock ligado.\n\nA equipe já sabe a taxa de abandono por fase, mas agora precisa descobrir quais etapas estão acima da média geral para priorizar ajustes sem transformar o jogo inteiro em tutorial.\n\nA próxima atualização precisa mexer onde há evidência, não onde o fórum gritou mais alto ontem à noite.\n\nSua missão é encontrar fases com abandono acima da média. Porque em games dificuldade boa desafia; dificuldade mal calibrada vira desinstalação com review criativo.",
+    "story": "Olá, analista! Hoje você está no estúdio de um jogo onde o time de design jura que a dificuldade está divertida e a comunidade jura exatamente o contrário com caps lock ligado.\n\nA equipe já sabe a taxa de abandono por fase mas agora precisa descobrir quais etapas estão acima da média geral para priorizar ajustes sem transformar o jogo inteiro em tutorial.\n\nA próxima atualização precisa mexer onde há evidência não onde o fórum gritou mais alto ontem à noite.\n\nSua missão é encontrar fases com abandono acima da média. Porque em games dificuldade boa desafia mas dificuldade mal calibrada vira desinstalação com review criativo pela internet.",
     "objective": "Sua tarefa: retorne fase, taxa de abandono e quanto ela ficou acima da média geral, considerando apenas fases com taxa acima da média. Ordene pelo maior valor acima da média e depois fase em ordem alfabética.",
     "objective_steps": [
       "Comece pelas sessões registradas em cada fase.",
@@ -1581,7 +1581,7 @@
     "title": "Faturas vencidas",
     "difficulty": "Júnior",
     "database": "financas.db",
-    "story": "Olá, analista! Hoje você está no financeiro de uma empresa que começou a segunda-feira com cobrança, caixa apertado e um silêncio desconfortável quando alguém perguntou quem exatamente deve ser priorizado.\n\nNem toda fatura aberta é urgente, mas as vencidas antes do fechamento já estão pesando na previsão de caixa e deixando a diretoria com aquele otimismo de planilha que ninguém compra.\n\nA equipe precisa transformar uma fila confusa de cobrança em uma lista objetiva de ataque.\n\nSua missão é encontrar os maiores valores vencidos antes do corte. Porque em finanças atraso pequeno vira ruído, atraso grande vira reunião com café ruim.",
+    "story": "Olá, analista! Hoje você está no financeiro de uma imobiliária que começou a segunda-feira cheia de cobranças cobrança, caixa apertado e um silêncio desconfortável quando alguém perguntou o que exatamente deve ser priorizado.\n\nNem toda fatura aberta é urgente mas as vencidas antes do fechamento já estão pesando na previsão de caixa e deixando a diretoria com aquele otimismo de planilha que ninguém compra.\n\nA equipe precisa transformar uma fila confusa de cobrança em uma lista objetiva de ataque.\n\nSua missão é encontrar os maiores valores vencidos antes do corte. Porque em finanças atraso pequeno vira ruído, atraso grande vira reunião com café ruim.",
     "objective": "Sua tarefa: retorne cliente e valor em aberto das faturas vencidas antes de 2026-05-01. Ordene do maior valor para o menor e traga apenas os 5 primeiros resultados.",
     "objective_steps": [
       "Comece pelas faturas vencidas antes da data de corte.",
@@ -1629,7 +1629,7 @@
     "title": "Carteira em risco",
     "difficulty": "Pleno",
     "database": "financas.db",
-    "story": "Olá, analista! Hoje você foi chamado para um comitê de crédito onde todo mundo fala baixo, exceto a planilha de exposição, que está praticamente gritando.\n\nA área de risco não quer olhar apenas o valor contratado dos empréstimos, porque parte da carteira já foi paga e outra parte continua aberta com classificação preocupante.\n\nAntes de provisionar dinheiro demais ou de menos, o comitê precisa enxergar o saldo real ainda exposto por segmento.\n\nSua missão é calcular o saldo em risco líquido. Porque em finanças risco bruto assusta, mas risco líquido decide quanto dinheiro fica preso na gaveta.",
+    "story": "Olá, analista! Hoje você foi chamado para um comitê de crédito de uma grande fundo de investimentos onde todo mundo fala baixo e o silência toma conta da sala exceto a planilha de exposição, que está praticamente gritando.\n\nA área de risco não quer olhar apenas o valor contratado dos empréstimos porque parte da carteira já foi paga e outra parte continua aberta com classificação preocupante.\n\nAntes de provisionar dinheiro demais ou de menos o comitê precisa enxergar o saldo real ainda exposto por segmento.\n\nSua missão é calcular o saldo em risco líquido. Porque em finanças risco bruto assusta, mas risco líquido decide quanto dinheiro fica preso na gaveta.",
     "objective": "Sua tarefa: retorne o segmento e o saldo em risco dos empréstimos ativos com classificação alto ou crítico. Considere como saldo em risco o valor contratado menos os pagamentos realizados antes de 2026-05-01. Ordene do maior saldo para o menor.",
     "objective_steps": [
       "Comece pela carteira de empréstimos ativos em situação de maior risco.",
@@ -1670,7 +1670,7 @@
     "title": "Caixa por status",
     "difficulty": "Júnior",
     "database": "financas.db",
-    "story": "Olá, analista! Hoje você está no fechamento financeiro e a diretoria quer saber se o problema do caixa é atraso real, valor ainda aberto ou só aquele pânico saudável de fim de mês.\n\nAs faturas anteriores ao corte precisam ser agrupadas por status para mostrar onde o dinheiro está parado e onde a cobrança precisa ganhar prioridade.\n\nO time comercial trouxe otimismo, o financeiro trouxe boletos e alguém precisa trazer números que não dependam de entusiasmo.\n\nSua missão é resumir a carteira de faturas por status antes do fechamento. Porque em finanças esperança não entra no fluxo de caixa, mas vencimento entra.",
+    "story": "Olá, analista! Hoje você está no fechamento financeiro de uma grande empresa e a diretoria quer saber se o problema do caixa é atraso real, valor ainda aberto ou só aquele pânico saudável de fim de mês.\n\nAs faturas anteriores ao corte precisam ser agrupadas por status para mostrar onde o dinheiro está parado e onde a cobrança precisa ganhar prioridade.\n\nO time comercial trouxe otimismo, o financeiro trouxe boletos e alguém precisa trazer números que não dependam de entusiasmo.\n\nSua missão é resumir a carteira de faturas por status antes do fechamento. Porque em finanças esperança não entra no fluxo de caixa, mas vencimento entra.",
     "objective": "Sua tarefa: retorne status, quantidade de faturas e valor total das faturas com vencimento antes de 2026-05-01. Ordene do maior valor total para o menor.",
     "objective_steps": [
       "Comece pelas faturas com vencimento antes da data de corte.",
