@@ -798,10 +798,15 @@ h3 {
 .column-chips {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-start;
   gap: 7px;
 }
 
 .column-chip {
+  min-height: 24px;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
   padding: 5px 8px;
   border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 999px;
@@ -810,6 +815,7 @@ h3 {
   font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
   font-size: 0.76rem;
   line-height: 1;
+  overflow-wrap: anywhere;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transition:
     transform 0.14s ease,
@@ -1137,6 +1143,73 @@ td {
 
 tbody tr:hover td {
   background: rgba(20, 184, 166, 0.06);
+}
+
+.result-panel .table-wrap {
+  position: relative;
+  overflow: hidden auto;
+  border: 1px solid rgba(20, 184, 166, 0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(10, 25, 41, 0.96), rgba(7, 17, 29, 0.98)),
+    #07111d;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 0 28px rgba(20, 184, 166, 0.08),
+    0 12px 28px rgba(7, 17, 29, 0.16),
+    0 0 24px rgba(20, 184, 166, 0.08);
+}
+
+.result-panel .table-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(20, 184, 166, 0.52), rgba(14, 165, 233, 0.42), transparent);
+  opacity: 0.75;
+}
+
+.result-panel table {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #e9f7f5;
+  font-family: "JetBrains Mono", "Cascadia Code", Consolas, monospace;
+}
+
+.result-panel th,
+.result-panel td {
+  border-bottom: 1px solid rgba(20, 184, 166, 0.14);
+}
+
+.result-panel th {
+  background:
+    linear-gradient(135deg, rgba(8, 47, 73, 0.92), rgba(19, 78, 74, 0.78));
+  color: #f7ffff;
+  font-size: 0.74rem;
+  font-weight: 850;
+  letter-spacing: 0;
+}
+
+.result-panel td {
+  background: rgba(7, 17, 29, 0.52);
+  color: #dbeafe;
+  font-size: 0.82rem;
+}
+
+.result-panel tbody tr:nth-child(even) td {
+  background: rgba(15, 34, 52, 0.5);
+}
+
+.result-panel tbody tr:hover td {
+  background: rgba(20, 184, 166, 0.1);
+  color: #f7ffff;
+}
+
+.result-panel tbody tr:last-child td {
+  border-bottom: 0;
 }
 
 .error-banner {

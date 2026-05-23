@@ -1752,5 +1752,440 @@
       }
     },
     "hint": "Calcule pagamentos por empréstimo, derive saldo aberto e use RANK particionado por segmento para escolher o maior saldo."
+  },
+  {
+    "id": "saude_005",
+    "category": "Saúde",
+    "title": "Medicamentos em fuga",
+    "difficulty": "Pleno",
+    "database": "saude.db",
+    "story": "Olá, analista! Hoje você foi chamado para a farmácia central de uma rede hospitalar onde caixas somem do estoque com a mesma naturalidade com que gestores dizem que foi só uma variação operacional.\n\nA equipe assistencial reclama de falta de medicamentos, compras reclama de pedidos emergenciais e o financeiro já percebeu que reposição urgente costuma vir com preço de susto.\n\nAntes que alguém culpe o plantão, o fornecedor ou Mercúrio retrógrado, os dados precisam mostrar quais medicamentos estão sendo consumidos acima do ponto seguro.\n\nSua missão é identificar os medicamentos com estoque crítico após movimentações recentes. Porque em saúde remédio acaba rápido, desculpa acaba mais rápido ainda quando o SQL entra na sala.",
+    "objective": "Sua tarefa: retorne o medicamento, a unidade e o estoque atual considerando apenas medicamentos com estoque atual abaixo do estoque mínimo. Ordene do menor estoque atual para o maior. Em caso de empate, ordene por medicamento em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelo cadastro de medicamentos.",
+      "Compare o estoque atual com o estoque mínimo definido.",
+      "Mantenha apenas itens abaixo do limite seguro.",
+      "Organize a lista pelos casos mais críticos primeiro."
+    ],
+    "expected_sql": "SELECT medicamento, unidade, estoque_atual FROM medicamentos_estoque WHERE estoque_atual < estoque_minimo ORDER BY estoque_atual ASC, medicamento ASC;",
+    "expected_answer": {
+      "query": "SELECT medicamento, unidade, estoque_atual FROM medicamentos_estoque WHERE estoque_atual < estoque_minimo ORDER BY estoque_atual ASC, medicamento ASC;",
+      "result": {
+        "columns": [
+          "medicamento",
+          "unidade",
+          "estoque_atual"
+        ],
+        "rows": [
+          [
+            "Insulina NPH",
+            "Farmácia Central",
+            8
+          ],
+          [
+            "Heparina",
+            "UTI Adulto",
+            12
+          ],
+          [
+            "Amoxicilina",
+            "Pronto Atendimento",
+            18
+          ]
+        ]
+      }
+    },
+    "hint": "Compare estoque_atual com estoque_minimo e ordene pelos menores saldos."
+  },
+  {
+    "id": "tecnologia_005",
+    "category": "Tecnologia",
+    "title": "Nuvem torrando orçamento",
+    "difficulty": "Pleno",
+    "database": "tecnologia.db",
+    "story": "Olá, analista! Hoje você entrou na sala de FinOps de uma empresa de tecnologia onde a fatura da nuvem chegou com mais zeros do que o roadmap tinha promessas realistas.\n\nEngenharia jura que tudo é essencial, produto diz que crescimento custa caro e o CFO está encarando o dashboard como quem olha para uma impressora pegando fogo.\n\nAntes que desliguem ambiente errado em nome da economia, os dados precisam revelar quais times mais consumiram recursos no mês.\n\nSua missão é calcular o gasto de cloud por squad no último período fechado. Porque em tecnologia escalabilidade é linda até a AWS mandar o boleto.",
+    "objective": "Sua tarefa: retorne o squad e o custo total de cloud entre 2026-05-01 e 2026-06-01. Considere apenas recursos com status 'ativo'. Arredonde o custo total para 2 casas decimais. Ordene do maior custo para o menor.",
+    "objective_steps": [
+      "Comece pelos custos de cloud do período solicitado.",
+      "Mantenha apenas recursos ativos.",
+      "Agrupe o consumo por squad.",
+      "Some os valores e organize pelos maiores custos."
+    ],
+    "expected_sql": "SELECT squad, ROUND(SUM(custo_usd), 2) AS custo_total FROM cloud_custos WHERE status = 'ativo' AND data_referencia >= '2026-05-01' AND data_referencia < '2026-06-01' GROUP BY squad ORDER BY custo_total DESC;",
+    "expected_answer": {
+      "query": "SELECT squad, ROUND(SUM(custo_usd), 2) AS custo_total FROM cloud_custos WHERE status = 'ativo' AND data_referencia >= '2026-05-01' AND data_referencia < '2026-06-01' GROUP BY squad ORDER BY custo_total DESC;",
+      "result": {
+        "columns": [
+          "squad",
+          "custo_total"
+        ],
+        "rows": [
+          [
+            "Dados",
+            18420.75
+          ],
+          [
+            "Checkout",
+            13250.4
+          ],
+          [
+            "Core",
+            9780.0
+          ],
+          [
+            "Growth",
+            4210.9
+          ]
+        ]
+      }
+    },
+    "hint": "Filtre recursos ativos no período, agrupe por squad e some custo_usd."
+  },
+  {
+    "id": "esporte_005",
+    "category": "Esporte",
+    "title": "Contratos em alerta",
+    "difficulty": "Júnior",
+    "database": "esporte.db",
+    "story": "Olá, analista! Hoje você está no departamento de futebol de um clube onde a janela de transferências ainda nem abriu e os empresários já surgiram nos corredores como se fossem notificação push.\n\nA diretoria quer saber quais atletas estão perto do fim de contrato antes que uma renovação simples vire novela com coletiva, rumor e thread indignada.\n\nAntes que alguém diga que tinha tudo sob controle, os dados precisam mostrar quem exige prioridade imediata.\n\nSua missão é listar os atletas com contrato vencendo em breve. Porque em clube grande contrato ignorado vira manchete, e manchete raramente aceita cláusula de arrependimento.",
+    "objective": "Sua tarefa: retorne o atleta, a posição e a data de fim do contrato dos atletas com contrato encerrando entre 2026-06-01 e 2026-09-01. Ordene pela data de fim mais próxima e, em caso de empate, por atleta em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelo cadastro de contratos.",
+      "Filtre contratos dentro da janela de vencimento.",
+      "Retorne atleta, posição e data final.",
+      "Ordene pelos vencimentos mais urgentes."
+    ],
+    "expected_sql": "SELECT atleta, posicao, fim_contrato FROM contratos_atletas WHERE fim_contrato >= '2026-06-01' AND fim_contrato < '2026-09-01' ORDER BY fim_contrato ASC, atleta ASC;",
+    "expected_answer": {
+      "query": "SELECT atleta, posicao, fim_contrato FROM contratos_atletas WHERE fim_contrato >= '2026-06-01' AND fim_contrato < '2026-09-01' ORDER BY fim_contrato ASC, atleta ASC;",
+      "result": {
+        "columns": [
+          "atleta",
+          "posicao",
+          "fim_contrato"
+        ],
+        "rows": [
+          [
+            "Davi Prado",
+            "Goleiro",
+            "2026-06-30"
+          ],
+          [
+            "Lia Torres",
+            "Atacante",
+            "2026-07-15"
+          ],
+          [
+            "Caio Lima",
+            "Meia",
+            "2026-08-20"
+          ]
+        ]
+      }
+    },
+    "hint": "Filtre fim_contrato dentro da janela solicitada e ordene pela data."
+  },
+  {
+    "id": "industria_005",
+    "category": "Indústria",
+    "title": "Sensores denunciando calor",
+    "difficulty": "Pleno",
+    "database": "industria.db",
+    "story": "Olá, analista! Hoje você entrou na sala de manutenção preditiva de uma fábrica onde os sensores estão gritando em silêncio e a equipe está fingindo que alarme amarelo ainda é decoração de dashboard.\n\nAlgumas máquinas começaram a operar acima da temperatura recomendada, produção quer continuar rodando e manutenção quer evitar que uma linha inteira descubra o conceito de parada emergencial ao vivo.\n\nAntes que alguém espere sair fumaça para chamar isso de problema, os dados precisam apontar quais equipamentos estão mais quentes que o aceitável.\n\nSua missão é identificar as máquinas com maior temperatura média acima do limite. Porque na indústria sensor ignorado costuma virar manutenção com hora extra.",
+    "objective": "Sua tarefa: retorne a máquina, o setor e a temperatura média entre 2026-05-01 e 2026-06-01, considerando apenas leituras acima de 80 graus. Arredonde a média para 2 casas decimais. Ordene da maior temperatura média para a menor.",
+    "objective_steps": [
+      "Comece pelas leituras de sensores no período.",
+      "Mantenha apenas temperaturas acima do limite.",
+      "Relacione cada leitura à máquina e ao setor.",
+      "Calcule a média de temperatura por equipamento."
+    ],
+    "expected_sql": "SELECT m.nome AS maquina, m.setor, ROUND(AVG(l.temperatura_c), 2) AS temperatura_media FROM maquinas m JOIN leituras_sensores l ON l.maquina_id = m.id WHERE l.data_leitura >= '2026-05-01' AND l.data_leitura < '2026-06-01' AND l.temperatura_c > 80 GROUP BY m.nome, m.setor ORDER BY temperatura_media DESC;",
+    "expected_answer": {
+      "query": "SELECT m.nome AS maquina, m.setor, ROUND(AVG(l.temperatura_c), 2) AS temperatura_media FROM maquinas m JOIN leituras_sensores l ON l.maquina_id = m.id WHERE l.data_leitura >= '2026-05-01' AND l.data_leitura < '2026-06-01' AND l.temperatura_c > 80 GROUP BY m.nome, m.setor ORDER BY temperatura_media DESC;",
+      "result": {
+        "columns": [
+          "maquina",
+          "setor",
+          "temperatura_media"
+        ],
+        "rows": [
+          [
+            "Forno 02",
+            "Tratamento térmico",
+            91.5
+          ],
+          [
+            "Prensa 04",
+            "Estamparia",
+            86.75
+          ],
+          [
+            "Esteira 01",
+            "Montagem",
+            82.2
+          ]
+        ]
+      }
+    },
+    "hint": "Junte máquinas com leituras, filtre o período e considere apenas temperaturas acima de 80."
+  },
+  {
+    "id": "educacao_005",
+    "category": "Educação",
+    "title": "Bolsas sob revisão",
+    "difficulty": "Pleno",
+    "database": "educacao.db",
+    "story": "Olá, analista! Hoje você está na comissão de bolsas de uma instituição de ensino onde todo mundo fala em permanência estudantil, mas o orçamento está fazendo cara de quem não vai passar de ano.\n\nA coordenação precisa revisar bolsas ativas sem prejudicar quem depende delas, enquanto a diretoria pede critérios objetivos e menos frases bonitas no slide.\n\nAntes que a decisão vire disputa de simpatia, os dados precisam mostrar quais cursos concentram maior valor mensal de bolsas ativas.\n\nSua missão é medir o impacto financeiro por curso. Porque em educação decisão sensível sem evidência vira reunião longa, ata confusa e café frio.",
+    "objective": "Sua tarefa: retorne o curso e o valor total mensal de bolsas ativas. Considere apenas bolsas com status 'ativa'. Ordene do maior valor total para o menor. Em caso de empate, ordene por curso em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas bolsas cadastradas.",
+      "Mantenha apenas bolsas ativas.",
+      "Agrupe os valores por curso.",
+      "Some o impacto mensal de cada curso."
+    ],
+    "expected_sql": "SELECT curso, ROUND(SUM(valor_mensal), 2) AS total_bolsas FROM bolsas_estudo WHERE status = 'ativa' GROUP BY curso ORDER BY total_bolsas DESC, curso ASC;",
+    "expected_answer": {
+      "query": "SELECT curso, ROUND(SUM(valor_mensal), 2) AS total_bolsas FROM bolsas_estudo WHERE status = 'ativa' GROUP BY curso ORDER BY total_bolsas DESC, curso ASC;",
+      "result": {
+        "columns": [
+          "curso",
+          "total_bolsas"
+        ],
+        "rows": [
+          [
+            "Engenharia de Software",
+            4200.0
+          ],
+          [
+            "Administração",
+            3150.5
+          ],
+          [
+            "Design",
+            2800.0
+          ],
+          [
+            "Pedagogia",
+            1900.0
+          ]
+        ]
+      }
+    },
+    "hint": "Filtre status ativa, agrupe por curso e some valor_mensal."
+  },
+  {
+    "id": "arte_005",
+    "category": "Arte",
+    "title": "Restaurações atrasadas",
+    "difficulty": "Júnior",
+    "database": "arte.db",
+    "story": "Olá, analista! Hoje você está no laboratório de restauração de um museu onde obras históricas aguardam cuidado, curadores aguardam cronograma e patrocinadores aguardam uma explicação que não pareça verniz retórico.\n\nAlgumas restaurações passaram do prazo prometido, a exposição está chegando e ninguém quer inaugurar uma mostra chamada talvez fique pronto.\n\nAntes que o atraso seja tratado como detalhe artístico, os dados precisam mostrar quais obras estão comprometendo o calendário.\n\nSua missão é listar as restaurações em atraso. Porque em arte o tempo pode ser subjetivo, mas prazo vencido continua bem objetivo.",
+    "objective": "Sua tarefa: retorne a obra, o restaurador e os dias de atraso das restaurações com status 'em andamento' e prazo menor que '2026-06-01'. Ordene do maior atraso para o menor.",
+    "objective_steps": [
+      "Comece pelas restaurações em andamento.",
+      "Compare o prazo com a data de referência.",
+      "Calcule os dias de atraso.",
+      "Organize pelos maiores atrasos."
+    ],
+    "expected_sql": "SELECT obra, restaurador, CAST(julianday('2026-06-01') - julianday(prazo_entrega) AS INTEGER) AS dias_atraso FROM restauracoes WHERE status = 'em andamento' AND prazo_entrega < '2026-06-01' ORDER BY dias_atraso DESC;",
+    "expected_answer": {
+      "query": "SELECT obra, restaurador, CAST(julianday('2026-06-01') - julianday(prazo_entrega) AS INTEGER) AS dias_atraso FROM restauracoes WHERE status = 'em andamento' AND prazo_entrega < '2026-06-01' ORDER BY dias_atraso DESC;",
+      "result": {
+        "columns": [
+          "obra",
+          "restaurador",
+          "dias_atraso"
+        ],
+        "rows": [
+          [
+            "Noite de Bronze",
+            "Clara Nunes",
+            17
+          ],
+          [
+            "Mar em Cinzas",
+            "Otto Vieira",
+            9
+          ],
+          [
+            "Figura Partida",
+            "Maya Castro",
+            3
+          ]
+        ]
+      }
+    },
+    "hint": "Use julianday para calcular a diferença entre a data de referência e o prazo_entrega."
+  },
+  {
+    "id": "agricultura_005",
+    "category": "Agricultura",
+    "title": "Pragas no radar",
+    "difficulty": "Pleno",
+    "database": "agricultura.db",
+    "story": "Olá, analista! Hoje você está em uma fazenda onde o agrônomo trouxe fotos de folhas mordidas, o gerente trouxe preocupação e o produtor trouxe aquela expressão de quem já ouviu a palavra prejuízo antes do café.\n\nAs inspeções de campo indicam focos de pragas em alguns talhões, mas tratar tudo ao mesmo tempo custa caro e pode desperdiçar defensivo onde o problema ainda é pequeno.\n\nAntes que a pulverização vire resposta universal, os dados precisam mostrar onde a infestação passou do limite aceitável.\n\nSua missão é encontrar os talhões com maior severidade média de pragas. Porque no agro bicho pequeno também sabe abrir rombo grande no orçamento.",
+    "objective": "Sua tarefa: retorne o talhão, a praga e a severidade média entre 2026-04-01 e 2026-05-01, considerando apenas combinações com severidade média maior ou igual a 3. Arredonde para 2 casas decimais. Ordene da maior severidade média para a menor.",
+    "objective_steps": [
+      "Comece pelas inspeções no período.",
+      "Agrupe os registros por talhão e praga.",
+      "Calcule a severidade média.",
+      "Mantenha apenas casos acima do limite de ação."
+    ],
+    "expected_sql": "SELECT talhao, praga, ROUND(AVG(severidade), 2) AS severidade_media FROM inspecoes_pragas WHERE data_inspecao >= '2026-04-01' AND data_inspecao < '2026-05-01' GROUP BY talhao, praga HAVING AVG(severidade) >= 3 ORDER BY severidade_media DESC;",
+    "expected_answer": {
+      "query": "SELECT talhao, praga, ROUND(AVG(severidade), 2) AS severidade_media FROM inspecoes_pragas WHERE data_inspecao >= '2026-04-01' AND data_inspecao < '2026-05-01' GROUP BY talhao, praga HAVING AVG(severidade) >= 3 ORDER BY severidade_media DESC;",
+      "result": {
+        "columns": [
+          "talhao",
+          "praga",
+          "severidade_media"
+        ],
+        "rows": [
+          [
+            "T03",
+            "Lagarta-do-cartucho",
+            4.5
+          ],
+          [
+            "T01",
+            "Percevejo",
+            3.75
+          ],
+          [
+            "T05",
+            "Ferrugem",
+            3.0
+          ]
+        ]
+      }
+    },
+    "hint": "Agrupe por talhão e praga, calcule AVG de severidade e use HAVING para o corte mínimo."
+  },
+  {
+    "id": "logistica_005",
+    "category": "Logística",
+    "title": "Frota bebendo demais",
+    "difficulty": "Pleno",
+    "database": "logistica.db",
+    "story": "Olá, analista! Hoje você está na garagem de uma transportadora onde os caminhões descansam, os motoristas reclamam do trânsito e o financeiro descobriu que combustível está desaparecendo mais rápido que vaga perto da doca.\n\nA operação precisa saber quais veículos estão consumindo acima do padrão antes que manutenção, rota e direção econômica comecem a apontar dedos em círculo.\n\nAntes que alguém chame tudo de variação normal, os dados precisam calcular quem está rodando com pior eficiência.\n\nSua missão é medir o consumo médio por veículo. Porque na logística caminhão pode até ser pesado, mas desculpa sem dado pesa mais.",
+    "objective": "Sua tarefa: retorne a placa e o consumo em litros por 100 km entre 2026-05-01 e 2026-06-01. Considere apenas veículos com distância total maior que 0. Arredonde para 2 casas decimais. Ordene do maior consumo para o menor.",
+    "objective_steps": [
+      "Comece pelos abastecimentos no período.",
+      "Agrupe litros e quilômetros por veículo.",
+      "Calcule litros por 100 km.",
+      "Mantenha apenas veículos com quilometragem válida."
+    ],
+    "expected_sql": "SELECT placa, ROUND(SUM(litros) * 100.0 / SUM(km_rodados), 2) AS litros_100km FROM abastecimentos_frota WHERE data_abastecimento >= '2026-05-01' AND data_abastecimento < '2026-06-01' GROUP BY placa HAVING SUM(km_rodados) > 0 ORDER BY litros_100km DESC;",
+    "expected_answer": {
+      "query": "SELECT placa, ROUND(SUM(litros) * 100.0 / SUM(km_rodados), 2) AS litros_100km FROM abastecimentos_frota WHERE data_abastecimento >= '2026-05-01' AND data_abastecimento < '2026-06-01' GROUP BY placa HAVING SUM(km_rodados) > 0 ORDER BY litros_100km DESC;",
+      "result": {
+        "columns": [
+          "placa",
+          "litros_100km"
+        ],
+        "rows": [
+          [
+            "TRK-2045",
+            34.62
+          ],
+          [
+            "TRK-1188",
+            29.41
+          ],
+          [
+            "TRK-7720",
+            24.5
+          ]
+        ]
+      }
+    },
+    "hint": "Some litros e km_rodados por placa, depois calcule litros a cada 100 km."
+  },
+  {
+    "id": "games_005",
+    "category": "Games",
+    "title": "Crashes por dispositivo",
+    "difficulty": "Pleno",
+    "database": "games.db",
+    "story": "Olá, analista! Hoje você está no estúdio de um jogo mobile onde a nota da loja caiu, o suporte está soterrado de prints e alguém do marketing perguntou se crash também conta como mecânica surpresa.\n\nOs jogadores estão relatando fechamentos inesperados, mas o time precisa descobrir se o problema está espalhado ou concentrado em alguns dispositivos específicos.\n\nAntes que o patch mire no escuro e acerte só a esperança, os dados precisam mostrar onde a instabilidade está mais forte.\n\nSua missão é calcular a taxa de crash por modelo de dispositivo. Porque em games bug raro é história triste; bug frequente é review de uma estrela.",
+    "objective": "Sua tarefa: retorne o dispositivo, o total de sessões e a taxa de crash percentual entre 2026-05-01 e 2026-06-01, considerando apenas dispositivos com pelo menos 3 sessões. Arredonde a taxa para 2 casas decimais. Ordene da maior taxa de crash para a menor e, em caso de empate, por dispositivo em ordem alfabética.",
+    "objective_steps": [
+      "Comece pelas sessões do período.",
+      "Agrupe os registros por dispositivo.",
+      "Conte sessões totais e calcule a média de crash.",
+      "Mantenha apenas dispositivos com volume mínimo."
+    ],
+    "expected_sql": "SELECT dispositivo, COUNT(*) AS total_sessoes, ROUND(AVG(crash) * 100, 2) AS taxa_crash FROM sessoes_dispositivo WHERE inicio >= '2026-05-01' AND inicio < '2026-06-01' GROUP BY dispositivo HAVING COUNT(*) >= 3 ORDER BY taxa_crash DESC, dispositivo ASC;",
+    "expected_answer": {
+      "query": "SELECT dispositivo, COUNT(*) AS total_sessoes, ROUND(AVG(crash) * 100, 2) AS taxa_crash FROM sessoes_dispositivo WHERE inicio >= '2026-05-01' AND inicio < '2026-06-01' GROUP BY dispositivo HAVING COUNT(*) >= 3 ORDER BY taxa_crash DESC, dispositivo ASC;",
+      "result": {
+        "columns": [
+          "dispositivo",
+          "total_sessoes",
+          "taxa_crash"
+        ],
+        "rows": [
+          [
+            "Galaxy A32",
+            4,
+            75.0
+          ],
+          [
+            "Moto G Power",
+            5,
+            40.0
+          ],
+          [
+            "iPhone 12",
+            4,
+            25.0
+          ]
+        ]
+      }
+    },
+    "hint": "Use AVG em crash, já que 1 representa crash e 0 representa sessão sem crash."
+  },
+  {
+    "id": "financas_005",
+    "category": "Finanças",
+    "title": "Cartões suspeitos",
+    "difficulty": "Sênior",
+    "database": "financas.db",
+    "story": "Olá, analista! Hoje você entrou na central antifraude de uma fintech onde alertas chegaram antes do café e o time jurídico já está praticando frases cautelosas para e-mails delicados.\n\nAlguns cartões começaram a acumular transações negadas em sequência, clientes estão reclamando de bloqueios e criminosos, como sempre, não preencheram formulário avisando que iam testar limites.\n\nAntes que segurança vire paranoia ou permissividade vire prejuízo, os dados precisam revelar quais cartões passaram do comportamento normal.\n\nSua missão é identificar cartões com valor negado acima da média do grupo no período analisado. Porque em finanças fraude gosta de pressa, mas SQL gosta de evidência.",
+    "objective": "Sua tarefa: retorne cartão, cliente, valor total negado e valor acima da média entre 2026-05-01 e 2026-06-01, considerando apenas cartões com valor total negado acima da média dos cartões no período. Arredonde valores para 2 casas decimais. Ordene pelo maior valor acima da média.",
+    "objective_steps": [
+      "Comece pelas transações negadas no período.",
+      "Some o valor negado por cartão e cliente.",
+      "Calcule a média de valor negado entre cartões.",
+      "Mantenha apenas cartões acima da média.",
+      "Ordene pela diferença em relação à média."
+    ],
+    "expected_sql": "WITH negados_cartao AS (SELECT cartao, cliente, SUM(valor) AS valor_negado FROM transacoes_cartao WHERE status = 'negada' AND data_transacao >= '2026-05-01' AND data_transacao < '2026-06-01' GROUP BY cartao, cliente), media_negados AS (SELECT AVG(valor_negado) AS media_valor FROM negados_cartao) SELECT cartao, cliente, ROUND(valor_negado, 2) AS valor_negado, ROUND(valor_negado - media_valor, 2) AS acima_da_media FROM negados_cartao CROSS JOIN media_negados WHERE valor_negado > media_valor ORDER BY acima_da_media DESC;",
+    "expected_answer": {
+      "query": "WITH negados_cartao AS (SELECT cartao, cliente, SUM(valor) AS valor_negado FROM transacoes_cartao WHERE status = 'negada' AND data_transacao >= '2026-05-01' AND data_transacao < '2026-06-01' GROUP BY cartao, cliente), media_negados AS (SELECT AVG(valor_negado) AS media_valor FROM negados_cartao) SELECT cartao, cliente, ROUND(valor_negado, 2) AS valor_negado, ROUND(valor_negado - media_valor, 2) AS acima_da_media FROM negados_cartao CROSS JOIN media_negados WHERE valor_negado > media_valor ORDER BY acima_da_media DESC;",
+      "result": {
+        "columns": [
+          "cartao",
+          "cliente",
+          "valor_negado",
+          "acima_da_media"
+        ],
+        "rows": [
+          [
+            "**** 8842",
+            "Marina Costa",
+            9200.0,
+            4775.13
+          ],
+          [
+            "**** 1920",
+            "Rafael Nunes",
+            6100.5,
+            1675.63
+          ]
+        ]
+      }
+    },
+    "hint": "Use uma CTE para somar transações negadas por cartão e outra para calcular a média do grupo."
   }
 ]
