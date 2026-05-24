@@ -2198,6 +2198,58 @@ tbody tr:hover td {
   }
 }
 
+/* Performance pass: keep the cyberpunk look without continuous paint-heavy effects. */
+.ambient-glows,
+.ambient-particles,
+.ambient-sql-tokens,
+.ambient-scanline {
+  display: none;
+}
+
+.game-hud,
+.panel,
+.loading-panel,
+.modal-backdrop {
+  backdrop-filter: none;
+}
+
+.game-hud::before,
+.panel::after,
+.loading-panel::after,
+.modal::after,
+.help-query-panel::after {
+  animation: none;
+  opacity: 0.12;
+  transform: none;
+  will-change: auto;
+}
+
+.hud-stat,
+.scenario-meta span,
+.quiz-result-badge,
+.result-icon,
+.help-modal-icon,
+.icon-button,
+.title-icon,
+.schema-title-icon,
+.panel-title svg,
+.objective-list svg,
+.table-name svg,
+.help-button svg,
+.danger-help-button svg,
+.query-hint svg,
+.hud-stat svg,
+.heart,
+.intro-data-animation::before,
+.intro-data-animation span {
+  animation: none;
+  will-change: auto;
+}
+
+.party-burst span {
+  animation-iteration-count: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
