@@ -11,6 +11,9 @@ from app.schemas import (
 )
 from app.services.scenario_service import (
     get_categories,
+    get_career_intro,
+    get_career_arc_intro,
+    get_career_round,
     get_database_path,
     get_expected_answer_lines,
     get_public_scenario,
@@ -33,6 +36,27 @@ def categories() -> list[str]:
 @router.get("/round")
 def round_data() -> dict:
     return get_public_scenario(get_random_scenario())
+
+
+@router.get("/career/intro")
+def career_intro() -> dict[str, str]:
+    return get_career_intro()
+
+
+@router.get("/career/intro/{arc_index}")
+def career_arc_intro(arc_index: int) -> dict[str, str]:
+    try:
+        return get_career_arc_intro(arc_index)
+    except IndexError as exc:
+        raise HTTPException(status_code=404, detail="Arco de carreira nÃ£o encontrado.") from exc
+
+
+@router.get("/career/round/{step}")
+def career_round(step: int) -> dict:
+    try:
+        return get_career_round(step)
+    except IndexError as exc:
+        raise HTTPException(status_code=404, detail="Etapa de carreira nÃ£o encontrada.") from exc
 
 
 @router.get("/scenarios/{scenario_id}/schema")
@@ -62,13 +86,18 @@ def assist_line(scenario_id: str, line_index: int) -> AssistLineResult:
 
 
 @router.get("/round/{scenario_id}/sql-help", response_model=SqlHelpQuestion)
-def sql_help_question(scenario_id: str) -> SqlHelpQuestion:
+def sql_help_question(scenario_id: str, exclude_question_ids: str | None = None) -> SqlHelpQuestion:
     try:
         scenario = get_scenario(scenario_id)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Cenário não encontrado.") from exc
 
-    return SqlHelpQuestion(**get_sql_help_question(scenario))
+    excluded_ids = {
+        question_id.strip()
+        for question_id in (exclude_question_ids or "").split(",")
+        if question_id.strip()
+    }
+    return SqlHelpQuestion(**get_sql_help_question(scenario, excluded_ids))
 
 
 @router.post("/round/{scenario_id}/sql-help", response_model=SqlHelpAnswerResult)

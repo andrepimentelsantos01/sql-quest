@@ -45,9 +45,11 @@ function ResultContent({ result, onClose, onNextRound }) {
         <button type="button" className="ghost-button" onClick={onClose}>
           Ver resultado
         </button>
-        <button type="button" className="primary-button" onClick={onNextRound}>
-          Próxima missão
-        </button>
+        {result.correct ? (
+          <button type="button" className="primary-button" onClick={onNextRound}>
+            Próxima missão
+          </button>
+        ) : null}
       </div>
     </>
   );

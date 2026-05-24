@@ -1,7 +1,7 @@
 import { CheckCircle2, CheckCircle, Target, XCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
-export default function MissionBriefing({ scenario, onAcceptTask, onRejectTask, accepted, loading }) {
+export default function MissionBriefing({ scenario, onAcceptTask, onRejectTask, accepted, loading, rejectLabel = "Recusar Task" }) {
   return (
     <motion.section
       className="panel mission-briefing"
@@ -34,10 +34,12 @@ export default function MissionBriefing({ scenario, onAcceptTask, onRejectTask, 
               <CheckCircle size={18} />
               Aceitar Task
             </button>
-            <button type="button" className="reject-task-button" onClick={onRejectTask} disabled={loading}>
-              <XCircle size={18} />
-              {loading ? "Buscando task..." : "Recusar Task"}
-            </button>
+            {onRejectTask ? (
+              <button type="button" className="reject-task-button" onClick={onRejectTask} disabled={loading}>
+                <XCircle size={18} />
+                {loading ? "Buscando task..." : rejectLabel}
+              </button>
+            ) : null}
           </motion.div>
         ) : null}
       </AnimatePresence>

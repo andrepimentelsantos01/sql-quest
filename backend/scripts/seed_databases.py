@@ -570,6 +570,538 @@ def seed_financas() -> None:
     connection.close()
 
 
+def seed_carreira_padaria() -> None:
+    connection = reset_database("carreira_padaria.db")
+    connection.executescript(
+        """
+        CREATE TABLE padaria_vendas (
+            id INTEGER PRIMARY KEY,
+            produto TEXT NOT NULL,
+            quantidade INTEGER NOT NULL,
+            preco_unitario REAL NOT NULL,
+            data_venda TEXT NOT NULL
+        );
+
+        CREATE TABLE padaria_pedidos (
+            id INTEGER PRIMARY KEY,
+            cliente TEXT NOT NULL,
+            data_pedido TEXT NOT NULL,
+            hora_pedido TEXT NOT NULL,
+            valor_total REAL NOT NULL
+        );
+
+        CREATE TABLE padaria_estoque (
+            id INTEGER PRIMARY KEY,
+            ingrediente TEXT NOT NULL,
+            unidade TEXT NOT NULL,
+            quantidade_atual REAL NOT NULL,
+            quantidade_minima REAL NOT NULL
+        );
+
+        CREATE TABLE rede_vendas (
+            id INTEGER PRIMARY KEY,
+            unidade TEXT NOT NULL,
+            produto TEXT NOT NULL,
+            quantidade INTEGER NOT NULL,
+            preco_unitario REAL NOT NULL,
+            data_venda TEXT NOT NULL
+        );
+
+        CREATE TABLE rede_pedidos (
+            id INTEGER PRIMARY KEY,
+            unidade TEXT NOT NULL,
+            turno TEXT NOT NULL,
+            cliente TEXT NOT NULL,
+            data_pedido TEXT NOT NULL
+        );
+
+        CREATE TABLE transferencias_unidades (
+            id INTEGER PRIMARY KEY,
+            item TEXT NOT NULL,
+            origem TEXT NOT NULL,
+            destino TEXT NOT NULL,
+            dias_atraso INTEGER NOT NULL
+        );
+
+        CREATE TABLE estoque_unidades (
+            id INTEGER PRIMARY KEY,
+            unidade TEXT NOT NULL,
+            item TEXT NOT NULL,
+            quantidade_atual REAL NOT NULL,
+            quantidade_minima REAL NOT NULL
+        );
+
+        CREATE TABLE delivery_pedidos (
+            id INTEGER PRIMARY KEY,
+            bairro TEXT NOT NULL,
+            status_entrega TEXT NOT NULL,
+            minutos_atraso INTEGER NOT NULL,
+            data_pedido TEXT NOT NULL
+        );
+
+        CREATE TABLE desperdicio_diario (
+            id INTEGER PRIMARY KEY,
+            produto TEXT NOT NULL,
+            quantidade_descartada INTEGER NOT NULL,
+            data_registro TEXT NOT NULL
+        );
+
+        CREATE TABLE fornecedores_entregas (
+            id INTEGER PRIMARY KEY,
+            fornecedor TEXT NOT NULL,
+            status_entrega TEXT NOT NULL,
+            data_entrega TEXT NOT NULL
+        );
+
+        CREATE TABLE encomendas_corporativas (
+            id INTEGER PRIMARY KEY,
+            cliente_empresa TEXT NOT NULL,
+            valor_total REAL NOT NULL,
+            data_encomenda TEXT NOT NULL
+        );
+
+        CREATE TABLE avaliacoes_clientes (
+            id INTEGER PRIMARY KEY,
+            unidade TEXT NOT NULL,
+            nota REAL NOT NULL,
+            data_avaliacao TEXT NOT NULL
+        );
+
+        CREATE TABLE atendimentos_unidades (
+            id INTEGER PRIMARY KEY,
+            unidade TEXT NOT NULL,
+            tempo_atendimento_min REAL NOT NULL,
+            data_atendimento TEXT NOT NULL
+        );
+        """
+    )
+    insert_many(
+        connection,
+        "padaria_vendas",
+        ("produto", "quantidade", "preco_unitario", "data_venda"),
+        [
+            ("Pão francês", 80, 0.90, "2026-05-02"),
+            ("Pão francês", 70, 0.90, "2026-05-03"),
+            ("Pão francês", 60, 0.90, "2026-05-04"),
+            ("Bolo de cenoura", 30, 18.00, "2026-05-02"),
+            ("Bolo de cenoura", 9, 18.00, "2026-05-04"),
+            ("Pão de queijo", 50, 2.80, "2026-05-02"),
+            ("Pão de queijo", 10, 2.80, "2026-05-03"),
+            ("Croissant", 18, 8.50, "2026-05-03"),
+            ("Croissant", 3, 8.50, "2026-05-04"),
+            ("Café coado", 36, 4.00, "2026-05-02"),
+        ],
+    )
+    insert_many(
+        connection,
+        "padaria_pedidos",
+        ("cliente", "data_pedido", "hora_pedido", "valor_total"),
+        [
+            ("Dona Marta", "2026-05-02", "07:00", 18.90),
+            ("Seu Paulo", "2026-05-02", "07:00", 12.50),
+            ("Ana Clara", "2026-05-02", "07:00", 9.20),
+            ("Bruno Lima", "2026-05-02", "07:00", 15.00),
+            ("Dona Marta", "2026-05-02", "08:00", 22.00),
+            ("Carla Nunes", "2026-05-02", "08:00", 11.40),
+            ("Seu Paulo", "2026-05-03", "08:00", 10.80),
+            ("Dona Marta", "2026-05-03", "09:00", 16.30),
+            ("Bruno Lima", "2026-05-03", "09:00", 8.90),
+            ("Carla Nunes", "2026-05-03", "06:00", 7.50),
+            ("Dona Marta", "2026-05-03", "11:00", 30.00),
+            ("Seu Paulo", "2026-05-04", "15:00", 26.00),
+            ("Ana Clara", "2026-05-04", "17:00", 19.90),
+        ],
+    )
+    insert_many(
+        connection,
+        "padaria_estoque",
+        ("ingrediente", "unidade", "quantidade_atual", "quantidade_minima"),
+        [
+            ("Fermento biológico", "kg", 4.0, 10.0),
+            ("Farinha de trigo", "kg", 12.0, 25.0),
+            ("Manteiga", "kg", 15.0, 20.0),
+            ("Açúcar", "kg", 35.0, 20.0),
+            ("Chocolate granulado", "kg", 8.0, 8.0),
+        ],
+    )
+    insert_many(
+        connection,
+        "rede_vendas",
+        ("unidade", "produto", "quantidade", "preco_unitario", "data_venda"),
+        [
+            ("Matriz", "Pão francês", 120, 0.90, "2026-06-02"),
+            ("Matriz", "Bolo de cenoura", 20, 18.00, "2026-06-02"),
+            ("Matriz", "Café coado", 25, 4.00, "2026-06-02"),
+            ("Filial", "Pão de queijo", 70, 2.80, "2026-06-02"),
+            ("Filial", "Bolo de cenoura", 25, 18.00, "2026-06-02"),
+            ("Filial", "Café coado", 55, 2.30, "2026-06-02"),
+        ],
+    )
+    insert_many(
+        connection,
+        "rede_pedidos",
+        ("unidade", "turno", "cliente", "data_pedido"),
+        [
+            ("Matriz", "manhã", "Dona Marta", "2026-06-03"),
+            ("Matriz", "manhã", "Seu Paulo", "2026-06-03"),
+            ("Matriz", "manhã", "Ana Clara", "2026-06-03"),
+            ("Matriz", "manhã", "Carla Nunes", "2026-06-03"),
+            ("Matriz", "tarde", "Bruno Lima", "2026-06-03"),
+            ("Matriz", "tarde", "Eva Rocha", "2026-06-03"),
+            ("Filial", "manhã", "Lia Prado", "2026-06-03"),
+            ("Filial", "manhã", "Rafa Dias", "2026-06-03"),
+            ("Filial", "manhã", "Otto Vieira", "2026-06-03"),
+            ("Filial", "tarde", "Nina Lopes", "2026-06-03"),
+            ("Filial", "tarde", "João Mendes", "2026-06-03"),
+            ("Filial", "tarde", "Bia Rocha", "2026-06-03"),
+            ("Filial", "tarde", "Lara Dias", "2026-06-03"),
+            ("Filial", "tarde", "Caio Lima", "2026-06-03"),
+        ],
+    )
+    insert_many(
+        connection,
+        "transferencias_unidades",
+        ("item", "origem", "destino", "dias_atraso"),
+        [
+            ("Farinha de trigo", "Matriz", "Filial", 3),
+            ("Embalagens", "Matriz", "Filial", 2),
+            ("Fermento biológico", "Matriz", "Filial", 1),
+            ("Açúcar", "Matriz", "Filial", 0),
+            ("Café", "Filial", "Matriz", 0),
+        ],
+    )
+    insert_many(
+        connection,
+        "estoque_unidades",
+        ("unidade", "item", "quantidade_atual", "quantidade_minima"),
+        [
+            ("Filial", "Fermento biológico", 3.0, 8.0),
+            ("Filial", "Farinha de trigo", 14.0, 25.0),
+            ("Filial", "Açúcar", 26.0, 20.0),
+            ("Matriz", "Embalagens", 18.0, 30.0),
+            ("Matriz", "Farinha de trigo", 40.0, 25.0),
+        ],
+    )
+    insert_many(
+        connection,
+        "delivery_pedidos",
+        ("bairro", "status_entrega", "minutos_atraso", "data_pedido"),
+        [
+            ("Centro", "atrasada", 18, "2026-07-02"),
+            ("Centro", "atrasada", 12, "2026-07-04"),
+            ("Centro", "atrasada", 7, "2026-07-08"),
+            ("Jardim Norte", "atrasada", 21, "2026-07-03"),
+            ("Jardim Norte", "atrasada", 9, "2026-07-07"),
+            ("Vila Clara", "atrasada", 14, "2026-07-05"),
+            ("Centro", "no prazo", 0, "2026-07-09"),
+            ("Vila Clara", "no prazo", 0, "2026-07-10"),
+        ],
+    )
+    insert_many(
+        connection,
+        "desperdicio_diario",
+        ("produto", "quantidade_descartada", "data_registro"),
+        [
+            ("Pão francês", 10, "2026-07-01"),
+            ("Pão francês", 8, "2026-07-02"),
+            ("Croissant", 7, "2026-07-01"),
+            ("Croissant", 5, "2026-07-03"),
+            ("Bolo de cenoura", 4, "2026-07-01"),
+            ("Bolo de cenoura", 5, "2026-07-04"),
+            ("Pão de queijo", 5, "2026-07-02"),
+        ],
+    )
+    insert_many(
+        connection,
+        "fornecedores_entregas",
+        ("fornecedor", "status_entrega", "data_entrega"),
+        [
+            ("Moinho Aurora", "atrasada", "2026-07-01"),
+            ("Moinho Aurora", "incompleta", "2026-07-08"),
+            ("Moinho Aurora", "atrasada", "2026-07-15"),
+            ("Laticínios Boa Vista", "atrasada", "2026-07-03"),
+            ("Laticínios Boa Vista", "atrasada", "2026-07-12"),
+            ("Embalagens Sul", "incompleta", "2026-07-05"),
+            ("Moinho Aurora", "ok", "2026-07-20"),
+            ("Embalagens Sul", "ok", "2026-07-22"),
+        ],
+    )
+    insert_many(
+        connection,
+        "encomendas_corporativas",
+        ("cliente_empresa", "valor_total", "data_encomenda"),
+        [
+            ("Escritório Alameda", 1200.00, "2026-07-02"),
+            ("Escritório Alameda", 1200.00, "2026-07-16"),
+            ("Clínica Horizonte", 900.50, "2026-07-04"),
+            ("Clínica Horizonte", 850.00, "2026-07-18"),
+            ("Escola Girassol", 1280.00, "2026-07-10"),
+            ("Academia Pulse", 900.00, "2026-07-12"),
+            ("Studio Norte", 620.00, "2026-07-14"),
+        ],
+    )
+    insert_many(
+        connection,
+        "avaliacoes_clientes",
+        ("unidade", "nota", "data_avaliacao"),
+        [
+            ("Matriz", 5.0, "2026-07-01"),
+            ("Matriz", 4.0, "2026-07-02"),
+            ("Matriz", 4.0, "2026-07-03"),
+            ("Matriz", 5.0, "2026-07-04"),
+            ("Matriz", 4.0, "2026-07-05"),
+            ("Filial", 3.0, "2026-07-01"),
+            ("Filial", 4.0, "2026-07-02"),
+            ("Filial", 4.0, "2026-07-03"),
+            ("Filial", 3.0, "2026-07-04"),
+            ("Filial", 4.0, "2026-07-05"),
+        ],
+    )
+    insert_many(
+        connection,
+        "atendimentos_unidades",
+        ("unidade", "tempo_atendimento_min", "data_atendimento"),
+        [
+            ("Matriz", 5.0, "2026-08-01"),
+            ("Matriz", 6.0, "2026-08-01"),
+            ("Matriz", 4.5, "2026-08-02"),
+            ("Matriz", 6.5, "2026-08-02"),
+            ("Filial", 9.0, "2026-08-01"),
+            ("Filial", 8.5, "2026-08-01"),
+            ("Filial", 10.0, "2026-08-02"),
+            ("Filial", 7.5, "2026-08-02"),
+        ],
+    )
+    connection.commit()
+    connection.close()
+
+
+def seed_mercado_pleno() -> None:
+    connection = reset_database("mercado_pleno.db")
+    connection.executescript(
+        """
+        CREATE TABLE lojas (
+            id INTEGER PRIMARY KEY,
+            nome TEXT NOT NULL,
+            bairro TEXT NOT NULL,
+            tipo TEXT NOT NULL
+        );
+
+        CREATE TABLE setores (
+            id INTEGER PRIMARY KEY,
+            nome TEXT NOT NULL
+        );
+
+        CREATE TABLE produtos (
+            id INTEGER PRIMARY KEY,
+            nome TEXT NOT NULL,
+            setor_id INTEGER NOT NULL,
+            custo_unitario REAL NOT NULL,
+            preco_unitario REAL NOT NULL,
+            FOREIGN KEY (setor_id) REFERENCES setores(id)
+        );
+
+        CREATE TABLE vendas (
+            id INTEGER PRIMARY KEY,
+            loja_id INTEGER NOT NULL,
+            produto_id INTEGER NOT NULL,
+            data_venda TEXT NOT NULL,
+            quantidade INTEGER NOT NULL,
+            FOREIGN KEY (loja_id) REFERENCES lojas(id),
+            FOREIGN KEY (produto_id) REFERENCES produtos(id)
+        );
+
+        CREATE TABLE estoque (
+            id INTEGER PRIMARY KEY,
+            loja_id INTEGER NOT NULL,
+            produto_id INTEGER NOT NULL,
+            quantidade_atual INTEGER NOT NULL,
+            quantidade_minima INTEGER NOT NULL,
+            FOREIGN KEY (loja_id) REFERENCES lojas(id),
+            FOREIGN KEY (produto_id) REFERENCES produtos(id)
+        );
+
+        CREATE TABLE fornecedores (
+            id INTEGER PRIMARY KEY,
+            nome TEXT NOT NULL,
+            categoria TEXT NOT NULL
+        );
+
+        CREATE TABLE entregas_fornecedor (
+            id INTEGER PRIMARY KEY,
+            fornecedor_id INTEGER NOT NULL,
+            loja_id INTEGER NOT NULL,
+            data_entrega TEXT NOT NULL,
+            status TEXT NOT NULL,
+            dias_atraso INTEGER NOT NULL,
+            FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id),
+            FOREIGN KEY (loja_id) REFERENCES lojas(id)
+        );
+
+        CREATE TABLE perdas (
+            id INTEGER PRIMARY KEY,
+            loja_id INTEGER NOT NULL,
+            produto_id INTEGER NOT NULL,
+            data_perda TEXT NOT NULL,
+            quantidade_perdida INTEGER NOT NULL,
+            motivo TEXT NOT NULL,
+            FOREIGN KEY (loja_id) REFERENCES lojas(id),
+            FOREIGN KEY (produto_id) REFERENCES produtos(id)
+        );
+        """
+    )
+    insert_many(
+        connection,
+        "lojas",
+        ("id", "nome", "bairro", "tipo"),
+        [
+            (1, "Matriz Centro", "Centro", "matriz"),
+            (2, "Filial Jardim Norte", "Jardim Norte", "filial"),
+            (3, "Loja Compacta Vila Clara", "Vila Clara", "compacta"),
+        ],
+    )
+    insert_many(
+        connection,
+        "setores",
+        ("id", "nome"),
+        [
+            (1, "Padaria"),
+            (2, "Hortifruti"),
+            (3, "Açougue"),
+            (4, "Frios"),
+            (5, "Mercearia"),
+            (6, "Limpeza"),
+            (7, "Bebidas"),
+        ],
+    )
+    insert_many(
+        connection,
+        "produtos",
+        ("id", "nome", "setor_id", "custo_unitario", "preco_unitario"),
+        [
+            (1, "Pão francês", 1, 0.45, 0.90),
+            (2, "Bolo de cenoura", 1, 9.00, 18.00),
+            (3, "Banana prata", 2, 3.00, 5.00),
+            (4, "Alface crespa", 2, 2.00, 4.00),
+            (5, "Contra-filé", 3, 32.00, 48.00),
+            (6, "Frango resfriado", 3, 12.00, 18.00),
+            (7, "Queijo mussarela", 4, 22.00, 34.00),
+            (8, "Presunto fatiado", 4, 15.00, 24.00),
+            (9, "Arroz 5kg", 5, 18.00, 24.00),
+            (10, "Feijão carioca", 5, 6.00, 9.00),
+            (11, "Sabão em pó", 6, 20.00, 25.00),
+            (12, "Detergente", 6, 1.60, 2.50),
+            (13, "Refrigerante", 7, 5.00, 7.00),
+            (14, "Cerveja lata", 7, 3.80, 5.00),
+            (15, "Café torrado", 5, 10.00, 16.00),
+        ],
+    )
+    insert_many(
+        connection,
+        "vendas",
+        ("loja_id", "produto_id", "data_venda", "quantidade"),
+        [
+            (1, 1, "2026-07-05", 1600),
+            (2, 1, "2026-07-12", 1400),
+            (1, 2, "2026-07-08", 90),
+            (2, 2, "2026-07-18", 110),
+            (1, 3, "2026-07-03", 700),
+            (2, 3, "2026-07-14", 500),
+            (3, 4, "2026-07-20", 500),
+            (1, 5, "2026-07-06", 100),
+            (2, 5, "2026-07-16", 80),
+            (2, 6, "2026-07-09", 150),
+            (3, 6, "2026-07-24", 100),
+            (1, 7, "2026-07-10", 120),
+            (2, 7, "2026-07-21", 100),
+            (1, 8, "2026-07-11", 80),
+            (3, 8, "2026-07-25", 80),
+            (1, 9, "2026-07-02", 220),
+            (2, 9, "2026-07-17", 180),
+            (1, 10, "2026-07-07", 250),
+            (3, 10, "2026-07-22", 250),
+            (2, 15, "2026-07-13", 250),
+            (1, 11, "2026-07-04", 200),
+            (2, 11, "2026-07-19", 150),
+            (3, 12, "2026-07-23", 700),
+            (1, 13, "2026-07-15", 300),
+            (2, 14, "2026-07-26", 1600),
+            (3, 14, "2026-07-27", 1400),
+            (1, 1, "2026-06-30", 9999),
+            (2, 5, "2026-08-01", 9999),
+        ],
+    )
+    insert_many(
+        connection,
+        "estoque",
+        ("loja_id", "produto_id", "quantidade_atual", "quantidade_minima"),
+        [
+            (2, 3, 8, 30),
+            (2, 4, 6, 20),
+            (3, 11, 4, 12),
+            (3, 12, 5, 18),
+            (1, 7, 9, 20),
+            (3, 14, 10, 35),
+            (2, 5, 3, 12),
+            (1, 1, 400, 120),
+            (2, 9, 80, 50),
+            (3, 13, 60, 40),
+        ],
+    )
+    insert_many(
+        connection,
+        "fornecedores",
+        ("id", "nome", "categoria"),
+        [
+            (1, "Moinho Aurora", "Padaria"),
+            (2, "Horti Vale", "Hortifruti"),
+            (3, "Carnes Serra", "Açougue"),
+            (4, "Laticínios Boa Vista", "Frios"),
+            (5, "Distribuidora Limpa Tudo", "Limpeza"),
+            (6, "Bebidas Atlântico", "Bebidas"),
+        ],
+    )
+    insert_many(
+        connection,
+        "entregas_fornecedor",
+        ("fornecedor_id", "loja_id", "data_entrega", "status", "dias_atraso"),
+        [
+            (2, 1, "2026-07-03", "atrasada", 2),
+            (2, 2, "2026-07-10", "incompleta", 0),
+            (2, 3, "2026-07-18", "cancelada", 0),
+            (3, 1, "2026-07-05", "atrasada", 1),
+            (3, 2, "2026-07-19", "incompleta", 0),
+            (4, 1, "2026-07-07", "atrasada", 3),
+            (4, 3, "2026-07-22", "cancelada", 0),
+            (5, 2, "2026-07-11", "incompleta", 0),
+            (1, 1, "2026-07-12", "no_prazo", 0),
+            (6, 3, "2026-07-25", "no_prazo", 0),
+            (2, 1, "2026-06-28", "atrasada", 4),
+            (3, 2, "2026-08-01", "cancelada", 0),
+        ],
+    )
+    insert_many(
+        connection,
+        "perdas",
+        ("loja_id", "produto_id", "data_perda", "quantidade_perdida", "motivo"),
+        [
+            (1, 5, "2026-07-06", 10, "vencimento"),
+            (1, 7, "2026-07-12", 8, "armazenamento"),
+            (1, 3, "2026-07-20", 40, "quebra"),
+            (2, 6, "2026-07-08", 20, "vencimento"),
+            (2, 4, "2026-07-13", 30, "quebra"),
+            (2, 13, "2026-07-21", 20, "ajuste"),
+            (3, 11, "2026-07-09", 15, "avaria"),
+            (3, 14, "2026-07-18", 40, "quebra"),
+            (3, 1, "2026-07-26", 100, "sobra"),
+            (1, 5, "2026-06-28", 99, "fora do período"),
+            (3, 11, "2026-08-01", 99, "fora do período"),
+        ],
+    )
+    connection.commit()
+    connection.close()
+
+
 def main() -> None:
     seed_saude()
     seed_tecnologia()
@@ -581,6 +1113,8 @@ def main() -> None:
     seed_logistica()
     seed_games()
     seed_financas()
+    seed_carreira_padaria()
+    seed_mercado_pleno()
     print(f"Bancos criados em {DATABASES_DIR}")
 
 

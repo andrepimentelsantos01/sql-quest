@@ -21,6 +21,18 @@ export function fetchRound() {
   return request("/api/round");
 }
 
+export function fetchCareerIntro() {
+  return request("/api/career/intro");
+}
+
+export function fetchCareerArcIntro(arcIndex) {
+  return request(`/api/career/intro/${arcIndex}`);
+}
+
+export function fetchCareerRound(step) {
+  return request(`/api/career/round/${step}`);
+}
+
 export function submitQuery(scenarioId, query) {
   return request(`/api/round/${scenarioId}/submit`, {
     method: "POST",
@@ -39,8 +51,10 @@ export function fetchAssistLine(scenarioId, lineIndex) {
   return request(`/api/round/${scenarioId}/assist-line/${lineIndex}`);
 }
 
-export function fetchSqlHelpQuestion(scenarioId) {
-  return request(`/api/round/${scenarioId}/sql-help`);
+export function fetchSqlHelpQuestion(scenarioId, excludeQuestionIds = []) {
+  const excludedIds = Array.isArray(excludeQuestionIds) ? excludeQuestionIds : [excludeQuestionIds];
+  const query = excludedIds.length ? `?exclude_question_ids=${encodeURIComponent(excludedIds.join(","))}` : "";
+  return request(`/api/round/${scenarioId}/sql-help${query}`);
 }
 
 export function answerSqlHelpQuestion(scenarioId, questionId, optionId) {

@@ -1,9 +1,25 @@
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, Database, HelpCircle, PartyPopper, Play, RotateCcw, ShieldQuestion, TerminalSquare, XCircle } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  CheckCircle2,
+  Database,
+  HelpCircle,
+  PartyPopper,
+  Play,
+  RotateCcw,
+  ShieldQuestion,
+  Shuffle,
+  Store,
+  TerminalSquare,
+  XCircle,
+} from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   answerSqlHelpQuestion,
+  fetchCareerArcIntro,
   fetchAssistLine,
+  fetchCareerIntro,
+  fetchCareerRound,
   fetchRound,
   fetchSqlHelpQuestion,
   previewQuery,
@@ -19,9 +35,12 @@ import SqlTerminal from "./components/SqlTerminal";
 const STARTER_QUERY = "SELECT \nFROM \nLIMIT 10;";
 const INITIAL_PLAYER = { streak: 0, lives: 5 };
 const INTRO_STORAGE_KEY = "sql-quest:intro-seen";
+const MODE_FREE = "free";
+const MODE_CAREER = "career";
 
 export default function App() {
   const terminalSectionRef = useRef(null);
+  const [appMode, setAppMode] = useState(null);
   const [scenario, setScenario] = useState(null);
   const [query, setQuery] = useState(STARTER_QUERY);
   const [previewResult, setPreviewResult] = useState(null);
@@ -35,18 +54,23 @@ export default function App() {
   const [sqlHelpQuestion, setSqlHelpQuestion] = useState(null);
   const [sqlHelpResult, setSqlHelpResult] = useState(null);
   const [usedSqlHelpResult, setUsedSqlHelpResult] = useState(null);
+  const [usedSqlHelpQuestionIds, setUsedSqlHelpQuestionIds] = useState([]);
   const [loadingSqlHelp, setLoadingSqlHelp] = useState(false);
   const [answeringSqlHelp, setAnsweringSqlHelp] = useState(false);
-  const [loadingRound, setLoadingRound] = useState(true);
+  const [loadingRound, setLoadingRound] = useState(false);
   const [previewing, setPreviewing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [player, setPlayer] = useState(INITIAL_PLAYER);
   const [gameOverStreak, setGameOverStreak] = useState(null);
-  const [introOpen, setIntroOpen] = useState(() => localStorage.getItem(INTRO_STORAGE_KEY) !== "true");
+  const [introOpen, setIntroOpen] = useState(false);
+  const [careerIntro, setCareerIntro] = useState(null);
+  const [careerIntroOpen, setCareerIntroOpen] = useState(false);
+  const [careerStep, setCareerStep] = useState(0);
+  const [careerIntroStartStep, setCareerIntroStartStep] = useState(0);
+  const [careerCompleteOpen, setCareerCompleteOpen] = useState(false);
 
-  async function loadRound() {
-    setLoadingRound(true);
+  function resetMissionState() {
     setError("");
     setPreviewResult(null);
     setModalResult(null);
@@ -59,6 +83,11 @@ export default function App() {
     setSqlHelpResult(null);
     setUsedSqlHelpResult(null);
     setQuery(STARTER_QUERY);
+  }
+
+  async function loadFreeRound() {
+    setLoadingRound(true);
+    resetMissionState();
     try {
       const nextScenario = await fetchRound();
       setScenario(nextScenario);
@@ -67,6 +96,56 @@ export default function App() {
     } finally {
       setLoadingRound(false);
     }
+  }
+
+  async function loadCareerRound(step) {
+    setLoadingRound(true);
+    resetMissionState();
+    try {
+      const nextScenario = await fetchCareerRound(step);
+      setScenario(nextScenario);
+      setCareerStep(step);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingRound(false);
+    }
+  }
+
+  async function handleSelectFreeMode() {
+    setAppMode(MODE_FREE);
+    setPlayer(INITIAL_PLAYER);
+    setUsedSqlHelpQuestionIds([]);
+    setScenario(null);
+    setCareerCompleteOpen(false);
+    setIntroOpen(localStorage.getItem(INTRO_STORAGE_KEY) !== "true");
+    await loadFreeRound();
+  }
+
+  async function handleSelectCareerMode() {
+    setAppMode(MODE_CAREER);
+    setPlayer(INITIAL_PLAYER);
+    setUsedSqlHelpQuestionIds([]);
+    setScenario(null);
+    setCareerStep(0);
+    setCareerIntroStartStep(0);
+    setCareerCompleteOpen(false);
+    resetMissionState();
+    setLoadingRound(true);
+    try {
+      const intro = await fetchCareerIntro();
+      setCareerIntro(intro);
+      setCareerIntroOpen(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingRound(false);
+    }
+  }
+
+  async function handleStartCareer() {
+    setCareerIntroOpen(false);
+    await loadCareerRound(careerIntroStartStep);
   }
 
   async function handlePreview() {
@@ -109,6 +188,29 @@ export default function App() {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  async function handleNextRound() {
+    setModalResult(null);
+    if (appMode === MODE_CAREER) {
+      const nextStep = careerStep + 1;
+      const career = scenario?.career;
+      const total = career?.total ?? 0;
+      if (nextStep >= total) {
+        restoreLives();
+        setCareerCompleteOpen(true);
+        return;
+      }
+      if (career && career.arc_step + 1 >= career.arc_total) {
+        restoreLives();
+        setCareerCompleteOpen(true);
+        return;
+      }
+      await loadCareerRound(nextStep);
+      return;
+    }
+
+    await loadFreeRound();
   }
 
   async function handleConfirmAssist() {
@@ -161,7 +263,10 @@ export default function App() {
     setLoadingSqlHelp(true);
     setError("");
     try {
-      const question = await fetchSqlHelpQuestion(scenario.id);
+      const question = await fetchSqlHelpQuestion(scenario.id, usedSqlHelpQuestionIds);
+      setUsedSqlHelpQuestionIds((current) => (
+        current.includes(question.id) ? current : [...current, question.id]
+      ));
       setSqlHelpQuestion(question);
       setSqlHelpResult(null);
       setSqlHelpIntroOpen(false);
@@ -222,13 +327,25 @@ export default function App() {
       streak: 0,
       lives: Math.max(0, current.lives - 1),
     }));
-    await loadRound();
+
+    if (appMode === MODE_CAREER) {
+      await loadCareerRound(careerStep);
+      return;
+    }
+
+    await loadFreeRound();
   }
 
   async function handleRetryGame() {
     setGameOverStreak(null);
     setPlayer(INITIAL_PLAYER);
-    await loadRound();
+    setUsedSqlHelpQuestionIds([]);
+    if (appMode === MODE_CAREER) {
+      await loadCareerRound(0);
+      return;
+    }
+
+    await loadFreeRound();
   }
 
   function handleStartIntro() {
@@ -236,9 +353,23 @@ export default function App() {
     setIntroOpen(false);
   }
 
-  useEffect(() => {
-    loadRound();
-  }, []);
+  function handleBackToMenu() {
+    setAppMode(null);
+    setScenario(null);
+    setCareerIntroOpen(false);
+    setCareerCompleteOpen(false);
+    setIntroOpen(false);
+    setPlayer(INITIAL_PLAYER);
+    setUsedSqlHelpQuestionIds([]);
+    resetMissionState();
+  }
+
+  function restoreLives() {
+    setPlayer((current) => ({
+      ...current,
+      lives: INITIAL_PLAYER.lives,
+    }));
+  }
 
   useEffect(() => {
     if (!taskAccepted) {
@@ -256,104 +387,298 @@ export default function App() {
     <div className="game-root">
       <GameAmbientEffects />
       <main className="app-shell">
-      <GameHud
-        streak={player.streak}
-        lives={player.lives}
-      />
+        {!appMode ? (
+          <ModeMenu onSelectFree={handleSelectFreeMode} onSelectCareer={handleSelectCareerMode} />
+        ) : (
+          <>
+            <GameHud streak={player.streak} lives={player.lives} />
+            <ModeBar mode={appMode} scenario={scenario} onBackToMenu={handleBackToMenu} />
 
-      {error ? <div className="error-banner">{error}</div> : null}
+            {error ? <div className="error-banner">{error}</div> : null}
 
-      {loadingRound || !scenario ? (
-        <section className="loading-panel">Carregando missão...</section>
-      ) : (
-        <div className="game-grid">
-          <div className="main-column">
-            <MissionBriefing
-              scenario={scenario}
-              onAcceptTask={handleAcceptTask}
-              onRejectTask={loadRound}
-              accepted={taskAccepted}
-              loading={loadingRound}
-            />
-            <AnimatePresence initial={false}>
-              {taskAccepted ? (
-                <motion.div
-                  className="accepted-workspace"
-                  key={`${scenario.id}-accepted-workspace`}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.22, ease: "easeOut" }}
-                >
-                  <div ref={terminalSectionRef}>
-                    <SqlTerminal
-                      schema={scenario.schema}
-                      value={query}
-                      onChange={setQuery}
-                      onPreview={handlePreview}
-                      loading={previewing}
-                      onRequestAssist={() => setAssistModalOpen(true)}
-                      assistDisabled={player.lives <= 0 || assisting}
-                    />
-                  </div>
-                  <MissionReport
-                    result={previewResult}
-                    onSubmit={handleSubmit}
-                    submitting={submitting}
-                    canSubmit={Boolean(query.trim())}
-                    onRequestHelp={handleRequestSqlHelp}
-                    helpLoading={loadingSqlHelp}
-                    taskAccepted={taskAccepted}
-                    onGiveUpTask={() => setGiveUpModalOpen(true)}
-                    givingUp={loadingRound}
+            {loadingRound || !scenario ? (
+              <section className="loading-panel">
+                {appMode === MODE_CAREER && careerIntroOpen ? "Preparando início da carreira..." : "Carregando missão..."}
+              </section>
+            ) : (
+              <div className="game-grid">
+                <div className="main-column">
+                  <MissionBriefing
+                    scenario={scenario}
+                    onAcceptTask={handleAcceptTask}
+                    onRejectTask={appMode === MODE_FREE ? loadFreeRound : null}
+                    accepted={taskAccepted}
+                    loading={loadingRound}
                   />
-                </motion.div>
-              ) : null}
-            </AnimatePresence>
-          </div>
-        </div>
-      )}
+                  <AnimatePresence initial={false}>
+                    {taskAccepted ? (
+                      <motion.div
+                        className="accepted-workspace"
+                        key={`${scenario.id}-accepted-workspace`}
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.22, ease: "easeOut" }}
+                      >
+                        <div ref={terminalSectionRef}>
+                          <SqlTerminal
+                            schema={scenario.schema}
+                            value={query}
+                            onChange={setQuery}
+                            onPreview={handlePreview}
+                            loading={previewing}
+                            onRequestAssist={() => setAssistModalOpen(true)}
+                            assistDisabled={player.lives <= 0 || assisting}
+                          />
+                        </div>
+                        <MissionReport
+                          result={previewResult}
+                          onSubmit={handleSubmit}
+                          submitting={submitting}
+                          canSubmit={Boolean(query.trim())}
+                          onRequestHelp={handleRequestSqlHelp}
+                          helpLoading={loadingSqlHelp}
+                          taskAccepted={taskAccepted && appMode !== MODE_CAREER}
+                          onGiveUpTask={() => setGiveUpModalOpen(true)}
+                          givingUp={loadingRound}
+                        />
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
+                </div>
+              </div>
+            )}
+          </>
+        )}
 
-      <ResultModal result={modalResult} onClose={() => setModalResult(null)} onNextRound={loadRound} />
-      <AssistModal
-        open={assistModalOpen}
-        loading={assisting}
-        lives={player.lives}
-        onCancel={() => setAssistModalOpen(false)}
-        onConfirm={handleConfirmAssist}
-      />
-      <GiveUpTaskModal
-        open={giveUpModalOpen}
-        loading={loadingRound}
-        lives={player.lives}
-        onCancel={() => setGiveUpModalOpen(false)}
-        onConfirm={handleConfirmGiveUpTask}
-      />
-      <SqlHelpIntroModal
-        open={sqlHelpIntroOpen}
-        loading={loadingSqlHelp}
-        onCancel={() => setSqlHelpIntroOpen(false)}
-        onContinue={handleContinueSqlHelp}
-      />
-      <SqlHelpModal
-        question={sqlHelpQuestion}
-        result={sqlHelpResult}
-        loading={answeringSqlHelp}
-        onAnswer={handleAnswerSqlHelp}
-        onUseQuery={(nextQuery) => {
-          setQuery(formatSqlQuery(nextQuery));
-          setSqlHelpQuestion(null);
-          setSqlHelpResult(null);
-        }}
-        onClose={() => {
-          setSqlHelpQuestion(null);
-          setSqlHelpResult(null);
-        }}
-      />
-      <IntroModal open={introOpen} onStart={handleStartIntro} />
-      <GameOverModal streak={gameOverStreak} onRetry={handleRetryGame} />
+        <ResultModal result={modalResult} onClose={() => setModalResult(null)} onNextRound={handleNextRound} />
+        <CareerIntroModal
+          intro={careerIntro}
+          open={careerIntroOpen}
+          isInitialArc={careerIntroStartStep === 0}
+          onStart={handleStartCareer}
+          onBack={handleBackToMenu}
+        />
+        <CareerCompleteModal
+          open={careerCompleteOpen}
+          completion={scenario?.career?.completion}
+          hasNextArc={Boolean(scenario?.career && scenario.career.step + 1 < scenario.career.total)}
+          onBackToMenu={handleBackToMenu}
+          onRestart={() => {
+            const currentCareer = scenario?.career;
+            const arcStartStep = currentCareer ? currentCareer.step - currentCareer.arc_step : 0;
+            setCareerCompleteOpen(false);
+            restoreLives();
+            loadCareerRound(arcStartStep);
+          }}
+          onContinue={async () => {
+            const nextStep = (scenario?.career?.step ?? careerStep) + 1;
+            const nextArc = (scenario?.career?.arc_index ?? 0) + 1;
+            setCareerCompleteOpen(false);
+            restoreLives();
+            setLoadingRound(true);
+            try {
+              const intro = await fetchCareerArcIntro(nextArc);
+              setCareerIntro(intro);
+              setCareerIntroStartStep(nextStep);
+              setCareerIntroOpen(true);
+            } catch (err) {
+              setError(err.message);
+            } finally {
+              setLoadingRound(false);
+            }
+          }}
+        />
+        <AssistModal
+          open={assistModalOpen}
+          loading={assisting}
+          lives={player.lives}
+          onCancel={() => setAssistModalOpen(false)}
+          onConfirm={handleConfirmAssist}
+        />
+        <GiveUpTaskModal
+          open={giveUpModalOpen}
+          loading={loadingRound}
+          lives={player.lives}
+          mode={appMode}
+          onCancel={() => setGiveUpModalOpen(false)}
+          onConfirm={handleConfirmGiveUpTask}
+        />
+        <SqlHelpIntroModal
+          open={sqlHelpIntroOpen}
+          loading={loadingSqlHelp}
+          onCancel={() => setSqlHelpIntroOpen(false)}
+          onContinue={handleContinueSqlHelp}
+        />
+        <SqlHelpModal
+          question={sqlHelpQuestion}
+          result={sqlHelpResult}
+          loading={answeringSqlHelp}
+          onAnswer={handleAnswerSqlHelp}
+          onUseQuery={(nextQuery) => {
+            setQuery(formatSqlQuery(nextQuery));
+            setSqlHelpQuestion(null);
+            setSqlHelpResult(null);
+          }}
+          onClose={() => {
+            setSqlHelpQuestion(null);
+            setSqlHelpResult(null);
+          }}
+        />
+        <IntroModal open={introOpen} onStart={handleStartIntro} />
+        <GameOverModal streak={gameOverStreak} mode={appMode} onRetry={handleRetryGame} />
       </main>
     </div>
+  );
+}
+
+function ModeMenu({ onSelectFree, onSelectCareer }) {
+  return (
+    <motion.section
+      className="mode-menu-panel"
+      initial={{ opacity: 0, y: 18 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.22 }}
+    >
+      <div className="mode-menu-brand">
+        <h1 className="game-logo mode-logo">
+          SQL <span>Quest</span>
+        </h1>
+        <p>Escolha como quer entrar na próxima investigação de dados.</p>
+      </div>
+      <div className="mode-menu-actions">
+        <button type="button" className="mode-card-button" onClick={onSelectFree}>
+          <Shuffle size={24} />
+          <span>Modo Livre</span>
+          <small>Missões aleatórias no formato atual.</small>
+        </button>
+        <button type="button" className="mode-card-button career" onClick={onSelectCareer}>
+          <BriefcaseBusiness size={24} />
+          <span>Modo Carreira</span>
+          <small>Uma trilha sequencial começando como Analista Júnior.</small>
+        </button>
+      </div>
+    </motion.section>
+  );
+}
+
+function ModeBar({ mode, scenario, onBackToMenu }) {
+  const career = scenario?.career;
+
+  return (
+    <div className="mode-status-bar">
+      <div>
+        <strong>{mode === MODE_CAREER ? "Modo Carreira" : "Modo Livre"}</strong>
+        {career ? (
+          <span>{career.arc}</span>
+        ) : (
+          <span>{mode === MODE_CAREER ? "Trilha sequencial" : "Missões aleatórias"}</span>
+        )}
+      </div>
+      <button type="button" className="ghost-button" onClick={onBackToMenu}>
+        Voltar ao menu
+      </button>
+    </div>
+  );
+}
+
+function CareerIntroModal({ intro, open, isInitialArc, onStart, onBack }) {
+  if (!open || !intro) {
+    return null;
+  }
+
+  return (
+    <AnimatePresence>
+      <motion.div className="modal-backdrop" role="presentation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div
+          className="modal intro-modal career-intro-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="career-intro-title"
+          initial={{ opacity: 0, scale: 0.92, y: 18 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: 10 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
+        >
+          <div className="intro-data-animation" aria-hidden="true">
+            <span>SELECT</span>
+            <span>SUM()</span>
+            <span>COUNT()</span>
+          </div>
+          <div className="intro-heading">
+            <span className="intro-icon" aria-hidden="true">
+              <Store size={22} />
+            </span>
+            <h2 id="career-intro-title">{intro.title}</h2>
+          </div>
+          <div className="career-arc-badge">{intro.arc}</div>
+          <div className="intro-copy">
+            {intro.story.split("\n\n").map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+          <div className="modal-actions">
+            <button type="button" className="ghost-button" onClick={onBack}>
+              Voltar ao menu
+            </button>
+            <button type="button" className="start-missions-button" onClick={onStart}>
+              <Play size={18} />
+              {isInitialArc ? "Iniciar modo carreira" : "Continuar trabalhando na padaria"}
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function CareerCompleteModal({ open, completion, hasNextArc, onBackToMenu, onRestart, onContinue }) {
+  if (!open) {
+    return null;
+  }
+
+  const title = completion?.title ?? "Arco concluído";
+  const story = completion?.story ?? "Você concluiu mais uma etapa da carreira com SQL e deixou seu Joaquim com menos achismo para defender na próxima reunião.";
+
+  return (
+    <AnimatePresence>
+      <motion.div className="modal-backdrop" role="presentation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div
+          className="modal game-over-modal career-complete-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="career-complete-title"
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: 10 }}
+          transition={{ duration: 0.18, ease: "easeOut" }}
+        >
+          <div className="result-icon success">
+            <PartyPopper size={30} />
+          </div>
+          <h3 id="career-complete-title">{title}</h3>
+          <div className="career-complete-copy">
+            {story.split("\n\n").map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
+          <div className="modal-actions">
+            <button type="button" className="ghost-button" onClick={onRestart}>
+              Refazer arco
+            </button>
+            {hasNextArc ? (
+              <button type="button" className="primary-button" onClick={onContinue}>
+                Seguir trabalhando na padaria...
+              </button>
+            ) : (
+              <button type="button" className="primary-button" onClick={onBackToMenu}>
+                Voltar ao menu
+              </button>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -415,20 +740,16 @@ function IntroModal({ open, onStart }) {
   );
 }
 
-function GameOverModal({ streak, onRetry }) {
+function GameOverModal({ streak, mode, onRetry }) {
   if (streak === null) {
     return null;
   }
 
+  const isCareer = mode === MODE_CAREER;
+
   return (
     <AnimatePresence>
-      <motion.div
-        className="modal-backdrop"
-        role="presentation"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
+      <motion.div className="modal-backdrop" role="presentation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
         <motion.div
           className="modal game-over-modal"
           role="dialog"
@@ -454,9 +775,19 @@ function GameOverModal({ streak, onRetry }) {
             <PartyPopper size={30} />
           </motion.div>
 
-          <h3 id="game-over-title">Fim de jogo</h3>
-          <p>Parabéns pela rodada. Sua sequência final foi:</p>
-          <div className="game-over-streak">{streak}</div>
+          <h3 id="game-over-title">{isCareer ? "Fim de carreira... por enquanto" : "Fim de jogo"}</h3>
+          {isCareer ? (
+            <div className="game-over-copy">
+              <p>O cargo de Analista de Dados Júnior na Padaria Pão Nosso de Cada Dia foi encerrado antes do período de experiência.</p>
+              <p>Seu Joaquim agradeceu o esforço, ofereceu um pão de queijo de despedida e explicou que a padaria ainda não está pronta para decisões baseadas em “quase acertei a query”.</p>
+              <p>Mas nem tudo está perdido. Volte ao Modo Livre, pratique filtros, agregações e ordenações com calma, e quando sentir que suas consultas já conseguem separar opinião de evidência, retorne ao Modo Carreira.</p>
+            </div>
+          ) : (
+            <>
+              <p>Parabéns pela rodada. Sua sequência final foi:</p>
+              <div className="game-over-streak">{streak}</div>
+            </>
+          )}
 
           <div className="modal-actions">
             <button type="button" className="primary-button" onClick={onRetry}>
@@ -470,23 +801,27 @@ function GameOverModal({ streak, onRetry }) {
   );
 }
 
-function GiveUpTaskModal({ open, loading, lives, onCancel, onConfirm }) {
+function GiveUpTaskModal({ open, loading, lives, mode, onCancel, onConfirm }) {
   if (!open) {
     return null;
   }
+
+  const text = mode === MODE_CAREER
+    ? "Você perderá 1 coração e reiniciará esta etapa da carreira."
+    : "Você perderá 1 coração e receberá uma nova task.";
 
   return (
     <div className="modal-backdrop" role="presentation">
       <div className="modal assist-modal" role="dialog" aria-modal="true" aria-labelledby="give-up-task-title">
         <h3 id="give-up-task-title">Desistir da Task?</h3>
-        <p>Você perderá 1 coração e receberá uma nova task.</p>
+        <p>{text}</p>
         <div className="hint">Vidas atuais: {lives}</div>
         <div className="modal-actions">
           <button type="button" className="ghost-button" onClick={onCancel} disabled={loading}>
             Cancelar
           </button>
           <button type="button" className="danger-help-button" onClick={onConfirm} disabled={loading}>
-            {loading ? "Buscando nova task..." : "Aceitar"}
+            {loading ? "Carregando..." : "Aceitar"}
           </button>
         </div>
       </div>
@@ -576,43 +911,37 @@ function SqlHelpIntroModal({ open, loading, onCancel, onContinue }) {
 
   return (
     <AnimatePresence>
-      <motion.div
-        className="modal-backdrop"
-        role="presentation"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-      <motion.div
-        className="modal sql-help-modal sql-help-rules-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="sql-help-rules-title"
-        initial={{ opacity: 0, scale: 0.94, y: 16 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.97, y: 8 }}
-        transition={{ duration: 0.16, ease: "easeOut" }}
-      >
-        <div className="help-modal-header">
-          <span className="help-modal-icon" aria-hidden="true">
-            <ShieldQuestion size={18} />
-          </span>
-          <h3 id="sql-help-rules-title">Regras do Pedir Ajuda</h3>
-        </div>
-        <p>Você responderá uma pergunta de fundamento SQL com 5 alternativas parecidas.</p>
-        <div className="help-rules">
-          <span>Se acertar, recebe a query certa sem perder coração.</span>
-          <span>Se errar, recebe a query certa e perde 1 coração.</span>
-        </div>
-        <div className="modal-actions">
-          <button type="button" className="ghost-button" onClick={onCancel} disabled={loading}>
-            Cancelar Ajuda
-          </button>
-          <button type="button" className="primary-button" onClick={onContinue} disabled={loading}>
-            {loading ? "Carregando..." : "Seguir"}
-          </button>
-        </div>
-      </motion.div>
+      <motion.div className="modal-backdrop" role="presentation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div
+          className="modal sql-help-modal sql-help-rules-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="sql-help-rules-title"
+          initial={{ opacity: 0, scale: 0.94, y: 16 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.97, y: 8 }}
+          transition={{ duration: 0.16, ease: "easeOut" }}
+        >
+          <div className="help-modal-header">
+            <span className="help-modal-icon" aria-hidden="true">
+              <ShieldQuestion size={18} />
+            </span>
+            <h3 id="sql-help-rules-title">Regras do Pedir Ajuda</h3>
+          </div>
+          <p>Você responderá uma pergunta de fundamento SQL com 5 alternativas parecidas.</p>
+          <div className="help-rules">
+            <span>Se acertar, recebe a query certa sem perder coração.</span>
+            <span>Se errar, recebe a query certa e perde 1 coração.</span>
+          </div>
+          <div className="modal-actions">
+            <button type="button" className="ghost-button" onClick={onCancel} disabled={loading}>
+              Cancelar Ajuda
+            </button>
+            <button type="button" className="primary-button" onClick={onContinue} disabled={loading}>
+              {loading ? "Carregando..." : "Seguir"}
+            </button>
+          </div>
+        </motion.div>
       </motion.div>
     </AnimatePresence>
   );
@@ -624,13 +953,7 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
   }
 
   return (
-    <motion.div
-      className="modal-backdrop"
-      role="presentation"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
+    <motion.div className="modal-backdrop" role="presentation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
       <motion.div
         className="modal sql-help-modal"
         role="dialog"
@@ -656,12 +979,7 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
             <div className="help-result-explanation">
               <p>{result.explanation}</p>
             </div>
-            <motion.div
-              className="help-query-panel"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.08, duration: 0.16 }}
-            >
+            <motion.div className="help-query-panel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.16 }}>
               <div className="help-query-header">
                 <TerminalSquare size={15} />
                 <span>Query liberada</span>

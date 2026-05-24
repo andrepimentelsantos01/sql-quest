@@ -1,4 +1,5 @@
 import json
+import random
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -32,10 +33,28 @@ def load_sql_help_questions() -> list[dict[str, Any]]:
     return data["questions"]
 
 
-def get_sql_help_question(scenario: dict[str, Any]) -> dict[str, Any]:
+def get_sql_help_question(scenario: dict[str, Any], exclude_question_ids: set[str] | None = None) -> dict[str, Any]:
+    excluded_ids = exclude_question_ids or set()
     questions = _questions_for_scenario(scenario)
-    index = sum(ord(char) for char in scenario["id"]) % len(questions)
-    question = questions[index]
+    available_questions = [
+        question for question in questions
+        if question["id"] not in excluded_ids
+    ]
+
+    if not available_questions:
+        available_questions = [
+            question for question in _level_questions_for_scenario(scenario)
+            if question["id"] not in excluded_ids
+        ]
+
+    if not available_questions:
+        available_questions = [
+            question for question in load_sql_help_questions()
+            if question["id"] not in excluded_ids
+        ]
+
+    available_questions = available_questions or questions
+    question = random.choice(available_questions)
     return {
         "id": question["id"],
         "question": question["question"],
@@ -51,9 +70,7 @@ def check_sql_help_answer(question_id: str, option_id: str) -> tuple[bool, str]:
 
 
 def _questions_for_scenario(scenario: dict[str, Any]) -> list[dict[str, Any]]:
-    level = scenario.get("difficulty")
-    level_questions = [question for question in load_sql_help_questions() if question["level"] == level]
-    base_questions = level_questions or load_sql_help_questions()
+    base_questions = _level_questions_for_scenario(scenario)
     expected_sql = scenario.get("expected_sql", "").upper()
     feature_terms = [term for term in FEATURE_TERMS if term in expected_sql]
     scored_questions = [
@@ -62,6 +79,11 @@ def _questions_for_scenario(scenario: dict[str, Any]) -> list[dict[str, Any]]:
     ]
     matched_questions = [question for question, score in scored_questions if score > 0]
     return matched_questions or base_questions
+
+
+def _level_questions_for_scenario(scenario: dict[str, Any]) -> list[dict[str, Any]]:
+    level = scenario.get("difficulty")
+    return [question for question in load_sql_help_questions() if question["level"] == level] or load_sql_help_questions()
 
 
 def _question_score(question: dict[str, Any], feature_terms: list[str]) -> int:

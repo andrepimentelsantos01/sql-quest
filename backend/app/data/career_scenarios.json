@@ -1,0 +1,677 @@
+{
+  "intro": {
+    "title": "Primeiro emprego, primeira query",
+    "arc": "Júnior - A padaria que queria virar rede",
+    "story": "Olá, analista! Depois de sobreviver à graduação, aos trabalhos em grupo e à frase isso aqui vai ser útil no mercado, você finalmente conseguiu seu primeiro emprego como Analista de Dados Júnior.\n\nSeu novo local de trabalho é a Padaria Pão Nosso de Cada Dia, uma padaria de bairro charmosa, barulhenta e levemente governada por planilhas com nomes como controle_final_agora_vai_3.xlsx. O dono, seu Joaquim, acredita que chegou a hora de crescer, abrir novas filiais e transformar sonhos de fermentação em decisões baseadas em dados.\n\nO problema é que, até ontem, as principais métricas da empresa eram acho que vendeu bem, o movimento estava bonito e o pão francês acabou antes do almoço, então deve ter sido sucesso. Agora, com você na equipe, a padaria quer trocar intuição por SQL, sem perder o cheiro de café recém-passado.\n\nSua jornada começa no balcão, entre fornadas, comandas e clientes perguntando se o sonho acabou. Como Analista de Dados Júnior, sua missão é ajudar a pequena padaria a entender vendas, produtos, estoque e clientes para crescer com menos achismo e mais evidência. Porque expansão sem dados é só vontade com aluguel mais caro."
+  },
+  "completion": {
+    "title": "Primeiro arco concluído",
+    "story": "Você ajudou a padaria a sair do achismo e chegar no primeiro mapa de decisões com SQL. Seu Joaquim ainda quer abrir filial, mas agora pelo menos vai levar dados para a conversa."
+  },
+  "scenarios": [
+    {
+      "id": "career_padaria_junior_001",
+      "category": "Carreira: Padaria",
+      "title": "O campeão da vitrine",
+      "difficulty": "Júnior",
+      "database": "carreira_padaria.db",
+      "story": "Olá, analista! Seu primeiro dia na Padaria Pão Nosso de Cada Dia começou com café forte, avental simbólico e seu Joaquim apontando para a vitrine como se estivesse revelando um painel executivo.\n\nA padaria quer entender qual produto realmente sustenta o caixa, porque todo mundo tem uma opinião diferente. A atendente jura que o pão de queijo domina. O padeiro defende o croissant com uma intensidade quase sindical. Seu Joaquim acha que o pão francês vence porque sempre venceu.\n\nAntes que a reunião vire degustação com argumentos emocionais, os dados precisam mostrar qual item vendeu mais unidades no período.\n\nSua missão é descobrir o produto mais vendido da padaria. Porque no varejo de bairro, carinho pelo produto é bonito, mas quantidade vendida paga o fermento.",
+      "objective": "Sua tarefa: retorne o produto e o total de unidades vendidas. Some a quantidade vendida por produto, ordene da maior quantidade para a menor e traga apenas o primeiro resultado.",
+      "objective_steps": [
+        "Comece pelas vendas registradas da padaria.",
+        "Agrupe as vendas por produto.",
+        "Some a quantidade vendida em cada grupo.",
+        "Ordene pelo maior total e mantenha apenas o primeiro resultado."
+      ],
+      "expected_sql": "SELECT produto, SUM(quantidade) AS total_vendido FROM padaria_vendas GROUP BY produto ORDER BY total_vendido DESC LIMIT 1;",
+      "expected_answer": {
+        "query": "SELECT produto, SUM(quantidade) AS total_vendido FROM padaria_vendas GROUP BY produto ORDER BY total_vendido DESC LIMIT 1;",
+        "result": {
+          "columns": ["produto", "total_vendido"],
+          "rows": [["Pão francês", 210]]
+        }
+      },
+      "hint": "Agrupe as vendas por produto, some as quantidades e use ORDER BY com LIMIT 1."
+    },
+    {
+      "id": "career_padaria_junior_002",
+      "category": "Carreira: Padaria",
+      "title": "Pico antes das dez",
+      "difficulty": "Júnior",
+      "database": "carreira_padaria.db",
+      "story": "Olá, analista! Hoje você chegou cedo e descobriu que a padaria tem dois tipos de correria: a correria normal e a correria das 7h30, quando todo mundo quer pão quente, café rápido e troco exato ao mesmo tempo.\n\nSeu Joaquim quer organizar melhor a equipe do balcão, mas cada funcionário tem uma lembrança diferente sobre o horário mais caótico. Um diz que é às 8h. Outro diz que é quando a fila encosta na porta. A caixa diz que é sempre que alguém pede só uma coisinha rapidinho.\n\nAntes de contratar mais gente ou escalar funcionário no susto, a padaria precisa descobrir em quais horários acontecem mais vendas.\n\nSua missão é identificar os horários com maior volume de pedidos no café da manhã. Porque escala de equipe baseada em memória costuma funcionar até a fila começar a reclamar em voz alta.",
+      "objective": "Sua tarefa: retorne a hora do pedido e a quantidade de pedidos realizados entre 06:00 e 10:00. Ordene da maior quantidade para a menor. Em caso de empate, ordene pela hora em ordem crescente.",
+      "objective_steps": [
+        "Comece pelos pedidos registrados.",
+        "Filtre apenas pedidos entre 06:00 e 10:00.",
+        "Agrupe os registros pela hora do pedido.",
+        "Conte quantos pedidos aconteceram em cada horário."
+      ],
+      "expected_sql": "SELECT hora_pedido AS hora, COUNT(*) AS pedidos FROM padaria_pedidos WHERE hora_pedido >= '06:00' AND hora_pedido < '10:00' GROUP BY hora_pedido ORDER BY pedidos DESC, hora ASC;",
+      "expected_answer": {
+        "query": "SELECT hora_pedido AS hora, COUNT(*) AS pedidos FROM padaria_pedidos WHERE hora_pedido >= '06:00' AND hora_pedido < '10:00' GROUP BY hora_pedido ORDER BY pedidos DESC, hora ASC;",
+        "result": {
+          "columns": ["hora", "pedidos"],
+          "rows": [["07:00", 4], ["08:00", 3], ["09:00", 2], ["06:00", 1]]
+        }
+      },
+      "hint": "Filtre as vendas do período da manhã, agrupe por hora e conte os pedidos."
+    },
+    {
+      "id": "career_padaria_junior_003",
+      "category": "Carreira: Padaria",
+      "title": "Farinha em fuga",
+      "difficulty": "Júnior",
+      "database": "carreira_padaria.db",
+      "story": "Olá, analista! Hoje o clima no estoque está tenso. A farinha acabou mais rápido do que o previsto, o açúcar está em nível preocupante e alguém escreveu comprar urgente em um post-it que já parece cansado.\n\nSeu Joaquim quer evitar duas tragédias comerciais: faltar ingrediente no meio da produção e comprar coisa demais até transformar o estoque em museu de saco fechado. Para isso, ele precisa saber quais itens estão abaixo do nível mínimo.\n\nA equipe até tentou resolver no olho, mas parece que tem pouco não é exatamente uma métrica confiável para uma padaria que sonha em abrir filiais.\n\nSua missão é listar os ingredientes com estoque abaixo do mínimo. Porque pão pode crescer no forno, mas negócio nenhum cresce com estoque controlado no improviso.",
+      "objective": "Sua tarefa: retorne o ingrediente, a quantidade atual e a quantidade mínima dos itens em que a quantidade atual está abaixo da quantidade mínima. Ordene pela menor quantidade atual primeiro. Em caso de empate, ordene por ingrediente em ordem alfabética.",
+      "objective_steps": [
+        "Comece pelo estoque de ingredientes.",
+        "Compare a quantidade atual com a quantidade mínima.",
+        "Mantenha apenas ingredientes abaixo do limite.",
+        "Ordene começando pelos itens mais críticos."
+      ],
+      "expected_sql": "SELECT ingrediente, quantidade_atual, quantidade_minima FROM padaria_estoque WHERE quantidade_atual < quantidade_minima ORDER BY quantidade_atual ASC, ingrediente ASC;",
+      "expected_answer": {
+        "query": "SELECT ingrediente, quantidade_atual, quantidade_minima FROM padaria_estoque WHERE quantidade_atual < quantidade_minima ORDER BY quantidade_atual ASC, ingrediente ASC;",
+        "result": {
+          "columns": ["ingrediente", "quantidade_atual", "quantidade_minima"],
+          "rows": [["Fermento biológico", 4.0, 10.0], ["Farinha de trigo", 12.0, 25.0], ["Manteiga", 15.0, 20.0]]
+        }
+      },
+      "hint": "Compare a quantidade atual com a quantidade mínima usando WHERE."
+    },
+    {
+      "id": "career_padaria_junior_004",
+      "category": "Carreira: Padaria",
+      "title": "Caixa quente",
+      "difficulty": "Júnior",
+      "database": "carreira_padaria.db",
+      "story": "Olá, analista! Hoje seu Joaquim apareceu com uma pergunta perigosa: a gente vende bastante, mas está entrando dinheiro de verdade? Essa frase fez a padaria inteira ficar em silêncio por três segundos, o que no comércio de bairro é praticamente uma auditoria.\n\nAlguns produtos vendem muito, mas têm preço baixo. Outros saem menos, mas deixam o caixa mais feliz. A vitrine pode até brilhar, mas quem decide expansão é receita, não popularidade emocional.\n\nAntes de planejar uma nova filial com base no produto mais comentado pelos clientes, a padaria precisa entender quais itens mais geram faturamento.\n\nSua missão é calcular a receita total por produto. Porque vender muito é ótimo, mas vender bem é o que paga o aluguel, a farinha e a máquina de cartão que sempre escolhe travar na pior hora.",
+      "objective": "Sua tarefa: retorne o produto e a receita total gerada. Calcule a receita como quantidade vendida multiplicada pelo preço unitário, agrupe por produto e ordene da maior receita para a menor.",
+      "objective_steps": [
+        "Comece pelas vendas registradas.",
+        "Multiplique quantidade por preço unitário em cada venda.",
+        "Agrupe o faturamento por produto.",
+        "Ordene os produtos pela maior receita total."
+      ],
+      "expected_sql": "SELECT produto, ROUND(SUM(quantidade * preco_unitario), 2) AS receita_total FROM padaria_vendas GROUP BY produto ORDER BY receita_total DESC;",
+      "expected_answer": {
+        "query": "SELECT produto, ROUND(SUM(quantidade * preco_unitario), 2) AS receita_total FROM padaria_vendas GROUP BY produto ORDER BY receita_total DESC;",
+        "result": {
+          "columns": ["produto", "receita_total"],
+          "rows": [["Bolo de cenoura", 702.0], ["Pão francês", 189.0], ["Croissant", 178.5], ["Pão de queijo", 168.0], ["Café coado", 144.0]]
+        }
+      },
+      "hint": "Multiplique quantidade por preço unitário e depois some o resultado por produto."
+    },
+    {
+      "id": "career_padaria_junior_005",
+      "category": "Carreira: Padaria",
+      "title": "Freguesia de valor",
+      "difficulty": "Júnior",
+      "database": "carreira_padaria.db",
+      "story": "Olá, analista! Hoje a padaria quer entender melhor seus clientes mais fiéis. Seu Joaquim conhece vários pelo nome, alguns pelo pedido e pelo menos um apenas como o senhor do pão bem passado, mas não queimado.\n\nA ideia de abrir novas filiais deixou uma pergunta importante no ar: quem são os clientes que mais voltam? Se a padaria quer crescer, precisa entender o comportamento da freguesia antes de achar que todo bairro funciona igual.\n\nO balcão tem histórias, mas o banco de dados tem registros. E, por mais carismático que seja lembrar o pedido de alguém, frequência de compra ainda precisa ser contada.\n\nSua missão é encontrar os clientes com mais pedidos registrados. Porque cliente fiel é bonito no discurso, mas fica ainda melhor quando aparece no COUNT.",
+      "objective": "Sua tarefa: retorne o cliente e a quantidade de pedidos realizados. Agrupe os pedidos por cliente, ordene da maior quantidade para a menor e traga os 5 primeiros resultados. Em caso de empate, ordene por cliente em ordem alfabética.",
+      "objective_steps": [
+        "Comece pelos pedidos registrados.",
+        "Agrupe os pedidos por cliente.",
+        "Conte quantos pedidos cada cliente realizou.",
+        "Ordene pelos clientes mais frequentes e limite aos 5 primeiros."
+      ],
+      "expected_sql": "SELECT cliente, COUNT(*) AS pedidos FROM padaria_pedidos GROUP BY cliente ORDER BY pedidos DESC, cliente ASC LIMIT 5;",
+      "expected_answer": {
+        "query": "SELECT cliente, COUNT(*) AS pedidos FROM padaria_pedidos GROUP BY cliente ORDER BY pedidos DESC, cliente ASC LIMIT 5;",
+        "result": {
+          "columns": ["cliente", "pedidos"],
+          "rows": [["Dona Marta", 4], ["Seu Paulo", 3], ["Ana Clara", 2], ["Bruno Lima", 2], ["Carla Nunes", 2]]
+        }
+      },
+      "hint": "Conte os pedidos por cliente, ordene pelo total e use LIMIT 5."
+    }
+  ],
+  "next_arc": {
+    "intro": {
+      "title": "Agora são duas padarias e o dobro dos problemas",
+      "arc": "Júnior 2 - A primeira filial",
+      "story": "Olá, analista! Depois de ajudar a Padaria Pão Nosso de Cada Dia a sair do achismo e entrar no perigoso mundo das decisões baseadas em dados, você sobreviveu ao primeiro arco da carreira.\n\nSeu Joaquim ficou tão empolgado com os resultados que fez o que todo empreendedor otimista faz depois de ver um gráfico subindo: abriu uma filial.\n\nAgora a padaria virou uma pequena rede, com uma matriz no bairro original e uma filial recém-inaugurada do outro lado da cidade. O sonho cresceu, a operação cresceu, os problemas cresceram e, por algum motivo, todo mundo acha que você, Analista de Dados Júnior, já deveria saber lidar com isso com a serenidade de um diretor de BI.\n\nA nova fase traz vendas por unidade, funcionários em turnos diferentes, entregas entre lojas, estoque compartilhado e clientes comparando o pão francês da matriz com o da filial como se fosse final de campeonato.\n\nSua missão é continuar ajudando a padaria a crescer sem virar uma bagunça com logotipo. Porque abrir filial é bonito no Instagram, mas quem segura a operação no mundo real é consulta SQL bem feita."
+    },
+    "completion": {
+      "title": "Filial funcionando, caos catalogado",
+      "story": "Você ajudou a matriz e a filial a pararem de discutir no grito e começarem a comparar operação com dados. A rede ainda tem fila, estoque apertado e logística com personalidade, mas agora seu Joaquim já sabe onde dói antes de culpar o clima."
+    },
+    "scenarios": [
+      {
+        "id": "career_padaria_junior_006",
+        "category": "Carreira: Padaria",
+        "title": "Duelo de balcões",
+        "difficulty": "Júnior",
+        "database": "carreira_padaria.db",
+        "story": "Olá, analista! A Padaria Pão Nosso de Cada Dia agora tem duas unidades e, como era inevitável, a matriz e a filial já começaram uma competição silenciosa pelo título de verdadeira responsável pelo sucesso.\n\nA equipe da matriz diz que carrega a tradição. A filial diz que representa o futuro. Seu Joaquim diz que ama as duas igualmente, mas abriu a planilha de vendas com a expressão de quem quer saber qual filha está pagando mais boleto.\n\nAntes que a rivalidade vire camiseta personalizada, os dados precisam mostrar quanto cada unidade vendeu no período.\n\nSua missão é comparar o faturamento total da matriz e da filial. Porque em rede de padarias, orgulho local é importante, mas receita ainda fala mais alto que discurso de balcão.",
+        "objective": "Sua tarefa: retorne a unidade e o faturamento total. Calcule o faturamento como quantidade vendida multiplicada pelo preço unitário, agrupe por unidade e ordene do maior faturamento para o menor.",
+        "objective_steps": [
+          "Comece pelas vendas da rede.",
+          "Calcule o faturamento de cada venda.",
+          "Agrupe os valores por unidade.",
+          "Ordene pelas unidades com maior faturamento."
+        ],
+        "expected_sql": "SELECT unidade, ROUND(SUM(quantidade * preco_unitario), 2) AS faturamento_total FROM rede_vendas GROUP BY unidade ORDER BY faturamento_total DESC;",
+        "expected_answer": {
+          "query": "SELECT unidade, ROUND(SUM(quantidade * preco_unitario), 2) AS faturamento_total FROM rede_vendas GROUP BY unidade ORDER BY faturamento_total DESC;",
+          "result": {
+            "columns": ["unidade", "faturamento_total"],
+            "rows": [["Filial", 772.5], ["Matriz", 568.0]]
+          }
+        },
+        "hint": "Agrupe as vendas por unidade e some quantidade * preco_unitario."
+      },
+      {
+        "id": "career_padaria_junior_007",
+        "category": "Carreira: Padaria",
+        "title": "Turno sob pressão",
+        "difficulty": "Júnior",
+        "database": "carreira_padaria.db",
+        "story": "Olá, analista! Com duas unidades funcionando, a padaria descobriu uma verdade operacional antiga: quanto mais portas abertas, mais gente perguntando por que a fila está parada.\n\nNa matriz, o movimento da manhã continua intenso. Na filial, o horário da tarde parece ter virado ponto de encontro oficial do bairro. Os funcionários dizem que estão fazendo o possível, os clientes dizem que estão esperando demais e seu Joaquim diz que precisa ver isso com dados, frase que agora ele usa para quase tudo.\n\nA gestão quer entender quais turnos estão concentrando mais atendimentos para ajustar escala sem transformar o balcão em zona de guerra.\n\nSua missão é contar quantos pedidos foram atendidos por turno em cada unidade. Porque funcionário cansado erra comanda, e comanda errada vira reunião.",
+        "objective": "Sua tarefa: retorne a unidade, o turno e a quantidade de pedidos atendidos. Agrupe por unidade e turno. Ordene da maior quantidade de pedidos para a menor. Em caso de empate, ordene por unidade e turno em ordem alfabética.",
+        "objective_steps": [
+          "Comece pelos pedidos da rede.",
+          "Agrupe os registros por unidade e turno.",
+          "Conte os pedidos de cada grupo.",
+          "Ordene os turnos com maior pressão operacional."
+        ],
+        "expected_sql": "SELECT unidade, turno, COUNT(*) AS pedidos FROM rede_pedidos GROUP BY unidade, turno ORDER BY pedidos DESC, unidade ASC, turno ASC;",
+        "expected_answer": {
+          "query": "SELECT unidade, turno, COUNT(*) AS pedidos FROM rede_pedidos GROUP BY unidade, turno ORDER BY pedidos DESC, unidade ASC, turno ASC;",
+          "result": {
+            "columns": ["unidade", "turno", "pedidos"],
+            "rows": [["Filial", "tarde", 5], ["Matriz", "manhã", 4], ["Filial", "manhã", 3], ["Matriz", "tarde", 2]]
+          }
+        },
+        "hint": "Use COUNT(*), agrupe por unidade e turno, depois ordene pelo total de pedidos."
+      },
+      {
+        "id": "career_padaria_junior_008",
+        "category": "Carreira: Padaria",
+        "title": "A farinha atravessou a cidade",
+        "difficulty": "Júnior",
+        "database": "carreira_padaria.db",
+        "story": "Olá, analista! A filial está indo bem, mas agora existe um novo problema: ingredientes não se teletransportam. Apesar de algumas pessoas da operação aparentemente acreditarem nisso.\n\nA matriz virou ponto de apoio para a filial, enviando farinha, fermento, embalagens e outros itens quando o estoque aperta. O problema é que algumas entregas internas estão demorando mais do que deveriam, e quando o fermento atrasa, o clima cresce menos que a massa.\n\nSeu Joaquim quer saber quais transferências entre unidades chegaram atrasadas para ajustar a logística antes que a expansão vire uma novela com planilha compartilhada.\n\nSua missão é identificar as entregas internas atrasadas entre matriz e filial. Porque em padaria, atraso de ingrediente não aparece no relatório: aparece na vitrine vazia.",
+        "objective": "Sua tarefa: retorne o item, a unidade de origem, a unidade de destino e os dias de atraso das transferências com atraso maior que zero. Ordene pelo maior atraso primeiro. Em caso de empate, ordene por item em ordem alfabética.",
+        "objective_steps": [
+          "Comece pelas transferências entre unidades.",
+          "Mantenha apenas entregas com atraso maior que zero.",
+          "Retorne item, origem, destino e dias de atraso.",
+          "Ordene pelos atrasos mais graves."
+        ],
+        "expected_sql": "SELECT item, origem, destino, dias_atraso FROM transferencias_unidades WHERE dias_atraso > 0 ORDER BY dias_atraso DESC, item ASC;",
+        "expected_answer": {
+          "query": "SELECT item, origem, destino, dias_atraso FROM transferencias_unidades WHERE dias_atraso > 0 ORDER BY dias_atraso DESC, item ASC;",
+          "result": {
+            "columns": ["item", "origem", "destino", "dias_atraso"],
+            "rows": [["Farinha de trigo", "Matriz", "Filial", 3], ["Embalagens", "Matriz", "Filial", 2], ["Fermento biológico", "Matriz", "Filial", 1]]
+          }
+        },
+        "hint": "Filtre as transferências em que dias_atraso > 0 e ordene pelos maiores atrasos."
+      },
+      {
+        "id": "career_padaria_junior_009",
+        "category": "Carreira: Padaria",
+        "title": "Alerta no estoque da filial",
+        "difficulty": "Júnior",
+        "database": "carreira_padaria.db",
+        "story": "Olá, analista! Agora que existem duas padarias, controlar estoque deixou de ser dar uma olhada no depósito e virou uma operação com nome, unidade, responsável e potencial para confusão.\n\nA matriz ainda tem certa folga em alguns ingredientes, mas a filial está aprendendo que vender bem também significa acabar com tudo mais rápido. O gerente da filial mandou três mensagens sobre estoque baixo, duas fotos de prateleira vazia e um áudio de quarenta segundos contendo apenas preocupação.\n\nAntes de comprar em excesso ou deixar produto faltar, a rede precisa saber quais itens estão abaixo do estoque mínimo em cada unidade.\n\nSua missão é listar os produtos com estoque crítico por loja. Porque quando a padaria vira rede, deve ter lá no fundo deixa de ser estratégia e passa a ser risco operacional.",
+        "objective": "Sua tarefa: retorne a unidade, o item, a quantidade atual e a quantidade mínima dos produtos em que a quantidade atual está abaixo da quantidade mínima. Ordene por unidade em ordem alfabética e depois pela menor quantidade atual.",
+        "objective_steps": [
+          "Comece pelo estoque por unidade.",
+          "Compare a quantidade atual com a quantidade mínima.",
+          "Mantenha apenas itens abaixo do mínimo.",
+          "Ordene por unidade e criticidade do estoque."
+        ],
+        "expected_sql": "SELECT unidade, item, quantidade_atual, quantidade_minima FROM estoque_unidades WHERE quantidade_atual < quantidade_minima ORDER BY unidade ASC, quantidade_atual ASC;",
+        "expected_answer": {
+          "query": "SELECT unidade, item, quantidade_atual, quantidade_minima FROM estoque_unidades WHERE quantidade_atual < quantidade_minima ORDER BY unidade ASC, quantidade_atual ASC;",
+          "result": {
+            "columns": ["unidade", "item", "quantidade_atual", "quantidade_minima"],
+            "rows": [["Filial", "Fermento biológico", 3.0, 8.0], ["Filial", "Farinha de trigo", 14.0, 25.0], ["Matriz", "Embalagens", 18.0, 30.0]]
+          }
+        },
+        "hint": "Compare quantidade_atual com quantidade_minima e mantenha apenas os itens abaixo do mínimo."
+      },
+      {
+        "id": "career_padaria_junior_010",
+        "category": "Carreira: Padaria",
+        "title": "Sucesso regional inesperado",
+        "difficulty": "Júnior",
+        "database": "carreira_padaria.db",
+        "story": "Olá, analista! A matriz e a filial vendem os mesmos produtos, mas os clientes já começaram a provar que bairro nenhum respeita completamente o planejamento comercial.\n\nNa matriz, o pão francês continua reinando com a autoridade de um clássico. Na filial, produtos diferentes começaram a ganhar força, e a equipe quer entender se isso é tendência real ou só empolgação de inauguração.\n\nSeu Joaquim quer comparar os produtos mais vendidos por unidade antes de decidir o que destacar nas vitrines, quais fornadas aumentar e quais apostas talvez precisem voltar discretamente para o canto da prateleira.\n\nSua missão é mostrar quais produtos mais venderam em cada unidade. Porque expansão boa não é copiar tudo: é descobrir onde cada loja tem sua própria freguesia.",
+        "objective": "Sua tarefa: retorne a unidade, o produto e o total de unidades vendidas. Some a quantidade vendida por produto em cada unidade. Ordene por unidade em ordem alfabética e, dentro de cada unidade, pelo maior total vendido.",
+        "objective_steps": [
+          "Comece pelas vendas da rede.",
+          "Agrupe por unidade e produto.",
+          "Some as unidades vendidas em cada grupo.",
+          "Ordene primeiro pela unidade e depois pelo maior volume vendido."
+        ],
+        "expected_sql": "SELECT unidade, produto, SUM(quantidade) AS total_vendido FROM rede_vendas GROUP BY unidade, produto ORDER BY unidade ASC, total_vendido DESC;",
+        "expected_answer": {
+          "query": "SELECT unidade, produto, SUM(quantidade) AS total_vendido FROM rede_vendas GROUP BY unidade, produto ORDER BY unidade ASC, total_vendido DESC;",
+          "result": {
+            "columns": ["unidade", "produto", "total_vendido"],
+            "rows": [["Filial", "Pão de queijo", 70], ["Filial", "Café coado", 55], ["Filial", "Bolo de cenoura", 25], ["Matriz", "Pão francês", 120], ["Matriz", "Café coado", 25], ["Matriz", "Bolo de cenoura", 20]]
+          }
+        },
+        "hint": "Agrupe por unidade e produto, some as quantidades e ordene primeiro pela unidade, depois pelo total vendido."
+      }
+    ],
+    "next_arc": {
+      "intro": {
+        "title": "A padaria virou uma rede",
+        "arc": "Júnior 3 - A rede entrou no radar",
+        "story": "Olá, analista! A Padaria Pão Nosso de Cada Dia oficialmente deixou de ser aquela padaria boa do bairro e começou a ser chamada de rede de padarias, o que deixou seu Joaquim emocionado e a operação levemente apavorada.\n\nA matriz continua cheia, a filial já tem clientes fiéis, o delivery começou a aparecer como promessa de crescimento e algumas empresas da região descobriram que café da manhã corporativo melhora qualquer reunião, exceto as que poderiam ter sido um e-mail.\n\nMas crescer trouxe novos problemas: entregas atrasadas, encomendas grandes, fornecedores inconsistentes, produtos sobrando no fim do dia e clientes dando opiniões com a confiança de quem acabou de comer um pão de queijo frio.\n\nSua missão neste arco é ajudar a padaria a entender onde a operação está funcionando, onde está desperdiçando dinheiro e onde o crescimento pode virar bagunça com embalagem personalizada. Porque virar rede é bonito, mas continuar lucrando depois disso exige mais do que cheiro de pão quente."
+      },
+      "completion": {
+        "title": "A rede entrou nos trilhos",
+        "story": "Você conectou delivery, desperdício, fornecedores, encomendas e avaliações em uma visão que parece pequena só para quem nunca tentou abrir filial com forno, rota e cliente opinando ao mesmo tempo. Seu Joaquim começou falando em mais uma loja; agora, pelo menos, fala olhando para dados."
+      },
+      "scenarios": [
+        {
+          "id": "career_padaria_junior_011",
+          "category": "Carreira: Padaria",
+          "title": "Delivery saiu, paciência ficou",
+          "difficulty": "Júnior",
+          "database": "carreira_padaria.db",
+          "story": "Olá, analista! A padaria entrou no delivery e descobriu uma verdade dura: pão chega quentinho só quando a operação, o trânsito e o aplicativo decidem colaborar no mesmo dia.\n\nOs pedidos começaram a crescer, mas algumas entregas estão atrasando mais do que deveriam. Clientes mandam mensagem perguntando se o café da manhã virou café da tarde, entregadores culpam rota, chuva e semáforo, e seu Joaquim está tentando não responder avaliações com emoção.\n\nAntes de trocar todo o raio de entrega ou prometer teletransporte no plano de expansão, os dados precisam mostrar quais bairros concentram mais atrasos.\n\nSua missão é identificar os bairros com mais entregas atrasadas. Porque delivery sem análise vira só uma forma moderna de levar reclamação até a porta do cliente.",
+          "objective": "Sua tarefa: retorne o bairro e a quantidade de entregas atrasadas. Considere apenas pedidos com minutos de atraso maior que zero. Agrupe por bairro e ordene da maior quantidade de atrasos para a menor. Em caso de empate, ordene por bairro em ordem alfabética.",
+          "objective_steps": [
+            "Comece pelos pedidos de delivery.",
+            "Mantenha apenas entregas com atraso maior que zero.",
+            "Agrupe os atrasos por bairro.",
+            "Ordene os bairros com maior concentração de problema."
+          ],
+          "expected_sql": "SELECT bairro, COUNT(*) AS entregas_atrasadas FROM delivery_pedidos WHERE minutos_atraso > 0 GROUP BY bairro ORDER BY entregas_atrasadas DESC, bairro ASC;",
+          "expected_answer": {
+            "query": "SELECT bairro, COUNT(*) AS entregas_atrasadas FROM delivery_pedidos WHERE minutos_atraso > 0 GROUP BY bairro ORDER BY entregas_atrasadas DESC, bairro ASC;",
+            "result": {
+              "columns": ["bairro", "entregas_atrasadas"],
+              "rows": [["Centro", 3], ["Jardim Norte", 2], ["Vila Clara", 1]]
+            }
+          },
+          "hint": "Filtre minutos_atraso maior que zero, agrupe por bairro e conte os pedidos."
+        },
+        {
+          "id": "career_padaria_junior_012",
+          "category": "Carreira: Padaria",
+          "title": "Sobra de vitrine",
+          "difficulty": "Júnior",
+          "database": "carreira_padaria.db",
+          "story": "Olá, analista! No fechamento da padaria, a vitrine anda parecendo retrospectiva de decisões otimistas demais. Alguns produtos sobram, outros desaparecem cedo, e todo mundo tem uma teoria com cheiro de achismo recém-assado.\n\nA produção quer evitar falta. O caixa quer evitar perda. Seu Joaquim quer evitar olhar para uma bandeja cheia no fim do dia e sentir que está financiando tristeza com cobertura de açúcar.\n\nAntes de ajustar fornadas no impulso, a rede precisa saber quais produtos estão gerando mais desperdício.\n\nSua missão é somar o descarte por produto. Porque produto parado na vitrine pode até parecer bonito, mas no relatório financeiro ele atende pelo nome de dinheiro indo embora.",
+          "objective": "Sua tarefa: retorne o produto e o total desperdiçado. Some a quantidade descartada por produto e ordene do maior desperdício para o menor. Em caso de empate, ordene por produto em ordem alfabética.",
+          "objective_steps": [
+            "Comece pelos registros de desperdício diário.",
+            "Agrupe os registros por produto.",
+            "Some as quantidades descartadas.",
+            "Ordene pelos produtos que mais geraram perda."
+          ],
+          "expected_sql": "SELECT produto, SUM(quantidade_descartada) AS total_desperdicio FROM desperdicio_diario GROUP BY produto ORDER BY total_desperdicio DESC, produto ASC;",
+          "expected_answer": {
+            "query": "SELECT produto, SUM(quantidade_descartada) AS total_desperdicio FROM desperdicio_diario GROUP BY produto ORDER BY total_desperdicio DESC, produto ASC;",
+            "result": {
+              "columns": ["produto", "total_desperdicio"],
+              "rows": [["Pão francês", 18], ["Croissant", 12], ["Bolo de cenoura", 9], ["Pão de queijo", 5]]
+            }
+          },
+          "hint": "Agrupe por produto e some quantidade_descartada."
+        },
+        {
+          "id": "career_padaria_junior_013",
+          "category": "Carreira: Padaria",
+          "title": "Fornecedor com agenda criativa",
+          "difficulty": "Júnior",
+          "database": "carreira_padaria.db",
+          "story": "Olá, analista! Com duas unidades e delivery rodando, fornecedor deixou de ser detalhe administrativo e virou parte do suspense operacional da semana.\n\nAlgumas entregas chegam no prazo. Outras chegam atrasadas, incompletas ou acompanhadas de explicações que começam com então, veja bem. A produção finge calma, o estoque faz conta no canto e seu Joaquim já aprendeu que promessa de fornecedor não entra no forno.\n\nAntes de trocar contrato na base da irritação, os dados precisam mostrar quais fornecedores mais geraram problema.\n\nSua missão é contar entregas atrasadas ou incompletas por fornecedor. Porque parceria comercial é linda, mas farinha que não chega não vira pão por força de relacionamento.",
+          "objective": "Sua tarefa: retorne o fornecedor e a quantidade de problemas. Considere apenas entregas com status 'atrasada' ou 'incompleta'. Agrupe por fornecedor e ordene da maior quantidade de problemas para a menor. Em caso de empate, ordene por fornecedor em ordem alfabética.",
+          "objective_steps": [
+            "Comece pelas entregas de fornecedores.",
+            "Mantenha apenas entregas atrasadas ou incompletas.",
+            "Agrupe os problemas por fornecedor.",
+            "Ordene pelos fornecedores com maior volume de falhas."
+          ],
+          "expected_sql": "SELECT fornecedor, COUNT(*) AS problemas FROM fornecedores_entregas WHERE status_entrega IN ('atrasada', 'incompleta') GROUP BY fornecedor ORDER BY problemas DESC, fornecedor ASC;",
+          "expected_answer": {
+            "query": "SELECT fornecedor, COUNT(*) AS problemas FROM fornecedores_entregas WHERE status_entrega IN ('atrasada', 'incompleta') GROUP BY fornecedor ORDER BY problemas DESC, fornecedor ASC;",
+            "result": {
+              "columns": ["fornecedor", "problemas"],
+              "rows": [["Moinho Aurora", 3], ["Laticínios Boa Vista", 2], ["Embalagens Sul", 1]]
+            }
+          },
+          "hint": "Use WHERE com IN para filtrar os status problemáticos e depois conte por fornecedor."
+        },
+        {
+          "id": "career_padaria_junior_014",
+          "category": "Carreira: Padaria",
+          "title": "Café corporativo, boleto executivo",
+          "difficulty": "Júnior",
+          "database": "carreira_padaria.db",
+          "story": "Olá, analista! As empresas da região descobriram que pedir café da manhã da padaria deixa reunião menos triste, embora ainda não resolva pauta mal escrita.\n\nAgora surgiram encomendas corporativas: kits, bandejas, combos e pedidos grandes o suficiente para fazer o forno parecer participante de reunião estratégica. Seu Joaquim gostou da novidade, principalmente da parte em que empresas pagam mais do que clientes pedindo só um pão na chapa.\n\nAntes de dar desconto para todo mundo ou chamar qualquer compra grande de conta-chave, a padaria precisa saber quais clientes corporativos mais compraram.\n\nSua missão é listar as empresas com maior valor encomendado. Porque cliente importante não é quem manda e-mail com logo bonito, é quem aparece bem no SUM.",
+          "objective": "Sua tarefa: retorne o cliente corporativo e o valor total encomendado. Some o valor das encomendas por cliente, arredonde para 2 casas decimais, ordene do maior total para o menor e traga apenas os 5 primeiros resultados.",
+          "objective_steps": [
+            "Comece pelas encomendas corporativas.",
+            "Agrupe os registros por cliente empresa.",
+            "Some o valor total de cada cliente.",
+            "Ordene pelos maiores compradores e limite aos 5 primeiros."
+          ],
+          "expected_sql": "SELECT cliente_empresa, ROUND(SUM(valor_total), 2) AS total_encomendado FROM encomendas_corporativas GROUP BY cliente_empresa ORDER BY total_encomendado DESC LIMIT 5;",
+          "expected_answer": {
+            "query": "SELECT cliente_empresa, ROUND(SUM(valor_total), 2) AS total_encomendado FROM encomendas_corporativas GROUP BY cliente_empresa ORDER BY total_encomendado DESC LIMIT 5;",
+            "result": {
+              "columns": ["cliente_empresa", "total_encomendado"],
+              "rows": [["Escritório Alameda", 2400.0], ["Clínica Horizonte", 1750.5], ["Escola Girassol", 1280.0], ["Academia Pulse", 900.0], ["Studio Norte", 620.0]]
+            }
+          },
+          "hint": "Agrupe por cliente_empresa, some valor_total e use LIMIT 5."
+        },
+        {
+          "id": "career_padaria_junior_015",
+          "category": "Carreira: Padaria",
+          "title": "Estrelas no balcão",
+          "difficulty": "Júnior",
+          "database": "carreira_padaria.db",
+          "story": "Olá, analista! A rede começou a coletar avaliações dos clientes, essa invenção moderna que transforma opinião sobre atendimento em número e número em reunião.\n\nA matriz está confiante, a filial diz que ainda está pegando ritmo e alguns clientes avaliaram com a severidade de jurado de reality gastronômico. Seu Joaquim quer entender se existe alguma unidade precisando de atenção antes que nota baixa vire reputação baixa.\n\nAntes de concluir que foi só azar ou que cliente não entende a pressão do balcão, os dados precisam comparar a média de avaliação por unidade.\n\nSua missão é descobrir qual unidade tem pior média de satisfação. Porque sorriso no atendimento ajuda, mas AVG baixo pede ação.",
+          "objective": "Sua tarefa: retorne a unidade e a média de avaliação. Calcule a média das notas por unidade, arredonde para 2 casas decimais e ordene da menor média para a maior.",
+          "objective_steps": [
+            "Comece pelas avaliações dos clientes.",
+            "Agrupe as notas por unidade.",
+            "Calcule a média de avaliação.",
+            "Ordene começando pela unidade com pior média."
+          ],
+          "expected_sql": "SELECT unidade, ROUND(AVG(nota), 2) AS media_avaliacao FROM avaliacoes_clientes GROUP BY unidade ORDER BY media_avaliacao ASC;",
+          "expected_answer": {
+            "query": "SELECT unidade, ROUND(AVG(nota), 2) AS media_avaliacao FROM avaliacoes_clientes GROUP BY unidade ORDER BY media_avaliacao ASC;",
+            "result": {
+              "columns": ["unidade", "media_avaliacao"],
+              "rows": [["Filial", 3.6], ["Matriz", 4.4]]
+            }
+          },
+          "hint": "Use AVG(nota), agrupe por unidade e ordene pela menor média."
+        }
+      ],
+      "next_arc": {
+        "intro": {
+          "title": "Auditoria do Pão Supremo",
+          "arc": "Júnior 4 - Auditoria do Pão Supremo",
+          "story": "Olá, analista! Depois de sobreviver a estoque crítico, filial recém-aberta, delivery atrasado, fornecedor temperamental e reuniões onde alguém sempre dizia mas eu acho que..., você chegou ao último arco da sua fase como Analista de Dados Júnior.\n\nA Padaria Pão Nosso de Cada Dia agora é oficialmente uma pequena rede. A matriz continua firme, a filial já tem freguesia própria e seu Joaquim começou a usar palavras como escala, processo e expansão sustentável, mesmo ainda chamando dashboard de painelzinho dos números.\n\nMas o crescimento chamou atenção. Um possível investidor local, conhecido como Dona Célia das Quitandas Reunidas, quer avaliar se a padaria está pronta para virar uma rede maior. Ela não quer ouvir só histórias bonitas sobre pão quentinho, vitrine cheia e sonho de abrir novas lojas. Ela quer evidências.\n\nSeu Joaquim entrou em modo apresentação executiva. A equipe entrou em modo pânico moderado. E você, ainda Júnior, recebeu a missão mais importante até agora: preparar os dados que vão provar se a padaria está crescendo com controle ou apenas correndo com uma planilha aberta.\n\nSua missão neste arco é ajudar a padaria a passar pela Auditoria do Pão Supremo: revisar vendas, desperdícios, atendimento, estoque e desempenho das unidades antes da reunião com a investidora. Porque promoção não vem quando você acerta uma query. Promoção vem quando sua query evita que todo mundo passe vergonha na reunião."
+        },
+        "completion": {
+          "title": "Auditoria concluída",
+          "story": "Parabéns, analista! Você concluiu a Auditoria do Pão Supremo sem deixar a reunião virar teatro corporativo, degustação emocional ou apresentação baseada em eu sinto que a filial está indo bem.\n\nCom suas consultas, a Padaria Pão Nosso de Cada Dia conseguiu mostrar faturamento por unidade, desperdícios, gargalos de atendimento, riscos de estoque e satisfação dos clientes. Dona Célia viu números. Seu Joaquim viu futuro. A equipe viu que talvez aqueles relatórios que você pede não sejam só coisa de dados.\n\nDepois da reunião, seu Joaquim chamou você no canto, segurando um café e uma expressão grave de quem ensaiou uma frase importante no caminho do caixa até a mesa.\n\nEle disse que você começou como Júnior, sobreviveu ao caos da padaria, ajudou a abrir filial, enfrentou estoque, delivery, fornecedor, fila, desperdício e ainda conseguiu explicar tudo sem usar a frase depende mais de cinco vezes.\n\nA partir de agora, você deixa de ser apenas o Analista de Dados Júnior da padaria.\n\nVocê foi promovido para Analista de Dados Pleno.\n\nA jornada continua. Agora as perguntas vão ficar menos óbvias, os dados vão ficar mais espalhados e as reuniões vão ter mais gente dizendo só cruza isso rapidinho?. Mas pelo menos você já sabe: quando o achismo entra pela porta, uma boa query pode pedir para ele aguardar na fila."
+        },
+        "scenarios": [
+          {
+            "id": "career_padaria_junior_016",
+            "category": "Carreira: Padaria",
+            "title": "Quem segura o pão?",
+            "difficulty": "Júnior",
+            "database": "carreira_padaria.db",
+            "story": "Olá, analista! A reunião com Dona Célia começou com uma pergunta simples, o tipo de pergunta que parece inofensiva até alguém perceber que não sabe responder sem abrir sete abas de planilha.\n\nEla quer saber qual unidade está gerando mais faturamento. A matriz afirma que tem tradição. A filial afirma que tem potencial. Seu Joaquim afirma que as duas são importantes, mas falou isso com a voz de quem quer muito ver o ranking.\n\nAntes que a apresentação vire uma disputa familiar com crachá corporativo, os dados precisam mostrar qual unidade realmente está sustentando a expansão.\n\nSua missão é calcular o faturamento total por unidade. Porque no mundo dos negócios, potencial é bonito, mas faturamento ainda é o idioma que investidor entende sem legenda.",
+            "objective": "Sua tarefa: retorne a unidade e o faturamento total. Calcule o faturamento como quantidade vendida multiplicada pelo preço unitário. Agrupe por unidade e ordene do maior faturamento para o menor.",
+            "objective_steps": [
+              "Comece pelas vendas da rede.",
+              "Calcule o faturamento de cada venda.",
+              "Agrupe o resultado por unidade.",
+              "Ordene pelas unidades com maior faturamento."
+            ],
+            "expected_sql": "SELECT unidade, ROUND(SUM(quantidade * preco_unitario), 2) AS faturamento_total FROM rede_vendas GROUP BY unidade ORDER BY faturamento_total DESC;",
+            "expected_answer": {
+              "query": "SELECT unidade, ROUND(SUM(quantidade * preco_unitario), 2) AS faturamento_total FROM rede_vendas GROUP BY unidade ORDER BY faturamento_total DESC;",
+              "result": {
+                "columns": ["unidade", "faturamento_total"],
+                "rows": [["Filial", 772.5], ["Matriz", 568.0]]
+              }
+            },
+            "hint": "Some quantidade * preco_unitario e agrupe o resultado por unidade."
+          },
+          {
+            "id": "career_padaria_junior_017",
+            "category": "Carreira: Padaria",
+            "title": "Sucesso com farelo demais",
+            "difficulty": "Júnior",
+            "database": "carreira_padaria.db",
+            "story": "Olá, analista! Dona Célia olhou para os números de venda, sorriu por meio segundo e fez a pergunta que derruba qualquer clima de comemoração: e quanto vocês perdem no fim do dia?\n\nO silêncio foi tão grande que deu para ouvir um croissant perdendo crocância na vitrine.\n\nA padaria vende bastante, mas alguns produtos também sobram demais no fechamento. Seu Joaquim chama isso de margem para encantar o cliente. A operação chama de produção otimista. O financeiro chama de dinheiro assado e jogado fora.\n\nSua missão é identificar quais produtos acumulam maior desperdício. Porque crescer vendendo é bom, mas crescer desperdiçando é só fazer prejuízo com cheiro de baunilha.",
+            "objective": "Sua tarefa: retorne o produto e o total de unidades desperdiçadas. Some as unidades desperdiçadas por produto e ordene do maior desperdício para o menor. Em caso de empate, ordene por produto em ordem alfabética.",
+            "objective_steps": [
+              "Comece pelos registros de desperdício.",
+              "Agrupe os registros por produto.",
+              "Some as unidades desperdiçadas.",
+              "Ordene pelos produtos com maior perda."
+            ],
+            "expected_sql": "SELECT produto, SUM(quantidade_descartada) AS unidades_desperdicadas FROM desperdicio_diario GROUP BY produto ORDER BY unidades_desperdicadas DESC, produto ASC;",
+            "expected_answer": {
+              "query": "SELECT produto, SUM(quantidade_descartada) AS unidades_desperdicadas FROM desperdicio_diario GROUP BY produto ORDER BY unidades_desperdicadas DESC, produto ASC;",
+              "result": {
+                "columns": ["produto", "unidades_desperdicadas"],
+                "rows": [["Pão francês", 18], ["Croissant", 12], ["Bolo de cenoura", 9], ["Pão de queijo", 5]]
+              }
+            },
+            "hint": "Agrupe por produto e use SUM na coluna de unidades desperdiçadas."
+          },
+          {
+            "id": "career_padaria_junior_018",
+            "category": "Carreira: Padaria",
+            "title": "A fila também faz auditoria",
+            "difficulty": "Júnior",
+            "database": "carreira_padaria.db",
+            "story": "Olá, analista! A investidora visitou as duas unidades disfarçada de cliente comum, o que seria convincente se ela não tivesse chegado anotando tempo de atendimento em um bloquinho com cara de due diligence.\n\nNa matriz, a fila anda com certa dignidade. Na filial, depende do horário, da sorte e da velocidade com que alguém encontra a maquininha. Os funcionários dizem que o movimento está alto. Os clientes dizem que a fila está longa. Seu Joaquim diz que é sinal de sucesso, frase perigosa quando dita perto de uma pessoa segurando senha 42.\n\nAgora a padaria precisa saber qual unidade tem o maior tempo médio de atendimento.\n\nSua missão é medir o tempo médio de atendimento por unidade. Porque fila grande pode parecer popularidade, mas em auditoria também pode parecer gargalo com uniforme.",
+            "objective": "Sua tarefa: retorne a unidade e o tempo médio de atendimento em minutos. Calcule a média do tempo de atendimento por unidade, arredonde para 2 casas decimais e ordene da maior média para a menor.",
+            "objective_steps": [
+              "Comece pelos atendimentos registrados.",
+              "Agrupe os tempos por unidade.",
+              "Calcule a média de atendimento.",
+              "Ordene pelas maiores médias."
+            ],
+            "expected_sql": "SELECT unidade, ROUND(AVG(tempo_atendimento_min), 2) AS tempo_medio_min FROM atendimentos_unidades GROUP BY unidade ORDER BY tempo_medio_min DESC;",
+            "expected_answer": {
+              "query": "SELECT unidade, ROUND(AVG(tempo_atendimento_min), 2) AS tempo_medio_min FROM atendimentos_unidades GROUP BY unidade ORDER BY tempo_medio_min DESC;",
+              "result": {
+                "columns": ["unidade", "tempo_medio_min"],
+                "rows": [["Filial", 8.75], ["Matriz", 5.5]]
+              }
+            },
+            "hint": "Use AVG no tempo de atendimento e agrupe por unidade."
+          },
+          {
+            "id": "career_padaria_junior_019",
+            "category": "Carreira: Padaria",
+            "title": "Ruptura não combina com expansão",
+            "difficulty": "Júnior",
+            "database": "carreira_padaria.db",
+            "story": "Olá, analista! Faltando poucas horas para a apresentação final, a filial avisou que alguns ingredientes estão perigosamente baixos. A matriz respondeu que talvez tenha um pouco sobrando, o que em linguagem operacional significa que ninguém tem certeza de nada.\n\nDona Célia quer saber se a rede consegue manter padrão entre unidades. Seu Joaquim quer responder claro com confiança. O estoque, infelizmente, parece estar preparando uma versão alternativa dessa resposta.\n\nAntes que alguém prometa expansão nacional sem saber se há fermento suficiente para amanhã, os dados precisam listar os itens em risco.\n\nSua missão é encontrar os ingredientes abaixo do estoque mínimo em cada unidade. Porque investidor pode até aceitar risco calculado, mas não costuma gostar de risco escondido atrás de saco de farinha.",
+            "objective": "Sua tarefa: retorne a unidade, o ingrediente, a quantidade atual e a quantidade mínima. Considere apenas itens em que a quantidade atual está abaixo da quantidade mínima. Ordene por unidade em ordem alfabética e depois pela menor quantidade atual.",
+            "objective_steps": [
+              "Comece pelo estoque por unidade.",
+              "Compare a quantidade atual com a quantidade mínima.",
+              "Mantenha apenas itens abaixo do limite.",
+              "Ordene por unidade e criticidade."
+            ],
+            "expected_sql": "SELECT unidade, item AS ingrediente, quantidade_atual, quantidade_minima FROM estoque_unidades WHERE quantidade_atual < quantidade_minima ORDER BY unidade ASC, quantidade_atual ASC;",
+            "expected_answer": {
+              "query": "SELECT unidade, item AS ingrediente, quantidade_atual, quantidade_minima FROM estoque_unidades WHERE quantidade_atual < quantidade_minima ORDER BY unidade ASC, quantidade_atual ASC;",
+              "result": {
+                "columns": ["unidade", "ingrediente", "quantidade_atual", "quantidade_minima"],
+                "rows": [["Filial", "Fermento biológico", 3.0, 8.0], ["Filial", "Farinha de trigo", 14.0, 25.0], ["Matriz", "Embalagens", 18.0, 30.0]]
+              }
+            },
+            "hint": "Use WHERE quantidade_atual < quantidade_minima."
+          },
+          {
+            "id": "career_padaria_junior_020",
+            "category": "Carreira: Padaria",
+            "title": "Satisfação não aceita desculpa",
+            "difficulty": "Júnior",
+            "database": "carreira_padaria.db",
+            "story": "Olá, analista! A última pergunta de Dona Célia veio com sorriso calmo e potencial destrutivo: os clientes estão satisfeitos?\n\nSeu Joaquim quase respondeu sim, eles sempre voltam, mas você sentiu no ar aquele momento em que uma resposta sem dados poderia encerrar uma carreira inteira antes do café.\n\nA padaria começou a coletar avaliações dos clientes nas duas unidades. Tem elogio sobre pão quente, reclamação sobre fila, comentário sobre atendimento e uma avaliação de duas estrelas escrita apenas cadê meu sonho?, que ninguém soube interpretar se era produto ou filosofia.\n\nAgora é hora de medir a satisfação média por unidade.\n\nSua missão é calcular a nota média dos clientes em cada loja. Porque cliente satisfeito recomenda, cliente irritado também recomenda, mas com outro objetivo.",
+            "objective": "Sua tarefa: retorne a unidade e a nota média dos clientes. Calcule a média das avaliações, arredonde para 2 casas decimais e ordene da menor nota média para a maior.",
+            "objective_steps": [
+              "Comece pelas avaliações dos clientes.",
+              "Agrupe as notas por unidade.",
+              "Calcule a média de satisfação.",
+              "Ordene começando pela menor nota média."
+            ],
+            "expected_sql": "SELECT unidade, ROUND(AVG(nota), 2) AS nota_media FROM avaliacoes_clientes GROUP BY unidade ORDER BY nota_media ASC;",
+            "expected_answer": {
+              "query": "SELECT unidade, ROUND(AVG(nota), 2) AS nota_media FROM avaliacoes_clientes GROUP BY unidade ORDER BY nota_media ASC;",
+              "result": {
+                "columns": ["unidade", "nota_media"],
+                "rows": [["Filial", 3.6], ["Matriz", 4.4]]
+              }
+            },
+            "hint": "Agrupe as avaliações por unidade e use AVG na nota."
+          }
+        ],
+        "next_arc": {
+          "intro": {
+            "title": "A padaria virou mercado.",
+            "arc": "Pleno 1 - Do Pão ao Mercado",
+            "story": "Olá, analista! Depois da lendária Auditoria do Pão Supremo, a Padaria Pão Nosso de Cada Dia recebeu investimento, reformou as lojas, contratou mais gente e fez aquilo que todo negócio bem-sucedido faz quando começa a dar certo: ficou mais complexo do que qualquer planilha deveria permitir.\n\nAgora a antiga padaria virou o Mercado Pão Nosso, uma pequena rede de supermercados com padaria própria, hortifruti, mercearia, frios, açougue, limpeza, bebidas e um setor administrativo onde a frase só cruza isso rapidinho já foi ouvida mais vezes do que o bip do caixa.\n\nA matriz continua existindo, a filial cresceu, e uma nova loja menor entrou em operação para testar expansão em outro bairro. O pão francês ainda é importante, claro, mas agora ele divide espaço com banana prata, sabão em pó, queijo mussarela, contra-filé, refrigerante e decisões de negócio que não cabem mais em uma consulta com uma tabela só.\n\nVocê foi promovido para Analista de Dados Pleno. Parabéns. Isso significa que agora as perguntas vêm com mais contexto, mais regra de negócio e mais gente olhando para você enquanto espera uma resposta objetiva.\n\nSua missão neste arco é ajudar o Mercado Pão Nosso a entender margem, estoque, fornecedores, setores e comportamento das lojas. Porque quando uma padaria vira supermercado, o cheiro de pão continua ótimo, mas quem evita prejuízo é SQL com JOIN, GROUP BY, HAVING e filtro bem colocado."
+          },
+          "completion": {
+            "title": "Pleno não vive só de query bonita",
+            "story": "Parabéns, analista! Você concluiu o primeiro arco como Analista de Dados Pleno e ajudou o Mercado Pão Nosso a entender que virar supermercado não é apenas colocar carrinho na entrada e aumentar a variedade de produtos.\n\nCom suas análises, a rede conseguiu enxergar margem por setor, estoque crítico, fornecedores problemáticos, perdas financeiras e áreas que vendem muito mas deixam pouco resultado. Em outras palavras: você tirou a operação do modo parece que está indo bem e colocou no modo agora sabemos onde dói.\n\nSeu Joaquim ficou orgulhoso. O investidor ficou interessado. O financeiro ficou preocupado, mas dessa vez de um jeito produtivo. E você percebeu que o trabalho de Pleno não é só escrever SQL maior: é entender a regra de negócio antes que alguém transforme uma dúvida mal formulada em relatório oficial.\n\nA jornada continua. A rede cresceu, os dados se espalharam e agora as perguntas vão começar a envolver comportamento de cliente, campanhas, ticket médio, sazonalidade e decisões que mexem diretamente no caixa.\n\nPorque no mercado, assim como na vida corporativa, sempre que alguém diz é uma análise simples, uma query com três joins acaba de nascer."
+          },
+          "scenarios": [
+            {
+              "id": "carreira_pleno_001",
+              "category": "Carreira",
+              "title": "Setores que pagam a conta",
+              "difficulty": "Pleno",
+              "database": "mercado_pleno.db",
+              "story": "Olá, analista! Seu primeiro desafio como Pleno começou com uma reunião de diretoria, o que na prática significa café em copo de vidro, três pessoas falando margem e uma quarta perguntando se padaria ainda é o coração do negócio.\n\nO Mercado Pão Nosso cresceu, mas agora cada setor quer defender sua importância. A padaria fala em tradição, o hortifruti fala em fluxo diário, o açougue fala em ticket médio e a mercearia fala tanto que ninguém sabe exatamente o que ela quis dizer.\n\nO investidor quer saber quais setores estão gerando mais margem bruta no mês. Não basta vender muito: se o custo acompanha de perto, o caixa aplaude com uma mão só.\n\nSua missão é calcular a margem bruta por setor. Porque no varejo, faturamento impressiona no slide, mas margem é quem decide se a expansão paga a própria conta.",
+              "objective": "Sua tarefa: retorne o setor e a margem bruta total das vendas entre 2026-07-01 e 2026-08-01. Calcule a margem como (preco_unitario - custo_unitario) * quantidade. Agrupe por setor e ordene da maior margem para a menor. Em caso de empate, ordene por setor em ordem alfabética.",
+              "objective_steps": [
+                "Comece pelas vendas realizadas no período solicitado.",
+                "Relacione cada venda ao produto vendido.",
+                "Relacione cada produto ao seu setor.",
+                "Calcule a margem de cada venda usando preço, custo e quantidade.",
+                "Some a margem por setor.",
+                "Ordene os setores pela maior margem total."
+              ],
+              "expected_sql": "SELECT s.nome AS setor, ROUND(SUM((p.preco_unitario - p.custo_unitario) * v.quantidade), 2) AS margem_bruta FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome ORDER BY margem_bruta DESC, setor ASC;",
+              "expected_answer": {
+                "query": "SELECT s.nome AS setor, ROUND(SUM((p.preco_unitario - p.custo_unitario) * v.quantidade), 2) AS margem_bruta FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome ORDER BY margem_bruta DESC, setor ASC;",
+                "result": {
+                  "columns": ["setor", "margem_bruta"],
+                  "rows": [["Mercearia", 5400.0], ["Açougue", 4380.0], ["Bebidas", 4200.0], ["Frios", 4080.0], ["Hortifruti", 3400.0], ["Padaria", 3150.0], ["Limpeza", 2380.0]]
+                }
+              },
+              "hint": "Junte vendas, produtos e setores. Depois calcule a diferença entre preço e custo antes de somar por setor."
+            },
+            {
+              "id": "carreira_pleno_002",
+              "category": "Carreira",
+              "title": "Prateleira vazia não vende",
+              "difficulty": "Pleno",
+              "database": "mercado_pleno.db",
+              "story": "Olá, analista! Hoje a operação abriu o dia com uma frase que assusta qualquer supermercado: tem produto acabando, mas depende da loja.\n\nNa matriz, o estoque parece controlado. Na Filial Jardim Norte, alguns itens estão sumindo com velocidade suspeita. Na Loja Compacta Vila Clara, compacta aparentemente virou também uma filosofia de armazenamento.\n\nA gestão quer saber quais setores concentram mais produtos abaixo do estoque mínimo em cada loja. Não adianta olhar item por item no desespero; agora a rede precisa entender onde está o risco operacional.\n\nSua missão é mapear os setores com mais produtos em nível crítico por loja. Porque prateleira vazia é o tipo de dashboard que o cliente entende sem login.",
+              "objective": "Sua tarefa: retorne a loja, o setor e a quantidade de produtos abaixo do estoque mínimo. Considere apenas produtos em que quantidade_atual < quantidade_minima. Agrupe por loja e setor. Ordene da maior quantidade crítica para a menor. Em caso de empate, ordene por loja e setor em ordem alfabética.",
+              "objective_steps": [
+                "Comece pelos registros de estoque.",
+                "Mantenha apenas produtos abaixo do mínimo.",
+                "Relacione cada item ao produto.",
+                "Relacione cada produto ao setor.",
+                "Relacione cada registro à loja.",
+                "Conte quantos produtos críticos existem por loja e setor."
+              ],
+              "expected_sql": "SELECT l.nome AS loja, s.nome AS setor, COUNT(*) AS produtos_criticos FROM estoque e JOIN lojas l ON l.id = e.loja_id JOIN produtos p ON p.id = e.produto_id JOIN setores s ON s.id = p.setor_id WHERE e.quantidade_atual < e.quantidade_minima GROUP BY l.nome, s.nome ORDER BY produtos_criticos DESC, loja ASC, setor ASC;",
+              "expected_answer": {
+                "query": "SELECT l.nome AS loja, s.nome AS setor, COUNT(*) AS produtos_criticos FROM estoque e JOIN lojas l ON l.id = e.loja_id JOIN produtos p ON p.id = e.produto_id JOIN setores s ON s.id = p.setor_id WHERE e.quantidade_atual < e.quantidade_minima GROUP BY l.nome, s.nome ORDER BY produtos_criticos DESC, loja ASC, setor ASC;",
+                "result": {
+                  "columns": ["loja", "setor", "produtos_criticos"],
+                  "rows": [["Filial Jardim Norte", "Hortifruti", 2], ["Loja Compacta Vila Clara", "Limpeza", 2], ["Filial Jardim Norte", "Açougue", 1], ["Loja Compacta Vila Clara", "Bebidas", 1], ["Matriz Centro", "Frios", 1]]
+                }
+              },
+              "hint": "Filtre o estoque abaixo do mínimo e use os joins para descobrir a loja e o setor de cada produto."
+            },
+            {
+              "id": "carreira_pleno_003",
+              "category": "Carreira",
+              "title": "O fornecedor também faz parte do caos",
+              "difficulty": "Pleno",
+              "database": "mercado_pleno.db",
+              "story": "Olá, analista! O Mercado Pão Nosso cresceu e descobriu uma verdade universal do varejo: quanto mais setor existe, mais fornecedor aparece prometendo pontualidade com PowerPoint bonito.\n\nO setor de compras está reclamando de entregas atrasadas, a operação reclama de entregas incompletas, o financeiro reclama de pagar urgência, e seu Joaquim reclama de todo mundo reclamar antes do café.\n\nA diretoria quer identificar fornecedores com maior número de problemas no mês. Para esta análise, problema significa entrega com status atrasada, incompleta ou cancelada. Entrega no prazo pode continuar vivendo sua vida em paz.\n\nSua missão é revelar quais fornecedores mais comprometeram a operação. Porque fornecedor ruim não aparece só no contrato: aparece na gôndola vazia, no gerente irritado e no cliente levando o dinheiro para outro mercado.",
+              "objective": "Sua tarefa: retorne o fornecedor e a quantidade de entregas problemáticas entre 2026-07-01 e 2026-08-01. Considere como problemáticas as entregas com status 'atrasada', 'incompleta' ou 'cancelada'. Agrupe por fornecedor. Retorne apenas fornecedores com 2 ou mais problemas. Ordene da maior quantidade para a menor. Em caso de empate, ordene por fornecedor em ordem alfabética.",
+              "objective_steps": [
+                "Comece pelas entregas do mês analisado.",
+                "Mantenha apenas os status problemáticos.",
+                "Relacione cada entrega ao fornecedor.",
+                "Conte os problemas por fornecedor.",
+                "Use HAVING para manter fornecedores com pelo menos 2 ocorrências.",
+                "Ordene do fornecedor mais problemático para o menos problemático."
+              ],
+              "expected_sql": "SELECT f.nome AS fornecedor, COUNT(*) AS entregas_problematicas FROM entregas_fornecedor ef JOIN fornecedores f ON f.id = ef.fornecedor_id WHERE ef.data_entrega >= '2026-07-01' AND ef.data_entrega < '2026-08-01' AND ef.status IN ('atrasada', 'incompleta', 'cancelada') GROUP BY f.nome HAVING COUNT(*) >= 2 ORDER BY entregas_problematicas DESC, fornecedor ASC;",
+              "expected_answer": {
+                "query": "SELECT f.nome AS fornecedor, COUNT(*) AS entregas_problematicas FROM entregas_fornecedor ef JOIN fornecedores f ON f.id = ef.fornecedor_id WHERE ef.data_entrega >= '2026-07-01' AND ef.data_entrega < '2026-08-01' AND ef.status IN ('atrasada', 'incompleta', 'cancelada') GROUP BY f.nome HAVING COUNT(*) >= 2 ORDER BY entregas_problematicas DESC, fornecedor ASC;",
+                "result": {
+                  "columns": ["fornecedor", "entregas_problematicas"],
+                  "rows": [["Horti Vale", 3], ["Carnes Serra", 2], ["Laticínios Boa Vista", 2]]
+                }
+              },
+              "hint": "Use IN para filtrar os status problemáticos e HAVING para manter apenas fornecedores com recorrência."
+            },
+            {
+              "id": "carreira_pleno_004",
+              "category": "Carreira",
+              "title": "O prejuízo passou no caixa?",
+              "difficulty": "Pleno",
+              "database": "mercado_pleno.db",
+              "story": "Olá, analista! Hoje o assunto é perda operacional, também conhecida internamente como aquilo que ninguém quer colocar no relatório até alguém perguntar.\n\nO Mercado Pão Nosso está vendendo mais, mas também está perdendo mais produtos por vencimento, quebra, armazenamento ruim e aquele misterioso motivo chamado ajuste, que geralmente significa que alguém preferiu não explicar muito.\n\nA diretoria quer saber quais lojas tiveram maior valor estimado de perdas no mês. Não basta contar unidades perdidas, porque perder uma banana não dói igual perder uma peça de carne nobre, embora ambas machuquem a alma do varejo.\n\nSua missão é calcular o valor total perdido por loja. Porque prejuízo não desaparece quando muda de prateleira; ele só espera alguém fazer o JOIN.",
+              "objective": "Sua tarefa: retorne a loja e o valor total de perdas entre 2026-07-01 e 2026-08-01. Calcule o valor da perda como quantidade_perdida * custo_unitario do produto. Agrupe por loja e ordene do maior valor perdido para o menor. Em caso de empate, ordene por loja em ordem alfabética.",
+              "objective_steps": [
+                "Comece pelos registros de perdas no período.",
+                "Relacione cada perda ao produto.",
+                "Relacione cada perda à loja.",
+                "Calcule o valor perdido usando quantidade perdida e custo unitário.",
+                "Some o valor perdido por loja.",
+                "Ordene pela maior perda financeira."
+              ],
+              "expected_sql": "SELECT l.nome AS loja, ROUND(SUM(pe.quantidade_perdida * p.custo_unitario), 2) AS valor_perdido FROM perdas pe JOIN lojas l ON l.id = pe.loja_id JOIN produtos p ON p.id = pe.produto_id WHERE pe.data_perda >= '2026-07-01' AND pe.data_perda < '2026-08-01' GROUP BY l.nome ORDER BY valor_perdido DESC, loja ASC;",
+              "expected_answer": {
+                "query": "SELECT l.nome AS loja, ROUND(SUM(pe.quantidade_perdida * p.custo_unitario), 2) AS valor_perdido FROM perdas pe JOIN lojas l ON l.id = pe.loja_id JOIN produtos p ON p.id = pe.produto_id WHERE pe.data_perda >= '2026-07-01' AND pe.data_perda < '2026-08-01' GROUP BY l.nome ORDER BY valor_perdido DESC, loja ASC;",
+                "result": {
+                  "columns": ["loja", "valor_perdido"],
+                  "rows": [["Matriz Centro", 616.0], ["Loja Compacta Vila Clara", 497.0], ["Filial Jardim Norte", 400.0]]
+                }
+              },
+              "hint": "A perda financeira depende do custo do produto. Junte perdas com produtos antes de somar."
+            },
+            {
+              "id": "carreira_pleno_005",
+              "category": "Carreira",
+              "title": "Vende muito, sobra pouco",
+              "difficulty": "Pleno",
+              "database": "mercado_pleno.db",
+              "story": "Olá, analista! A reunião final do arco começou com seu Joaquim animado mostrando os setores que mais venderam. O investidor olhou, respirou fundo e perguntou: mas quanto sobrou?\n\nEsse foi o momento em que metade da sala descobriu que vender bastante não significa necessariamente ganhar bastante. Alguns setores movimentam caixa, chamam cliente e deixam o mercado cheio, mas trabalham com margem apertada o suficiente para fazer o financeiro olhar para o teto.\n\nA diretoria quer identificar setores com faturamento relevante, mas margem percentual baixa. Em outras palavras: setores que parecem heróis no volume, mas talvez estejam suando para entregar lucro.\n\nSua missão é encontrar setores com faturamento alto e margem percentual abaixo do esperado. Porque no varejo, vender muito e ganhar pouco é basicamente fazer cardio com código de barras.",
+              "objective": "Sua tarefa: retorne o setor, o faturamento total e a margem percentual entre 2026-07-01 e 2026-08-01. Calcule o faturamento como preco_unitario * quantidade. Calcule a margem percentual como a margem bruta dividida pelo faturamento, multiplicada por 100. Considere apenas setores com faturamento total maior ou igual a 5000 e margem percentual abaixo de 25. Ordene pela menor margem percentual primeiro. Em caso de empate, ordene por setor em ordem alfabética.",
+              "objective_steps": [
+                "Comece pelas vendas do mês analisado.",
+                "Relacione cada venda ao produto.",
+                "Relacione cada produto ao setor.",
+                "Calcule faturamento total por setor.",
+                "Calcule margem bruta por setor.",
+                "Divida margem bruta por faturamento para obter a margem percentual.",
+                "Use HAVING para aplicar as regras de faturamento mínimo e margem baixa.",
+                "Ordene começando pelos setores com margem mais apertada."
+              ],
+              "expected_sql": "SELECT s.nome AS setor, ROUND(SUM(p.preco_unitario * v.quantidade), 2) AS faturamento_total, ROUND(SUM((p.preco_unitario - p.custo_unitario) * v.quantidade) * 100.0 / SUM(p.preco_unitario * v.quantidade), 2) AS margem_percentual FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome HAVING SUM(p.preco_unitario * v.quantidade) >= 5000 AND (SUM((p.preco_unitario - p.custo_unitario) * v.quantidade) * 100.0 / SUM(p.preco_unitario * v.quantidade)) < 25 ORDER BY margem_percentual ASC, setor ASC;",
+              "expected_answer": {
+                "query": "SELECT s.nome AS setor, ROUND(SUM(p.preco_unitario * v.quantidade), 2) AS faturamento_total, ROUND(SUM((p.preco_unitario - p.custo_unitario) * v.quantidade) * 100.0 / SUM(p.preco_unitario * v.quantidade), 2) AS margem_percentual FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome HAVING SUM(p.preco_unitario * v.quantidade) >= 5000 AND (SUM((p.preco_unitario - p.custo_unitario) * v.quantidade) * 100.0 / SUM(p.preco_unitario * v.quantidade)) < 25 ORDER BY margem_percentual ASC, setor ASC;",
+                "result": {
+                  "columns": ["setor", "faturamento_total", "margem_percentual"],
+                  "rows": [["Limpeza", 10500.0, 22.67], ["Bebidas", 17100.0, 24.56]]
+                }
+              },
+              "hint": "Você vai precisar calcular faturamento e margem no mesmo agrupamento. Use HAVING para filtrar depois da agregação."
+            }
+          ]
+        }
+      }
+    }
+  }
+}

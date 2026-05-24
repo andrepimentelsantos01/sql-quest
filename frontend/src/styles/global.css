@@ -393,6 +393,137 @@ h3 {
   gap: 18px;
 }
 
+.mode-menu-panel {
+  min-height: min(720px, calc(100vh - 80px));
+  display: grid;
+  align-content: center;
+  gap: 28px;
+  padding: 34px 0;
+}
+
+.mode-menu-brand {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.mode-logo {
+  font-size: clamp(2.1rem, 8vw, 4.6rem);
+}
+
+.mode-menu-brand p {
+  max-width: 620px;
+  color: #33424d;
+  font-size: 1.05rem;
+}
+
+.mode-menu-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mode-card-button {
+  min-height: 180px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid rgba(20, 184, 166, 0.2);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(236, 248, 247, 0.7)),
+    var(--surface-strong);
+  color: #17212b;
+  cursor: pointer;
+  text-align: left;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 16px 34px rgba(53, 71, 82, 0.12),
+    0 0 22px rgba(20, 184, 166, 0.08);
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.mode-card-button:hover {
+  border-color: rgba(20, 184, 166, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 20px 42px rgba(53, 71, 82, 0.16),
+    0 0 28px rgba(20, 184, 166, 0.14);
+}
+
+.mode-card-button svg {
+  color: #2dd4bf;
+  filter: drop-shadow(0 0 6px rgba(45, 212, 191, 0.42));
+}
+
+.mode-card-button span {
+  font-size: 1.25rem;
+  font-weight: 900;
+}
+
+.mode-card-button small {
+  color: #54616b;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.mode-card-button.career {
+  background:
+    linear-gradient(135deg, rgba(248, 255, 255, 0.9), rgba(224, 246, 243, 0.72)),
+    var(--surface-strong);
+}
+
+.mode-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -8px 0 18px;
+  padding: 10px 12px;
+  border: 1px solid rgba(22, 117, 111, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(236, 248, 247, 0.52)),
+    rgba(255, 255, 255, 0.58);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.74);
+}
+
+.mode-status-bar div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.mode-status-bar strong {
+  color: #17212b;
+  font-weight: 900;
+}
+
+.mode-status-bar span {
+  color: #54616b;
+  font-size: 0.86rem;
+}
+
+.career-arc-badge {
+  width: fit-content;
+  position: relative;
+  z-index: 1;
+  padding: 7px 10px;
+  border: 1px solid rgba(20, 184, 166, 0.24);
+  border-radius: 999px;
+  background: rgba(20, 184, 166, 0.1);
+  color: #12645f;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 .accepted-workspace {
   overflow: hidden;
 }
@@ -1450,6 +1581,57 @@ tbody tr:hover td {
   color: #33424d;
 }
 
+.game-over-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.game-over-copy p {
+  line-height: 1.55;
+}
+
+.career-complete-modal {
+  width: min(620px, 100%);
+  max-height: min(86vh, 680px);
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.career-complete-copy {
+  width: 100%;
+  max-height: min(42vh, 340px);
+  overflow-y: auto;
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(22, 117, 111, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.64);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  text-align: left;
+  overscroll-behavior: contain;
+}
+
+.career-complete-copy p {
+  color: #33424d;
+  line-height: 1.58;
+}
+
+.career-complete-copy::-webkit-scrollbar {
+  width: 10px;
+}
+
+.career-complete-copy::-webkit-scrollbar-track {
+  background: rgba(15, 42, 58, 0.08);
+  border-radius: 999px;
+}
+
+.career-complete-copy::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(255, 255, 255, 0.62);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #14b8a6, #0e7490);
+}
+
 .game-over-streak {
   min-width: 84px;
   padding: 10px 18px;
@@ -2077,6 +2259,19 @@ tbody tr:hover td {
     align-items: flex-start;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .mode-menu-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .mode-card-button {
+    min-height: 150px;
+  }
+
+  .mode-status-bar {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .scenario-meta {
