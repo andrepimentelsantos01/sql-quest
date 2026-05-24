@@ -66,7 +66,7 @@ export default function SqlTerminal({ schema, value, onChange, onPreview, loadin
       className={`panel terminal-panel sql-terminal${loading ? " is-running" : ""}`}
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2, delay: 0.03 }}
+      transition={{ duration: 0.12, delay: 0.015 }}
     >
       <div className="panel-title">
         <Terminal size={19} />

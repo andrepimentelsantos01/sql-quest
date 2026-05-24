@@ -7,7 +7,7 @@ export default function MissionBriefing({ scenario, onAcceptTask, onRejectTask, 
       className="panel mission-briefing"
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.22 }}
+      transition={{ duration: 0.14 }}
       key={scenario.id}
     >
       <div className="mission-title-row">
@@ -28,7 +28,7 @@ export default function MissionBriefing({ scenario, onAcceptTask, onRejectTask, 
             initial={{ opacity: 0, y: 10, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: 0.14 }}
+            transition={{ duration: 0.09 }}
           >
             <button type="button" className="accept-task-button" onClick={onAcceptTask}>
               <CheckCircle size={18} />

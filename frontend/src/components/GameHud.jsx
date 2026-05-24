@@ -9,7 +9,7 @@ export default function GameHud({ streak, lives }) {
       className="game-hud"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.18 }}
+      transition={{ duration: 0.11 }}
     >
       <div className="hud-brand">
         <div className="game-logo-wrap">

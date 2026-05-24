@@ -378,7 +378,7 @@ export default function App() {
 
     const scrollTimer = window.setTimeout(() => {
       terminalSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 90);
+    }, 40);
 
     return () => window.clearTimeout(scrollTimer);
   }, [taskAccepted, scenario?.id]);
@@ -418,7 +418,7 @@ export default function App() {
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -8 }}
-                        transition={{ duration: 0.22, ease: "easeOut" }}
+                        transition={{ duration: 0.14, ease: "easeOut" }}
                       >
                         <div ref={terminalSectionRef}>
                           <SqlTerminal
@@ -538,7 +538,7 @@ function ModeMenu({ onSelectFree, onSelectCareer }) {
       className="mode-menu-panel"
       initial={{ opacity: 0, y: 18 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.22 }}
+      transition={{ duration: 0.14 }}
     >
       <div className="mode-menu-brand">
         <h1 className="game-logo mode-logo">
@@ -598,7 +598,7 @@ function CareerIntroModal({ intro, open, isInitialArc, onStart, onBack }) {
           initial={{ opacity: 0, scale: 0.92, y: 18 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 10 }}
-          transition={{ duration: 0.18, ease: "easeOut" }}
+          transition={{ duration: 0.12, ease: "easeOut" }}
         >
           <div className="intro-data-animation" aria-hidden="true">
             <span>SELECT</span>
@@ -651,7 +651,7 @@ function CareerCompleteModal({ open, completion, hasNextArc, onBackToMenu, onRes
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 10 }}
-          transition={{ duration: 0.18, ease: "easeOut" }}
+          transition={{ duration: 0.12, ease: "easeOut" }}
         >
           <div className="result-icon success">
             <PartyPopper size={30} />
@@ -704,7 +704,7 @@ function IntroModal({ open, onStart }) {
           initial={{ opacity: 0, scale: 0.92, y: 18 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 10 }}
-          transition={{ duration: 0.18, ease: "easeOut" }}
+          transition={{ duration: 0.12, ease: "easeOut" }}
         >
           <div className="intro-data-animation" aria-hidden="true">
             <span>SELECT</span>
@@ -758,7 +758,7 @@ function GameOverModal({ streak, mode, onRetry }) {
           initial={{ opacity: 0, scale: 0.9, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 10 }}
-          transition={{ duration: 0.18, ease: "easeOut" }}
+          transition={{ duration: 0.12, ease: "easeOut" }}
         >
           <div className="party-burst" aria-hidden="true">
             {Array.from({ length: 14 }, (_, index) => (
@@ -770,7 +770,7 @@ function GameOverModal({ streak, mode, onRetry }) {
             className="result-icon success"
             initial={{ rotate: -8, scale: 0.82 }}
             animate={{ rotate: [0, -6, 6, 0], scale: 1 }}
-            transition={{ duration: 0.34, delay: 0.05 }}
+            transition={{ duration: 0.22, delay: 0.02 }}
           >
             <PartyPopper size={30} />
           </motion.div>
@@ -920,7 +920,7 @@ function SqlHelpIntroModal({ open, loading, onCancel, onContinue }) {
           initial={{ opacity: 0, scale: 0.94, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.97, y: 8 }}
-          transition={{ duration: 0.16, ease: "easeOut" }}
+          transition={{ duration: 0.1, ease: "easeOut" }}
         >
           <div className="help-modal-header">
             <span className="help-modal-icon" aria-hidden="true">
@@ -962,7 +962,7 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
         initial={{ opacity: 0, scale: 0.94, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.97, y: 8 }}
-        transition={{ duration: 0.16, ease: "easeOut" }}
+        transition={{ duration: 0.1, ease: "easeOut" }}
       >
         {result ? (
           <>
@@ -970,7 +970,7 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
               className={result.correct ? "quiz-result-badge correct" : "quiz-result-badge wrong"}
               initial={{ opacity: 0, scale: 0.86, y: -4 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ delay: 0.08, type: "spring", stiffness: 420, damping: 22 }}
+              transition={{ delay: 0.03, type: "spring", stiffness: 520, damping: 26 }}
             >
               {result.correct ? <CheckCircle2 size={15} /> : <XCircle size={15} />}
               {result.correct ? "Resposta certa" : "Resposta incorreta"}
@@ -979,7 +979,7 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
             <div className="help-result-explanation">
               <p>{result.explanation}</p>
             </div>
-            <motion.div className="help-query-panel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.16 }}>
+            <motion.div className="help-query-panel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03, duration: 0.1 }}>
               <div className="help-query-header">
                 <TerminalSquare size={15} />
                 <span>Query liberada</span>
@@ -1016,7 +1016,7 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
                   disabled={loading}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.025, duration: 0.14 }}
+                  transition={{ delay: index * 0.015, duration: 0.09 }}
                   whileHover={loading ? undefined : { y: -1 }}
                   whileTap={loading ? undefined : { scale: 0.985 }}
                 >
