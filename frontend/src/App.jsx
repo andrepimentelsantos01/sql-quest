@@ -62,6 +62,7 @@ export default function App() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [terminalError, setTerminalError] = useState("");
+  const [terminalDirty, setTerminalDirty] = useState(false);
   const [player, setPlayer] = useState(INITIAL_PLAYER);
   const [gameOverStreak, setGameOverStreak] = useState(null);
   const [introOpen, setIntroOpen] = useState(false);
@@ -74,6 +75,7 @@ export default function App() {
   function resetMissionState() {
     setError("");
     setTerminalError("");
+    setTerminalDirty(false);
     setPreviewResult(null);
     setModalResult(null);
     setAssistModalOpen(false);
@@ -158,6 +160,7 @@ export default function App() {
     setPreviewing(true);
     setError("");
     setTerminalError("");
+    setTerminalDirty(false);
     try {
       const response = await previewQuery(scenario.id, query);
       setPreviewResult(response);
@@ -177,6 +180,7 @@ export default function App() {
     setSubmitting(true);
     setError("");
     setTerminalError("");
+    setTerminalDirty(false);
     try {
       const response = await submitQuery(scenario.id, query);
       const correct = isCorrectResult(response.correct);
@@ -197,8 +201,8 @@ export default function App() {
 
   function handleQueryChange(nextQuery) {
     setQuery(nextQuery);
-    setPreviewResult(null);
     setTerminalError("");
+    setTerminalDirty(true);
   }
 
   async function handleNextRound() {
@@ -240,8 +244,8 @@ export default function App() {
           setGameOverStreak(getGameOverStreak(player, appMode));
         }
         setQuery((current) => insertAssistLine(current, response.line, currentLineIndex));
-        setPreviewResult(null);
         setTerminalError("");
+        setTerminalDirty(true);
         setAssistLineIndex(response.next_index);
         setPlayer((current) => ({
           ...current,
@@ -440,7 +444,7 @@ export default function App() {
                             onChange={handleQueryChange}
                             onPreview={handlePreview}
                             loading={previewing || submitting}
-                            status={getTerminalStatus(previewing || submitting, terminalError, previewResult)}
+                            status={getTerminalStatus(previewing || submitting, terminalError, previewResult, terminalDirty)}
                             errorMessage={terminalError}
                             hasResult={Boolean(previewResult)}
                             onRequestAssist={() => setAssistModalOpen(true)}
@@ -1062,8 +1066,12 @@ function updatePlayer(current, correct) {
   };
 }
 
-function getTerminalStatus(running, errorMessage, result) {
+function getTerminalStatus(running, errorMessage, result, dirty) {
   if (running) {
+    return "running";
+  }
+
+  if (dirty) {
     return "running";
   }
 
