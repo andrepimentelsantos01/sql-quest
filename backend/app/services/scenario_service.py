@@ -290,17 +290,31 @@ def get_business_rules(scenario: dict[str, Any]) -> dict[str, Any] | None:
         if is_temporal_literal(value):
             continue
 
-        left = normalize_sql_expression(match.group("left"))
         operator = match.group("operator")
-        label = f"{left}: {format_business_operator(operator)} {value}"
+        label = get_business_rule_label(match.group("left"), operator, value, scenario)
+        if not label:
+            continue
         if label in seen_labels:
             continue
 
         rules.append(
             {
-                "field": left,
+                "field": label.split(":", 1)[0],
                 "operator": operator,
                 "value": value,
+                "label": label,
+            }
+        )
+        seen_labels.add(label)
+
+    for label in get_objective_business_rule_labels(scenario):
+        if label in seen_labels:
+            continue
+        rules.append(
+            {
+                "field": label.split(":", 1)[0],
+                "operator": "",
+                "value": label.split(":", 1)[1].strip() if ":" in label else "",
                 "label": label,
             }
         )
@@ -334,6 +348,97 @@ def normalize_sql_expression(expression: str) -> str:
     if field_match:
         return normalize_sql_field(expression)
     return re.sub(r"\s+", " ", expression)
+
+
+def get_business_rule_label(expression: str, operator: str, value: str, scenario: dict[str, Any]) -> str | None:
+    normalized_expression = normalize_sql_expression(expression)
+    objective = scenario.get("objective", "").lower()
+
+    if is_technical_positive_filter(normalized_expression, operator, value):
+        return None
+
+    rule_name = get_business_rule_name(normalized_expression, objective)
+    if not rule_name:
+        return None
+
+    display_value = get_business_rule_display_value(rule_name, operator, value)
+    rule_name_lower = rule_name.lower()
+    if "mínim" in rule_name_lower or "máxim" in rule_name_lower:
+        return f"{rule_name}: {display_value}"
+
+    return f"{rule_name}: {format_business_operator(operator)} {value}"
+
+
+def get_business_rule_name(expression: str, objective: str) -> str:
+    expression_lower = expression.lower()
+
+    if "media_bimestre" in expression_lower or "avg(a.nota)" in expression_lower or "avg(nota)" in expression_lower:
+        return "Nota mínima"
+
+    if "frequencia_percentual" in expression_lower:
+        return "Frequência mínima"
+
+    if "avg(" in expression_lower and "severidade" in expression_lower:
+        return "Severidade média mínima"
+
+    if expression_lower == "severidade":
+        return "Severidade considerada"
+
+    if "minutos_parada" in expression_lower:
+        return "Total mínimo de minutos parados"
+
+    if "preco_unitario" in expression_lower and "quantidade" in expression_lower:
+        return "Faturamento mínimo"
+
+    if expression_lower == "count(*)":
+        if "sess" in objective or "dispositivo" in objective:
+            return "Sessões mínimas por dispositivo"
+        if "fornecedor" in objective:
+            return "Problemas mínimos por fornecedor"
+        return "Quantidade mínima"
+
+    if "total_incidentes" in expression_lower:
+        return "Incidentes mínimos por serviço"
+
+    if "gols" in expression_lower:
+        return "Gols mínimos"
+
+    if "temperatura_c" in expression_lower:
+        return "Temperatura limite"
+
+    return normalize_sql_expression(expression)
+
+
+def is_technical_positive_filter(expression: str, operator: str, value: str) -> bool:
+    if operator != ">" or value != "0":
+        return False
+
+    expression_lower = expression.lower()
+    return any(
+        technical_field in expression_lower
+        for technical_field in ("finalizacoes", "volume_m3", "km_rodados")
+    )
+
+
+def get_business_rule_display_value(rule_name: str, operator: str, value: str) -> str:
+    if "mínim" in rule_name.lower() and operator == ">" and value == "0":
+        return "1"
+    return value
+
+
+def get_objective_business_rule_labels(scenario: dict[str, Any]) -> list[str]:
+    objective = scenario.get("objective", "").lower()
+    labels: list[str] = []
+
+    margin_match = re.search(r"margem percentual abaixo de (\d+(?:\.\d+)?)", objective)
+    if margin_match:
+        labels.append(f"Margem percentual máxima: {margin_match.group(1)}")
+
+    favorites_match = re.search(r"pelo menos (\d+) favoritos", objective)
+    if favorites_match:
+        labels.append(f"Favoritos mínimos: {favorites_match.group(1)}")
+
+    return labels
 
 
 def normalize_sql_literal(value: str) -> str:
