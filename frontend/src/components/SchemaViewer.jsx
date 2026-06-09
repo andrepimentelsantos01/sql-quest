@@ -1,7 +1,11 @@
 import { memo } from "react";
-import { Database, Table2 } from "lucide-react";
+import { CalendarRange, Database, Table2 } from "lucide-react";
 
 function SchemaViewer({ schema, compact = false }) {
+  const tables = schema?.tables ?? schema ?? {};
+  const analysisPeriod = schema?.analysis_period;
+  const periodItems = getPeriodItems(analysisPeriod);
+
   return (
     <section className={`schema-panel${compact ? " compact" : ""}`} aria-labelledby="schema-title">
       <div className="schema-header">
@@ -11,8 +15,24 @@ function SchemaViewer({ schema, compact = false }) {
         </div>
       </div>
 
+      {periodItems.length ? (
+        <div className="period-context-card" aria-label={analysisPeriod?.title ?? "Janela solicitada"}>
+          <div className="period-context-header">
+            <CalendarRange size={15} />
+            <span>{analysisPeriod?.title ?? "Janela solicitada"}</span>
+          </div>
+          <div className="period-context-list">
+            {periodItems.map((item) => (
+              <span className="period-context-chip" key={item}>
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
       <div className="schema-grid">
-        {Object.entries(schema).map(([table, columns]) => (
+        {Object.entries(tables).map(([table, columns]) => (
           <div className="table-card" key={table}>
             <div className="table-card-header">
               <span className="table-name">
@@ -36,6 +56,20 @@ function SchemaViewer({ schema, compact = false }) {
 }
 
 export default memo(SchemaViewer);
+
+function getPeriodItems(analysisPeriod) {
+  if (!analysisPeriod) {
+    return [];
+  }
+
+  return [
+    ...(analysisPeriod.ranges ?? []),
+    ...(analysisPeriod.cutoffs ?? []),
+    ...(analysisPeriod.references ?? []),
+  ]
+    .map((item) => item.label)
+    .filter(Boolean);
+}
 
 function getColumnClassName(column) {
   if (column === "id") {

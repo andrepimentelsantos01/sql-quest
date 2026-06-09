@@ -33,7 +33,7 @@ import ResultModal from "./components/ResultModal";
 import SqlTerminal from "./components/SqlTerminal";
 
 const STARTER_QUERY = "SELECT \nFROM \nLIMIT 10;";
-const INITIAL_PLAYER = { streak: 0, lives: 5 };
+const INITIAL_PLAYER = { streak: 0, solvedTasks: 0, lives: 5 };
 const INTRO_STORAGE_KEY = "sql-quest:intro-seen";
 const MODE_FREE = "free";
 const MODE_CAREER = "career";
@@ -61,6 +61,7 @@ export default function App() {
   const [previewing, setPreviewing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [terminalError, setTerminalError] = useState("");
   const [player, setPlayer] = useState(INITIAL_PLAYER);
   const [gameOverStreak, setGameOverStreak] = useState(null);
   const [introOpen, setIntroOpen] = useState(false);
@@ -72,6 +73,7 @@ export default function App() {
 
   function resetMissionState() {
     setError("");
+    setTerminalError("");
     setPreviewResult(null);
     setModalResult(null);
     setAssistModalOpen(false);
@@ -155,11 +157,13 @@ export default function App() {
 
     setPreviewing(true);
     setError("");
+    setTerminalError("");
     try {
       const response = await previewQuery(scenario.id, query);
       setPreviewResult(response);
     } catch (err) {
-      setError(err.message);
+      setPreviewResult(null);
+      setTerminalError(err.message);
     } finally {
       setPreviewing(false);
     }
@@ -172,6 +176,7 @@ export default function App() {
 
     setSubmitting(true);
     setError("");
+    setTerminalError("");
     try {
       const response = await submitQuery(scenario.id, query);
       const correct = isCorrectResult(response.correct);
@@ -180,14 +185,20 @@ export default function App() {
       setPreviewResult(response.user_result);
       setModalResult(gameOver ? null : normalizedResponse);
       if (gameOver) {
-        setGameOverStreak(player.streak);
+        setGameOverStreak(getGameOverStreak(player, appMode));
       }
       setPlayer((current) => updatePlayer(current, correct));
     } catch (err) {
-      setError(err.message);
+      setTerminalError(err.message);
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function handleQueryChange(nextQuery) {
+    setQuery(nextQuery);
+    setPreviewResult(null);
+    setTerminalError("");
   }
 
   async function handleNextRound() {
@@ -226,9 +237,11 @@ export default function App() {
       const response = await fetchAssistLine(scenario.id, currentLineIndex);
       if (response.line) {
         if (player.lives <= 1) {
-          setGameOverStreak(player.streak);
+          setGameOverStreak(getGameOverStreak(player, appMode));
         }
         setQuery((current) => insertAssistLine(current, response.line, currentLineIndex));
+        setPreviewResult(null);
+        setTerminalError("");
         setAssistLineIndex(response.next_index);
         setPlayer((current) => ({
           ...current,
@@ -292,7 +305,7 @@ export default function App() {
       setUsedSqlHelpResult(resultWithScenario);
       if (!correct) {
         if (player.lives <= 1) {
-          setGameOverStreak(player.streak);
+          setGameOverStreak(getGameOverStreak(player, appMode));
           setSqlHelpQuestion(null);
           setSqlHelpResult(null);
         }
@@ -312,7 +325,7 @@ export default function App() {
   async function handleConfirmGiveUpTask() {
     const gameOver = player.lives <= 1;
     if (gameOver) {
-      setGameOverStreak(player.streak);
+      setGameOverStreak(getGameOverStreak(player, appMode));
       setGiveUpModalOpen(false);
       setPlayer((current) => ({
         ...current,
@@ -424,9 +437,12 @@ export default function App() {
                           <SqlTerminal
                             schema={scenario.schema}
                             value={query}
-                            onChange={setQuery}
+                            onChange={handleQueryChange}
                             onPreview={handlePreview}
-                            loading={previewing}
+                            loading={previewing || submitting}
+                            status={getTerminalStatus(previewing || submitting, terminalError, previewResult)}
+                            errorMessage={terminalError}
+                            hasResult={Boolean(previewResult)}
                             onRequestAssist={() => setAssistModalOpen(true)}
                             assistDisabled={player.lives <= 0 || assisting}
                           />
@@ -516,7 +532,7 @@ export default function App() {
           loading={answeringSqlHelp}
           onAnswer={handleAnswerSqlHelp}
           onUseQuery={(nextQuery) => {
-            setQuery(formatSqlQuery(nextQuery));
+            handleQueryChange(formatSqlQuery(nextQuery));
             setSqlHelpQuestion(null);
             setSqlHelpResult(null);
           }}
@@ -784,7 +800,7 @@ function GameOverModal({ streak, mode, onRetry }) {
             </div>
           ) : (
             <>
-              <p>Parabéns pela rodada. Sua sequência final foi:</p>
+              <p>Parabéns pela rodada. Tasks resolvidas:</p>
               <div className="game-over-streak">{streak}</div>
             </>
           )}
@@ -1042,7 +1058,28 @@ function updatePlayer(current, correct) {
   return {
     ...current,
     streak: current.streak + 1,
+    solvedTasks: current.solvedTasks + 1,
   };
+}
+
+function getTerminalStatus(running, errorMessage, result) {
+  if (running) {
+    return "running";
+  }
+
+  if (errorMessage) {
+    return "error";
+  }
+
+  if (result) {
+    return "success";
+  }
+
+  return "running";
+}
+
+function getGameOverStreak(player, mode) {
+  return mode === MODE_FREE ? player.solvedTasks : player.streak;
 }
 
 function isCorrectResult(value) {

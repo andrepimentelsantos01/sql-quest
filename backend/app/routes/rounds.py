@@ -60,7 +60,7 @@ def career_round(step: int) -> dict:
 
 
 @router.get("/scenarios/{scenario_id}/schema")
-def scenario_schema(scenario_id: str) -> dict[str, list[str]]:
+def scenario_schema(scenario_id: str) -> dict:
     try:
         scenario = get_scenario(scenario_id)
         return get_scenario_schema(scenario)

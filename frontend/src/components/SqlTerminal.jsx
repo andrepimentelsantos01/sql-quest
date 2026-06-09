@@ -49,7 +49,18 @@ const terminalTheme = EditorView.theme({
   },
 });
 
-export default function SqlTerminal({ schema, value, onChange, onPreview, loading, onRequestAssist, assistDisabled }) {
+export default function SqlTerminal({
+  schema,
+  value,
+  onChange,
+  onPreview,
+  loading,
+  status,
+  errorMessage,
+  hasResult,
+  onRequestAssist,
+  assistDisabled,
+}) {
   const extensions = useMemo(() => [sql(), terminalTheme], []);
   const basicSetup = useMemo(
     () => ({
@@ -68,9 +79,13 @@ export default function SqlTerminal({ schema, value, onChange, onPreview, loadin
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.12, delay: 0.015 }}
     >
-      <div className="panel-title">
-        <Terminal size={19} />
-        <h3>Terminal SQL</h3>
+      <div className="terminal-header">
+        <div className="panel-title">
+          <Terminal size={19} />
+          <h3>Terminal SQL</h3>
+        </div>
+
+        <TerminalStatusIndicator status={status} errorMessage={errorMessage} hasResult={hasResult} />
       </div>
 
       <SchemaViewer schema={schema} compact />
@@ -100,4 +115,41 @@ export default function SqlTerminal({ schema, value, onChange, onPreview, loadin
       </div>
     </motion.section>
   );
+}
+
+function TerminalStatusIndicator({ status, errorMessage, hasResult }) {
+  const isError = status === "error";
+  const label = getStatusLabel(status, hasResult);
+
+  return (
+    <div className="terminal-status-wrapper">
+      <button
+        type="button"
+        className={`terminal-status-dot ${status}`}
+        aria-label={isError ? `Erro no console SQL: ${errorMessage}` : label}
+        aria-describedby={isError ? "terminal-status-tooltip" : undefined}
+      >
+        <span className="sr-only">{label}</span>
+      </button>
+
+      {isError ? (
+        <div className="terminal-status-tooltip" id="terminal-status-tooltip" role="tooltip">
+          <strong>Console SQL</strong>
+          <span>{errorMessage}</span>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function getStatusLabel(status, hasResult) {
+  if (status === "success") {
+    return "Query aceita, executada e com resultado disponível na tabela abaixo.";
+  }
+
+  if (status === "error") {
+    return "Query retornou erro.";
+  }
+
+  return hasResult ? "Atualizando execução da query." : "Aguardando execução da query.";
 }
