@@ -846,6 +846,51 @@ h3 {
   overflow-wrap: anywhere;
 }
 
+.business-context-card {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid rgba(250, 204, 21, 0.24);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgba(250, 204, 21, 0.12), rgba(20, 184, 166, 0.06)),
+    rgba(8, 20, 34, 0.82);
+}
+
+.business-context-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fef3c7;
+  font-size: 0.8rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.business-context-header svg {
+  color: #facc15;
+  filter: drop-shadow(0 0 5px rgba(250, 204, 21, 0.34));
+}
+
+.business-context-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.business-context-chip {
+  max-width: 100%;
+  padding: 6px 8px;
+  border: 1px solid rgba(253, 224, 71, 0.2);
+  border-radius: 7px;
+  background: rgba(161, 98, 7, 0.16);
+  color: #fef9c3;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
 .task-decision-actions {
   display: flex;
   align-items: center;

@@ -1,10 +1,12 @@
 import { memo } from "react";
-import { CalendarRange, Database, Table2 } from "lucide-react";
+import { CalendarRange, Database, SlidersHorizontal, Table2 } from "lucide-react";
 
 function SchemaViewer({ schema, compact = false }) {
   const tables = schema?.tables ?? schema ?? {};
   const analysisPeriod = schema?.analysis_period;
+  const businessRules = schema?.business_rules;
   const periodItems = getPeriodItems(analysisPeriod);
+  const businessItems = getBusinessItems(businessRules);
 
   return (
     <section className={`schema-panel${compact ? " compact" : ""}`} aria-labelledby="schema-title">
@@ -24,6 +26,22 @@ function SchemaViewer({ schema, compact = false }) {
           <div className="period-context-list">
             {periodItems.map((item) => (
               <span className="period-context-chip" key={item}>
+                {item}
+              </span>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {businessItems.length ? (
+        <div className="business-context-card" aria-label={businessRules?.title ?? "Regras de Negócio"}>
+          <div className="business-context-header">
+            <SlidersHorizontal size={15} />
+            <span>{businessRules?.title ?? "Regras de Negócio"}</span>
+          </div>
+          <div className="business-context-list">
+            {businessItems.map((item) => (
+              <span className="business-context-chip" key={item}>
                 {item}
               </span>
             ))}
@@ -67,6 +85,16 @@ function getPeriodItems(analysisPeriod) {
     ...(analysisPeriod.cutoffs ?? []),
     ...(analysisPeriod.references ?? []),
   ]
+    .map((item) => item.label)
+    .filter(Boolean);
+}
+
+function getBusinessItems(businessRules) {
+  if (!businessRules) {
+    return [];
+  }
+
+  return (businessRules.rules ?? [])
     .map((item) => item.label)
     .filter(Boolean);
 }

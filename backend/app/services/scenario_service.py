@@ -27,6 +27,16 @@ DATE_CUTOFF_PATTERN = re.compile(
     re.IGNORECASE,
 )
 DATE_REFERENCE_PATTERN = re.compile(r"\bjulianday\('(?P<date>\d{4}-\d{2}-\d{2})'\)", re.IGNORECASE)
+BUSINESS_COMPARISON_PATTERN = re.compile(
+    r"\b(?P<left>[A-Za-z_][A-Za-z0-9_\.]*|(?:AVG|COUNT|SUM)\([^)]*\))\s*"
+    r"(?P<operator><=|>=|<>|!=|=|<|>)\s*"
+    r"(?P<value>'[^']+'|-?\d+(?:\.\d+)?)",
+    re.IGNORECASE,
+)
+BUSINESS_IN_PATTERN = re.compile(
+    r"\b(?P<field>[A-Za-z_][A-Za-z0-9_\.]*)\s+IN\s*\((?P<values>'[^']+'(?:\s*,\s*'[^']+')*)\)",
+    re.IGNORECASE,
+)
 
 
 @lru_cache
@@ -162,8 +172,11 @@ def get_scenario_schema_tables(scenario: dict[str, Any]) -> dict[str, list[str]]
 def get_scenario_schema(scenario: dict[str, Any]) -> dict[str, Any]:
     schema: dict[str, Any] = {"tables": get_scenario_schema_tables(scenario)}
     analysis_period = get_analysis_period(scenario)
+    business_rules = get_business_rules(scenario)
     if analysis_period:
         schema["analysis_period"] = analysis_period
+    if business_rules:
+        schema["business_rules"] = business_rules
     return schema
 
 
@@ -243,8 +256,92 @@ def get_analysis_period(scenario: dict[str, Any]) -> dict[str, Any] | None:
     }
 
 
+def get_business_rules(scenario: dict[str, Any]) -> dict[str, Any] | None:
+    query = scenario.get("expected_answer", {}).get("query") or scenario.get("expected_sql", "")
+    ignored_spans = get_temporal_spans(query)
+    rules: list[dict[str, str]] = []
+    seen_labels: set[str] = set()
+
+    for match in BUSINESS_IN_PATTERN.finditer(query):
+        if is_inside_spans(match.start(), ignored_spans):
+            continue
+        field = normalize_sql_field(match.group("field"))
+        values = [
+            value.strip().strip("'")
+            for value in match.group("values").split(",")
+        ]
+        label = f"{field}: um de {', '.join(values)}"
+        if label not in seen_labels:
+            rules.append(
+                {
+                    "field": field,
+                    "operator": "IN",
+                    "value": ", ".join(values),
+                    "label": label,
+                }
+            )
+            seen_labels.add(label)
+
+    for match in BUSINESS_COMPARISON_PATTERN.finditer(query):
+        if is_inside_spans(match.start(), ignored_spans):
+            continue
+
+        value = normalize_sql_literal(match.group("value"))
+        if is_temporal_literal(value):
+            continue
+
+        left = normalize_sql_expression(match.group("left"))
+        operator = match.group("operator")
+        label = f"{left}: {format_business_operator(operator)} {value}"
+        if label in seen_labels:
+            continue
+
+        rules.append(
+            {
+                "field": left,
+                "operator": operator,
+                "value": value,
+                "label": label,
+            }
+        )
+        seen_labels.add(label)
+
+    if not rules:
+        return None
+
+    return {
+        "title": "Regras de Negócio",
+        "rules": rules,
+    }
+
+
+def get_temporal_spans(query: str) -> list[tuple[int, int]]:
+    spans: list[tuple[int, int]] = []
+    spans.extend(match.span() for match in DATE_RANGE_PATTERN.finditer(query))
+    spans.extend(match.span() for match in DATE_BETWEEN_PATTERN.finditer(query))
+    spans.extend(match.span() for match in DATE_CUTOFF_PATTERN.finditer(query))
+    spans.extend(match.span() for match in DATE_REFERENCE_PATTERN.finditer(query))
+    return spans
+
+
 def normalize_sql_field(field: str) -> str:
     return field.split(".")[-1]
+
+
+def normalize_sql_expression(expression: str) -> str:
+    expression = expression.strip()
+    field_match = re.fullmatch(r"[A-Za-z_][A-Za-z0-9_\.]*", expression)
+    if field_match:
+        return normalize_sql_field(expression)
+    return re.sub(r"\s+", " ", expression)
+
+
+def normalize_sql_literal(value: str) -> str:
+    return value.strip().strip("'")
+
+
+def is_temporal_literal(value: str) -> bool:
+    return re.fullmatch(TEMPORAL_LITERAL_PATTERN, value) is not None
 
 
 def is_inside_spans(position: int, spans: list[tuple[int, int]]) -> bool:
@@ -258,6 +355,18 @@ def format_date_operator(operator: str) -> str:
         ">": "apos",
         ">=": "a partir de",
         "=": "em",
+    }[operator]
+
+
+def format_business_operator(operator: str) -> str:
+    return {
+        "<": "menor que",
+        "<=": "menor ou igual a",
+        ">": "maior que",
+        ">=": "maior ou igual a",
+        "=": "igual a",
+        "!=": "diferente de",
+        "<>": "diferente de",
     }[operator]
 
 
