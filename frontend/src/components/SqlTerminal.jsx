@@ -6,7 +6,7 @@ import { Play, Plus, Terminal } from "lucide-react";
 import { motion } from "motion/react";
 import SchemaViewer from "./SchemaViewer";
 
-const terminalTheme = EditorView.theme({
+export const terminalTheme = EditorView.theme({
   "&": {
     minHeight: "230px",
     backgroundColor: "#07111d",

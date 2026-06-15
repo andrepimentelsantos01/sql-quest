@@ -2244,6 +2244,31 @@ tbody tr:hover td {
     inset 0 0 28px rgba(20, 184, 166, 0.08);
 }
 
+.help-query-editor {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 0 0 8px 8px;
+  background: #07111d;
+}
+
+.help-query-editor .cm-editor {
+  min-height: 260px;
+  border-radius: 0;
+}
+
+.help-query-editor .cm-scroller {
+  overflow: auto;
+}
+
+.help-query-editor .cm-content {
+  padding: 14px 0;
+}
+
+.help-query-editor .cm-line {
+  line-height: 1.55;
+}
+
 .help-query-panel {
   position: relative;
   overflow: hidden;

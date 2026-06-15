@@ -1,4 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import CodeMirror from "@uiw/react-codemirror";
+import { sql } from "@codemirror/lang-sql";
+import { EditorView } from "@codemirror/view";
 import {
   BriefcaseBusiness,
   CheckCircle2,
@@ -31,7 +34,7 @@ import GameAmbientEffects from "./components/effects/GameAmbientEffects";
 import MissionBriefing from "./components/MissionBriefing";
 import MissionReport from "./components/MissionReport";
 import ResultModal from "./components/ResultModal";
-import SqlTerminal from "./components/SqlTerminal";
+import SqlTerminal, { terminalTheme } from "./components/SqlTerminal";
 
 const STARTER_QUERY = "SELECT \nFROM \nLIMIT 10;";
 const INITIAL_PLAYER = { streak: 0, solvedTasks: 0, lives: 5 };
@@ -1075,26 +1078,72 @@ function normalizeQueryLine(line) {
 }
 
 function formatSqlQuery(query) {
-  const breakKeywords = ["FROM", "JOIN", "WHERE", "GROUP BY", "ORDER BY", "LIMIT"];
-  const indentedKeywords = ["JOIN", "WHERE", "GROUP BY", "ORDER BY", "LIMIT"];
-  const conditions = ["AND", "OR"];
   let formatted = query.trim().replace(/\s+/g, " ").replace(/;$/, "");
 
-  for (const keyword of breakKeywords) {
-    formatted = formatted.replace(new RegExp(`\\s+(${keyword})\\b`, "gi"), "\n$1");
-  }
-
-  for (const condition of conditions) {
-    formatted = formatted.replace(new RegExp(`\\s+(${condition})\\b`, "gi"), "\n  $1");
-  }
+  formatted = formatted
+    .replace(/\s+(WITH)\b/gi, "\nWITH")
+    .replace(/\s+(SELECT)\b/gi, "\nSELECT")
+    .replace(/\s+(FROM)\b/gi, "\nFROM")
+    .replace(/\s+((?:LEFT|RIGHT|INNER|FULL|CROSS)\s+JOIN|JOIN)\b/gi, "\n  $1")
+    .replace(/\s+(WHERE)\b/gi, "\nWHERE")
+    .replace(/\s+(GROUP\s+BY)\b/gi, "\nGROUP BY")
+    .replace(/\s+(HAVING)\b/gi, "\nHAVING")
+    .replace(/\s+(ORDER\s+BY)\b/gi, "\nORDER BY")
+    .replace(/\s+(LIMIT)\b/gi, "\nLIMIT")
+    .replace(/\s+(AND|OR)\b/gi, "\n  $1")
+    .replace(/\s+(CASE)\b/gi, "\n  CASE")
+    .replace(/\s+(WHEN)\b/gi, "\n    WHEN")
+    .replace(/\s+(THEN)\b/gi, "\n      THEN")
+    .replace(/\s+(ELSE)\b/gi, "\n      ELSE")
+    .replace(/\s+(END\s+AS)\b/gi, "\n  END AS")
+    .replace(/\)\s*,\s*([A-Za-z_][A-Za-z0-9_]*\s+AS\s*\()/gi, "),\n$1");
 
   return `${formatted
     .split("\n")
-    .map((line) => {
-      const trimmed = line.trim();
-      return indentedKeywords.some((keyword) => trimmed.toUpperCase().startsWith(keyword)) ? `  ${trimmed}` : trimmed;
-    })
+    .map((line) => line.trimEnd())
+    .filter(Boolean)
+    .flatMap(splitSqlLineByTopLevelCommas)
     .join("\n")};`;
+}
+
+function splitSqlLineByTopLevelCommas(line) {
+  const parts = [];
+  let current = "";
+  let depth = 0;
+  let quote = null;
+
+  for (const character of line) {
+    if (quote) {
+      current += character;
+      if (character === quote) {
+        quote = null;
+      }
+      continue;
+    }
+
+    if (character === "'" || character === '"') {
+      quote = character;
+      current += character;
+      continue;
+    }
+
+    if (character === "(") {
+      depth += 1;
+    } else if (character === ")" && depth > 0) {
+      depth -= 1;
+    }
+
+    if (character === "," && depth === 0) {
+      parts.push(`${current.trimEnd()},`);
+      current = "  ";
+      continue;
+    }
+
+    current += character;
+  }
+
+  parts.push(current.trimEnd());
+  return parts.filter(Boolean);
 }
 
 function SqlHelpIntroModal({ open, loading, onCancel, onContinue }) {
@@ -1177,7 +1226,7 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
                 <TerminalSquare size={15} />
                 <span>Query liberada</span>
               </div>
-              <pre className="help-query-block">{formatSqlQuery(result.query)}</pre>
+              <ReadOnlySqlBlock query={result.query} />
             </motion.div>
             <div className="modal-actions">
               <button type="button" className="ghost-button" onClick={onClose}>
@@ -1221,6 +1270,41 @@ function SqlHelpModal({ question, result, loading, onAnswer, onUseQuery, onClose
         )}
       </motion.div>
     </motion.div>
+  );
+}
+
+function ReadOnlySqlBlock({ query }) {
+  const extensions = useMemo(
+    () => [
+      sql(),
+      terminalTheme,
+      EditorView.editable.of(false),
+      EditorView.lineWrapping,
+    ],
+    [],
+  );
+  const basicSetup = useMemo(
+    () => ({
+      drawSelection: false,
+      foldGutter: false,
+      highlightActiveLine: false,
+      highlightActiveLineGutter: false,
+    }),
+    [],
+  );
+
+  return (
+    <div className="help-query-editor" aria-label="Query liberada">
+      <CodeMirror
+        value={formatSqlQuery(query)}
+        height="260px"
+        extensions={extensions}
+        basicSetup={basicSetup}
+        editable={false}
+        readOnly
+        theme="dark"
+      />
+    </div>
   );
 }
 
