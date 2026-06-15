@@ -1880,6 +1880,9 @@ tbody tr:hover td {
 
 .game-over-modal {
   position: relative;
+  width: min(620px, 100%);
+  max-height: min(90vh, 780px);
+  overflow-y: auto;
   place-items: center;
   text-align: center;
   border-color: rgba(20, 184, 166, 0.38);
@@ -1890,6 +1893,11 @@ tbody tr:hover td {
   box-shadow:
     0 30px 80px rgba(32, 48, 58, 0.32),
     0 0 44px rgba(20, 184, 166, 0.18);
+}
+
+.game-over-query-panel {
+  width: 100%;
+  text-align: left;
 }
 
 .game-over-modal p {

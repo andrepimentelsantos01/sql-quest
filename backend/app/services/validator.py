@@ -1,5 +1,6 @@
 from collections import Counter
 import re
+import unicodedata
 from typing import Any
 
 from app.schemas import RoundResult
@@ -17,6 +18,9 @@ ORDER_REQUIREMENT_PATTERN = re.compile(
 def _normalize(value: Any) -> Any:
     if isinstance(value, float):
         return round(value, 6)
+    if isinstance(value, str):
+        normalized = unicodedata.normalize("NFKD", value.strip().casefold())
+        return "".join(character for character in normalized if not unicodedata.combining(character))
     return value
 
 
@@ -40,6 +44,10 @@ def _requires_order(scenario: dict[str, Any]) -> bool:
     return bool(ORDER_REQUIREMENT_PATTERN.search(text))
 
 
+def _get_expected_query(scenario: dict[str, Any]) -> str:
+    return scenario.get("expected_answer", {}).get("query") or scenario["expected_sql"]
+
+
 def validate_submission(scenario: dict[str, Any], user_query: str) -> RoundResult:
     database_path = get_database_path(scenario)
     try:
@@ -51,6 +59,7 @@ def validate_submission(scenario: dict[str, Any], user_query: str) -> RoundResul
             message=str(exc),
             user_result=None,
             hint=scenario.get("hint"),
+            expected_query=_get_expected_query(scenario),
         )
 
     ordered_match = _normalized_rows(user_result.rows) == _normalized_rows(expected.rows)
@@ -59,8 +68,10 @@ def validate_submission(scenario: dict[str, Any], user_query: str) -> RoundResul
     if correct:
         message = "Boa! O resultado retornado bate com a resposta esperada."
         hint = None
+        expected_query = None
     else:
         message = "Ainda não bateu com o resultado esperado. Confira filtros, agrupamentos e regras do enunciado."
         hint = scenario.get("hint")
+        expected_query = _get_expected_query(scenario)
 
-    return RoundResult(correct=correct, message=message, user_result=user_result, hint=hint)
+    return RoundResult(correct=correct, message=message, user_result=user_result, hint=hint, expected_query=expected_query)

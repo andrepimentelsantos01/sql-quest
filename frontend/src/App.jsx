@@ -9,7 +9,6 @@ import {
   HelpCircle,
   PartyPopper,
   Play,
-  RotateCcw,
   ShieldQuestion,
   Shuffle,
   Store,
@@ -36,7 +35,7 @@ import MissionReport from "./components/MissionReport";
 import ResultModal from "./components/ResultModal";
 import SqlTerminal, { terminalTheme } from "./components/SqlTerminal";
 
-const STARTER_QUERY = "SELECT \nFROM \nLIMIT 10;";
+const STARTER_QUERY = "";
 const INITIAL_PLAYER = { streak: 0, solvedTasks: 0, lives: 5 };
 const INTRO_STORAGE_KEY = "sql-quest:intro-seen";
 const MODE_FREE = "free";
@@ -68,7 +67,9 @@ export default function App() {
   const [terminalError, setTerminalError] = useState("");
   const [terminalDirty, setTerminalDirty] = useState(false);
   const [player, setPlayer] = useState(INITIAL_PLAYER);
-  const [gameOverStreak, setGameOverStreak] = useState(null);
+  const [gameOverState, setGameOverState] = useState(null);
+  const [gameOverModalOpen, setGameOverModalOpen] = useState(false);
+  const [reviewAfterGameOver, setReviewAfterGameOver] = useState(false);
   const [introOpen, setIntroOpen] = useState(false);
   const [careerIntro, setCareerIntro] = useState(null);
   const [careerIntroOpen, setCareerIntroOpen] = useState(false);
@@ -94,6 +95,7 @@ export default function App() {
     setSqlHelpQuestion(null);
     setSqlHelpResult(null);
     setUsedSqlHelpResult(null);
+    setReviewAfterGameOver(false);
     setQuery(STARTER_QUERY);
   }
 
@@ -221,7 +223,18 @@ export default function App() {
       setPreviewResult(response.user_result);
       setModalResult(gameOver ? null : normalizedResponse);
       if (gameOver) {
-        setGameOverStreak(getGameOverStreak(player, appMode));
+        const expectedQuery = response.expected_query ?? "";
+        setGameOverState(createGameOverState(player, appMode, scenario, expectedQuery, true));
+        setGameOverModalOpen(true);
+        setReviewAfterGameOver(true);
+        if (expectedQuery) {
+          setUsedSqlHelpResult({
+            correct: false,
+            explanation: "Query correta da última tentativa.",
+            query: expectedQuery,
+            scenarioId: scenario.id,
+          });
+        }
       }
       setPlayer((current) => updatePlayer(current, correct));
     } catch (err) {
@@ -273,7 +286,9 @@ export default function App() {
       const response = await fetchAssistLine(scenario.id, currentLineIndex);
       if (response.line) {
         if (player.lives <= 1) {
-          setGameOverStreak(getGameOverStreak(player, appMode));
+          setGameOverState(createGameOverState(player, appMode, scenario, "", false));
+          setGameOverModalOpen(true);
+          setReviewAfterGameOver(true);
         }
         setQuery((current) => insertAssistLine(current, response.line, currentLineIndex));
         setTerminalError("");
@@ -341,7 +356,9 @@ export default function App() {
       setUsedSqlHelpResult(resultWithScenario);
       if (!correct) {
         if (player.lives <= 1) {
-          setGameOverStreak(getGameOverStreak(player, appMode));
+          setGameOverState(createGameOverState(player, appMode, scenario, result.query, true));
+          setGameOverModalOpen(true);
+          setReviewAfterGameOver(true);
           setSqlHelpQuestion(null);
           setSqlHelpResult(null);
         }
@@ -361,7 +378,9 @@ export default function App() {
   async function handleConfirmGiveUpTask() {
     const gameOver = player.lives <= 1;
     if (gameOver) {
-      setGameOverStreak(getGameOverStreak(player, appMode));
+      setGameOverState(createGameOverState(player, appMode, scenario, "", false));
+      setGameOverModalOpen(true);
+      setReviewAfterGameOver(true);
       setGiveUpModalOpen(false);
       setPlayer((current) => ({
         ...current,
@@ -386,7 +405,9 @@ export default function App() {
   }
 
   async function handleRetryGame() {
-    setGameOverStreak(null);
+    setGameOverState(null);
+    setGameOverModalOpen(false);
+    setReviewAfterGameOver(false);
     setPlayer(INITIAL_PLAYER);
     setUsedSqlHelpQuestionIds([]);
     if (appMode === MODE_CAREER) {
@@ -395,6 +416,21 @@ export default function App() {
     }
 
     await loadFreeRound(freeRoundFilters);
+  }
+
+  function handleReviewGameOver() {
+    setGameOverModalOpen(false);
+    setPlayer(INITIAL_PLAYER);
+    setTerminalError("");
+    setTerminalDirty(false);
+  }
+
+  async function handleRestartAfterGameOverReview() {
+    await handleRetryGame();
+  }
+
+  function handleShowGameOverAnswer() {
+    setGameOverModalOpen(true);
   }
 
   function handleStartIntro() {
@@ -410,6 +446,9 @@ export default function App() {
     setIntroOpen(false);
     setFreeModeModalOpen(false);
     setFreeRoundFilters({});
+    setGameOverState(null);
+    setGameOverModalOpen(false);
+    setReviewAfterGameOver(false);
     setPlayer(INITIAL_PLAYER);
     setUsedSqlHelpQuestionIds([]);
     resetMissionState();
@@ -482,7 +521,7 @@ export default function App() {
                             errorMessage={terminalError}
                             hasResult={Boolean(previewResult)}
                             onRequestAssist={() => setAssistModalOpen(true)}
-                            assistDisabled={player.lives <= 0 || assisting}
+                            assistDisabled={player.lives <= 0 || assisting || reviewAfterGameOver}
                           />
                         </div>
                         <MissionReport
@@ -495,6 +534,10 @@ export default function App() {
                           taskAccepted={taskAccepted && appMode !== MODE_CAREER}
                           onGiveUpTask={() => setGiveUpModalOpen(true)}
                           givingUp={loadingRound}
+                          reviewMode={reviewAfterGameOver}
+                          canShowExpectedAnswer={Boolean(gameOverState?.expectedQuery)}
+                          onShowExpectedAnswer={handleShowGameOverAnswer}
+                          onRestartAfterGameOver={handleRestartAfterGameOverReview}
                         />
                       </motion.div>
                     ) : null}
@@ -588,7 +631,11 @@ export default function App() {
           }}
         />
         <IntroModal open={introOpen} onStart={handleStartIntro} />
-        <GameOverModal streak={gameOverStreak} mode={appMode} onRetry={handleRetryGame} />
+        <GameOverModal
+          state={gameOverModalOpen ? gameOverState : null}
+          onReview={handleReviewGameOver}
+          onBackToMenu={handleBackToMenu}
+        />
       </main>
     </div>
   );
@@ -936,12 +983,12 @@ function IntroModal({ open, onStart }) {
   );
 }
 
-function GameOverModal({ streak, mode, onRetry }) {
-  if (streak === null) {
+function GameOverModal({ state, onReview, onBackToMenu }) {
+  if (!state) {
     return null;
   }
 
-  const isCareer = mode === MODE_CAREER;
+  const isCareer = state.mode === MODE_CAREER;
 
   return (
     <AnimatePresence>
@@ -981,14 +1028,28 @@ function GameOverModal({ streak, mode, onRetry }) {
           ) : (
             <>
               <p>Parabéns pela rodada. Tasks resolvidas:</p>
-              <div className="game-over-streak">{streak}</div>
+              <div className="game-over-streak">{state.streak}</div>
             </>
           )}
 
+          {state.expectedQuery ? (
+            <motion.div className="help-query-panel game-over-query-panel" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03, duration: 0.1 }}>
+              <div className="help-query-header">
+                <TerminalSquare size={15} />
+                <span>Query correta</span>
+              </div>
+              <ReadOnlySqlBlock query={state.expectedQuery} />
+            </motion.div>
+          ) : null}
+
           <div className="modal-actions">
-            <button type="button" className="primary-button" onClick={onRetry}>
-              <RotateCcw size={17} />
-              Tentar novamente
+            {state.canReview ? (
+              <button type="button" className="ghost-button" onClick={onReview}>
+                Revisar query
+              </button>
+            ) : null}
+            <button type="button" className="primary-button" onClick={onBackToMenu}>
+              Voltar ao menu
             </button>
           </div>
         </motion.div>
@@ -1061,16 +1122,14 @@ function insertAssistLine(currentQuery, line, lineIndex) {
 
 function getNextAssistLineIndex(currentQuery, storedLineIndex) {
   const usefulLines = getUsefulQueryLines(currentQuery);
-  const starterLines = getUsefulQueryLines(STARTER_QUERY);
-  const userLines = usefulLines.filter((line) => !starterLines.includes(line));
-  return Math.max(storedLineIndex, userLines.length);
+  return Math.max(storedLineIndex, usefulLines.length);
 }
 
 function getUsefulQueryLines(query) {
   return query
     .split("\n")
     .map(normalizeQueryLine)
-    .filter((line) => line && !["SELECT", "FROM", "LIMIT 10"].includes(line));
+    .filter(Boolean);
 }
 
 function normalizeQueryLine(line) {
@@ -1345,6 +1404,16 @@ function getTerminalStatus(running, errorMessage, result, dirty) {
 
 function getGameOverStreak(player, mode) {
   return mode === MODE_FREE ? player.solvedTasks : player.streak;
+}
+
+function createGameOverState(player, mode, scenario, expectedQuery, canReview) {
+  return {
+    streak: getGameOverStreak(player, mode),
+    mode,
+    scenarioId: scenario?.id ?? null,
+    expectedQuery,
+    canReview: Boolean(canReview && scenario && expectedQuery),
+  };
 }
 
 function isCorrectResult(value) {

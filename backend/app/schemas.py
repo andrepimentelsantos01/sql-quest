@@ -15,6 +15,7 @@ class RoundResult(BaseModel):
     message: str
     user_result: QueryResult | None = None
     hint: str | None = None
+    expected_query: str | None = None
 
 
 class AssistLineResult(BaseModel):

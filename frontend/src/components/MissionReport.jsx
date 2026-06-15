@@ -1,4 +1,4 @@
-import { Activity, HelpCircle, Send, XCircle } from "lucide-react";
+import { Activity, Eye, HelpCircle, RotateCcw, Send, XCircle } from "lucide-react";
 import { motion } from "motion/react";
 
 export default function MissionReport({
@@ -11,6 +11,10 @@ export default function MissionReport({
   taskAccepted,
   onGiveUpTask,
   givingUp,
+  reviewMode,
+  canShowExpectedAnswer,
+  onShowExpectedAnswer,
+  onRestartAfterGameOver,
 }) {
   return (
     <motion.section
@@ -25,33 +29,52 @@ export default function MissionReport({
           <h3>Relatório da missão</h3>
         </div>
 
-        <div className="report-actions">
-          <button className="danger-help-button" type="button" onClick={onRequestHelp} disabled={helpLoading}>
-            <HelpCircle size={15} />
-            {helpLoading ? "..." : "Pedir Ajuda"}
-          </button>
-        </div>
+        {!reviewMode ? (
+          <div className="report-actions">
+            <button className="danger-help-button" type="button" onClick={onRequestHelp} disabled={helpLoading}>
+              <HelpCircle size={15} />
+              {helpLoading ? "..." : "Pedir Ajuda"}
+            </button>
+          </div>
+        ) : null}
       </div>
 
       {result ? <ResultTable result={result} /> : <p>A pré-visualização da consulta aparece aqui depois da execução.</p>}
 
       <div className="report-footer-actions">
-        {taskAccepted ? (
+        {reviewMode ? (
+          <>
+            {canShowExpectedAnswer ? (
+              <button type="button" className="ghost-button" onClick={onShowExpectedAnswer}>
+                <Eye size={17} />
+                Verificar resposta
+              </button>
+            ) : null}
+            <button type="button" className="primary-button submit-task-button" onClick={onRestartAfterGameOver}>
+              <RotateCcw size={17} />
+              Recomeçar
+            </button>
+          </>
+        ) : null}
+
+        {!reviewMode && taskAccepted ? (
           <button type="button" className="give-up-task-button" onClick={onGiveUpTask} disabled={givingUp}>
             <XCircle size={18} />
             Desistir da Task
           </button>
         ) : null}
 
-        <button
-          className="primary-button submit-task-button"
-          type="button"
-          onClick={onSubmit}
-          disabled={submitting || !canSubmit}
-        >
-          <Send size={17} />
-          {submitting ? "Entregando..." : "Entregar a task"}
-        </button>
+        {!reviewMode ? (
+          <button
+            className="primary-button submit-task-button"
+            type="button"
+            onClick={onSubmit}
+            disabled={submitting || !canSubmit}
+          >
+            <Send size={17} />
+            {submitting ? "Entregando..." : "Entregar a task"}
+          </button>
+        ) : null}
       </div>
     </motion.section>
   );
