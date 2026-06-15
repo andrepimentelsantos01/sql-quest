@@ -57,7 +57,7 @@ def career_arc_intro(arc_index: int) -> dict[str, str]:
     try:
         return get_career_arc_intro(arc_index)
     except IndexError as exc:
-        raise HTTPException(status_code=404, detail="Arco de carreira nÃ£o encontrado.") from exc
+        raise HTTPException(status_code=404, detail="Arco de carreira não encontrado.") from exc
 
 
 @router.get("/career/round/{step}")
@@ -65,7 +65,7 @@ def career_round(step: int) -> dict:
     try:
         return get_career_round(step)
     except IndexError as exc:
-        raise HTTPException(status_code=404, detail="Etapa de carreira nÃ£o encontrada.") from exc
+        raise HTTPException(status_code=404, detail="Etapa de carreira não encontrada.") from exc
 
 
 @router.get("/scenarios/{scenario_id}/schema")
