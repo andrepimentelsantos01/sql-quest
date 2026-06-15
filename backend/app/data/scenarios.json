@@ -164,9 +164,9 @@
     "difficulty": "Júnior",
     "database": "esporte.db",
     "story": "Olá, analista! Hoje você está na sala de desempenho da comissão técnica da Seleção Brasileira onde cada número pode pesar mais do que uma coletiva inteira antes da Copa do Mundo.\n\nA lista de convocados ainda não está fechada, o técnico tem nomes fortes na cabeça, a imprensa tem certezas barulhentas e a torcida já escalou metade do time nas redes sociais. Mas antes de levar alguém para o maior palco do futebol é preciso saber quem pode chegar inteiro e quem já está com o corpo no limite.\n\nAlguns atletas vêm acumulando cargas altas nos treinos concluídos e isso pode se transformar em risco de lesão.\n\nSua missão é revelar qual jogador teve a maior carga média de treino. Na Seleção talento chama atenção mas os dados ajudam a decidir quem aguenta a Copa inteira.",
-    "objective": "Sua tarefa: retorne o atleta e a carga média de treino. Considere apenas treinos concluídos e ordene da maior média para a menor.",
+    "objective": "Sua tarefa: retorne o atleta e a carga média de treino. Considere apenas treinos com status 'concluido' e ordene da maior média para a menor.",
     "objective_steps": [
-      "Comece pelos treinos concluídos.",
+      "Comece pelos treinos com status 'concluido'.",
       "Agrupe os registros por atleta.",
       "Calcule a carga média de treino de cada jogador.",
       "Organize a lista começando pelas maiores cargas."
@@ -199,7 +199,7 @@
         ]
       }
     },
-    "hint": "Ignore treinos que não foram concluídos, calcule AVG da carga e agrupe por atleta."
+    "hint": "Filtre status 'concluido', calcule AVG da carga e agrupe por atleta."
   },
   {
     "id": "esporte_002",
@@ -456,9 +456,9 @@
     "difficulty": "Pleno",
     "database": "arte.db",
     "story": "Olá, analista! Hoje você está fechando os números de uma grande exposição onde elogios foram abundantes, taças circularam sem parar e alguns artistas já começaram discretamente a perguntar quanto exatamente aquela visibilidade incrível virou dinheiro.\n\nNem toda negociação terminou em venda algumas reservas evaporaram no meio do caminho e a galeria precisa separar intenção artística de receita real.\n\nA gestão da galeria quer entender quais artistas realmente movimentaram o caixa no trimestre.\n\nSua missão é calcular a receita total de vendas concluídas por artista. Porque no fim do evento aplauso é ótimo, mas boleto prefere transferência confirmada.",
-    "objective": "Sua tarefa: retorne o artista e a receita total de vendas concluídas entre 2026-01-01 e 2026-04-01. Ordene da maior receita para a menor.",
+    "objective": "Sua tarefa: retorne o artista e a receita total de vendas com status 'concluida' entre 2026-01-01 e 2026-04-01. Ordene da maior receita para a menor.",
     "objective_steps": [
-      "Comece pelas vendas concluídas no período solicitado.",
+      "Comece pelas vendas com status 'concluida' no período solicitado.",
       "Relacione cada venda à obra e ao artista responsável.",
       "Some a receita confirmada de cada artista.",
       "Organize a lista começando por quem mais movimentou caixa."
@@ -487,7 +487,7 @@
         ]
       }
     },
-    "hint": "Junte artistas, obras e vendas. Depois filtre vendas concluídas no período e some o valor por artista."
+    "hint": "Junte artistas, obras e vendas. Depois filtre status 'concluida' no período e some o valor por artista."
   },
   {
     "id": "agricultura_001",
@@ -976,10 +976,10 @@
     "difficulty": "Júnior",
     "database": "arte.db",
     "story": "Olá, analista! Hoje você está no fechamento do evento principal de uma grande galeria de arte onde algumas obras receberam elogios intensos, promessas de compra e aquele tipo de entusiasmo que desaparece quando chega a hora de assinar a compra.\n\nA gestão da galeria quer separar o que virou venda concluída do que ficou apenas em intenção, reserva ou conversa ao lado do catálogo.\n\nExiste pelo menos uma obra ocupando espaço comercial sem receita confirmada e a próxima agenda de negociação depende dessa lista.\n\nSua missão é encontrar as obras sem venda concluída. Porque no mercado da arte, interesse é bonito mas faturamento continua mantendo a galeria aberta.",
-    "objective": "Sua tarefa: retorne o título das obras que não possuem venda concluída. Ordene por obra em ordem alfabética.",
+    "objective": "Sua tarefa: retorne o título das obras que não possuem venda com status 'concluida'. Ordene por obra em ordem alfabética.",
     "objective_steps": [
       "Comece pelo catálogo de obras da galeria.",
-      "Verifique quais peças não possuem venda concluída associada.",
+      "Verifique quais peças não possuem venda com status 'concluida' associada.",
       "Mantenha apenas as obras sem receita confirmada.",
       "Organize a lista pelo título da obra."
     ],
@@ -997,7 +997,7 @@
         ]
       }
     },
-    "hint": "Use LEFT JOIN entre obras e vendas concluídas, depois mantenha apenas registros sem venda correspondente."
+    "hint": "Use LEFT JOIN entre obras e vendas com status 'concluida', depois mantenha apenas registros sem venda correspondente."
   },
   {
     "id": "agricultura_003",
@@ -1369,11 +1369,11 @@
     "difficulty": "Sênior",
     "database": "arte.db",
     "story": "Olá, analista! Hoje você está numa galeria internacional onde a curadoria fala em impacto cultural, o comercial fala em caixa e os artistas querem saber por que elogio ainda não paga aluguel.\n\nA direção precisa cruzar duas pistas: obras que venderam e obras que despertaram desejo no catálogo digital. Uma peça pode ser valiosa pelo dinheiro que entrou ou pelo interesse que ainda pode virar negociação.\n\nA próxima parede de destaque é pequena demais para acomodar vaidade então a decisão precisa sair dos dados.\n\nSua missão é combinar receita concluída e favoritos por obra. Porque no mercado da arte subjetividade encanta mas os dados ditam a realidade.",
-    "objective": "Sua tarefa: retorne artista, obra, receita e favoritos, considerando obras com receita concluída maior que zero ou pelo menos 3 favoritos. Ordene pela maior receita, depois maior quantidade de favoritos e obra em ordem alfabética.",
+    "objective": "Sua tarefa: retorne artista, obra, receita e favoritos, considerando obras com receita de vendas com status 'concluida' maior que zero ou pelo menos 3 favoritos. Ordene pela maior receita, depois maior quantidade de favoritos e obra em ordem alfabética.",
     "objective_steps": [
       "Comece pelo catálogo completo de obras.",
       "Relacione cada peça ao artista responsável.",
-      "Calcule a receita confirmada por obra.",
+      "Calcule a receita com status 'concluida' por obra.",
       "Conte também os sinais de interesse do público.",
       "Mantenha obras com venda ou interesse relevante.",
       "Organize a lista por maior receita, depois por maior desejo do público."
@@ -1897,7 +1897,8 @@
       "Comece pelas leituras de sensores no período.",
       "Mantenha apenas temperaturas acima do limite.",
       "Relacione cada leitura à máquina e ao setor.",
-      "Calcule a média de temperatura por equipamento."
+      "Calcule a média de temperatura por equipamento.",
+      "Ordene da maior temperatura média para a menor."
     ],
     "expected_sql": "SELECT m.nome AS maquina, m.setor, ROUND(AVG(l.temperatura_c), 2) AS temperatura_media FROM maquinas m JOIN leituras_sensores l ON l.maquina_id = m.id WHERE l.data_leitura >= '2026-05-01' AND l.data_leitura < '2026-06-01' AND l.temperatura_c > 80 GROUP BY m.nome, m.setor ORDER BY temperatura_media DESC;",
     "expected_answer": {
@@ -1941,7 +1942,8 @@
       "Comece pelas bolsas cadastradas.",
       "Mantenha apenas bolsas ativas.",
       "Agrupe os valores por curso.",
-      "Some o impacto mensal de cada curso."
+      "Some o impacto mensal de cada curso.",
+      "Ordene pelo maior valor total e use o curso como desempate."
     ],
     "expected_sql": "SELECT curso, ROUND(SUM(valor_mensal), 2) AS total_bolsas FROM bolsas_estudo WHERE status = 'ativa' GROUP BY curso ORDER BY total_bolsas DESC, curso ASC;",
     "expected_answer": {
@@ -2029,7 +2031,8 @@
       "Comece pelas inspeções no período.",
       "Agrupe os registros por talhão e praga.",
       "Calcule a severidade média.",
-      "Mantenha apenas casos acima do limite de ação."
+      "Mantenha apenas casos acima do limite de ação.",
+      "Ordene da maior severidade média para a menor."
     ],
     "expected_sql": "SELECT talhao, praga, ROUND(AVG(severidade), 2) AS severidade_media FROM inspecoes_pragas WHERE data_inspecao >= '2026-04-01' AND data_inspecao < '2026-05-01' GROUP BY talhao, praga HAVING AVG(severidade) >= 3 ORDER BY severidade_media DESC;",
     "expected_answer": {
@@ -2073,7 +2076,8 @@
       "Comece pelos abastecimentos no período.",
       "Agrupe litros e quilômetros por veículo.",
       "Calcule litros por 100 km.",
-      "Mantenha apenas veículos com quilometragem válida."
+      "Mantenha apenas veículos com quilometragem válida.",
+      "Ordene do maior consumo para o menor."
     ],
     "expected_sql": "SELECT placa, ROUND(SUM(litros) * 100.0 / SUM(km_rodados), 2) AS litros_100km FROM abastecimentos_frota WHERE data_abastecimento >= '2026-05-01' AND data_abastecimento < '2026-06-01' GROUP BY placa HAVING SUM(km_rodados) > 0 ORDER BY litros_100km DESC;",
     "expected_answer": {
@@ -2113,7 +2117,8 @@
       "Comece pelas sessões do período.",
       "Agrupe os registros por dispositivo.",
       "Conte sessões totais e calcule a média de crash.",
-      "Mantenha apenas dispositivos com volume mínimo."
+      "Mantenha apenas dispositivos com volume mínimo.",
+      "Ordene pela maior taxa de crash e use dispositivo como desempate."
     ],
     "expected_sql": "SELECT dispositivo, COUNT(*) AS total_sessoes, ROUND(AVG(crash) * 100, 2) AS taxa_crash FROM sessoes_dispositivo WHERE inicio >= '2026-05-01' AND inicio < '2026-06-01' GROUP BY dispositivo HAVING COUNT(*) >= 3 ORDER BY taxa_crash DESC, dispositivo ASC;",
     "expected_answer": {
@@ -2195,12 +2200,13 @@
     "difficulty": "Pleno",
     "database": "tesouraria.db",
     "story": "Olá, analista! Hoje você está na sala de tesouraria de uma operação que começou o mês com pagamentos, recebimentos e uma reunião de caixa marcada antes mesmo do café esfriar.\n\nA diretoria quer entender se maio está gerando fôlego ou consumindo liquidez, mas a planilha enviada por e-mail mistura lançamento confirmado, pendência e movimento fora do mês como se tudo tivesse o mesmo peso.\n\nAntes que alguém transforme saldo em opinião otimista, os dados precisam separar entrada real, saída real e promessa ainda sem confirmação.\n\nSua missão é medir a movimentação diária do caixa confirmado em maio de 2026. Porque em tesouraria dinheiro pendente não paga boleto, só melhora apresentação.",
-    "objective": "Sua tarefa: retorne a data, o total de entradas, o total de saídas e o saldo líquido por dia em maio de 2026. Considere apenas movimentações com status 'confirmada' e ordene pela data em ordem crescente.",
+    "objective": "Sua tarefa: retorne a data, o total de entradas, o total de saídas e o saldo líquido por dia no período de 2026-05-01 até antes de 2026-06-01. Use tipo 'entrada' para entradas, tipo 'saida' para saídas, considere apenas movimentações com status 'confirmada' e ordene pela data em ordem crescente.",
     "objective_steps": [
-      "Comece pelas movimentações de caixa de maio de 2026.",
+      "Comece pelas movimentações de caixa de 2026-05-01 até antes de 2026-06-01.",
       "Mantenha apenas registros confirmados.",
-      "Separe entradas e saídas com CASE WHEN.",
-      "Agrupe os valores por data para calcular o saldo líquido diário."
+      "Separe tipo 'entrada' e tipo 'saida' com CASE WHEN.",
+      "Agrupe os valores por data para calcular o saldo líquido diário.",
+      "Ordene pela data em ordem crescente."
     ],
     "expected_sql": "SELECT data_movimento AS data, SUM(CASE WHEN tipo = 'entrada' THEN valor ELSE 0 END) AS total_entradas, SUM(CASE WHEN tipo = 'saida' THEN valor ELSE 0 END) AS total_saidas, SUM(CASE WHEN tipo = 'entrada' THEN valor ELSE -valor END) AS saldo_liquido FROM movimentacoes_caixa WHERE status = 'confirmada' AND data_movimento >= '2026-05-01' AND data_movimento < '2026-06-01' GROUP BY data_movimento ORDER BY data ASC;",
     "expected_answer": {
@@ -2258,7 +2264,7 @@
         ]
       }
     },
-    "hint": "Filtre o mês e o status confirmado, depois use CASE WHEN dentro de SUM para separar entradas e saídas."
+    "hint": "Filtre o mês e status 'confirmada', depois use CASE WHEN dentro de SUM para separar tipo 'entrada' e tipo 'saida'."
   },
   {
     "id": "tesouraria_002",
@@ -2272,7 +2278,8 @@
       "Comece pelos lançamentos internos confirmados.",
       "Relacione os lançamentos ao extrato usando conta e código de referência.",
       "Use LEFT JOIN para manter lançamentos sem par.",
-      "Filtre os casos em que o extrato não foi encontrado."
+      "Filtre os casos em que o extrato não foi encontrado.",
+      "Ordene por data e código de referência."
     ],
     "expected_sql": "SELECT li.codigo_referencia, li.data_lancamento AS data, li.descricao, li.valor FROM lancamentos_internos li LEFT JOIN extrato_bancario eb ON eb.conta_id = li.conta_id AND eb.codigo_referencia = li.codigo_referencia WHERE li.status = 'confirmado' AND eb.id IS NULL ORDER BY data ASC, li.codigo_referencia ASC;",
     "expected_answer": {
@@ -2314,7 +2321,8 @@
       "Comece pelos lançamentos internos confirmados.",
       "Relacione cada lançamento ao extrato por conta e código de referência.",
       "Calcule a diferença absoluta entre os valores.",
-      "Classifique a diferença com CASE WHEN."
+      "Classifique a diferença com CASE WHEN.",
+      "Ordene da maior diferença para a menor e use código de referência como desempate."
     ],
     "expected_sql": "SELECT li.codigo_referencia, li.valor AS valor_interno, eb.valor AS valor_bancario, ABS(li.valor - eb.valor) AS diferenca, CASE WHEN ABS(li.valor - eb.valor) = 0 THEN 'Conciliado' WHEN ABS(li.valor - eb.valor) <= 10 THEN 'Pequena divergência' WHEN ABS(li.valor - eb.valor) <= 100 THEN 'Divergência moderada' ELSE 'Divergência crítica' END AS classificacao FROM lancamentos_internos li JOIN extrato_bancario eb ON eb.conta_id = li.conta_id AND eb.codigo_referencia = li.codigo_referencia WHERE li.status = 'confirmado' ORDER BY diferenca DESC, li.codigo_referencia ASC;",
     "expected_answer": {
@@ -2387,7 +2395,8 @@
       "Comece pelas transações do extrato bancário.",
       "Agrupe por conta, referência, data e valor.",
       "Conte quantas linhas existem em cada grupo.",
-      "Use HAVING para manter apenas duplicidades reais."
+      "Use HAVING para manter apenas duplicidades reais.",
+      "Ordene pela maior quantidade de ocorrências, depois por conta e referência."
     ],
     "expected_sql": "SELECT c.nome AS conta, eb.codigo_referencia, eb.data_extrato AS data, eb.valor, COUNT(*) AS ocorrencias FROM extrato_bancario eb JOIN contas_tesouraria c ON c.id = eb.conta_id GROUP BY c.nome, eb.codigo_referencia, eb.data_extrato, eb.valor HAVING COUNT(*) > 1 ORDER BY ocorrencias DESC, conta ASC, eb.codigo_referencia ASC;",
     "expected_answer": {
@@ -2427,12 +2436,13 @@
     "difficulty": "Sênior",
     "database": "tesouraria.db",
     "story": "Olá, analista! Hoje a tesouraria precisa decidir quais contas exigem reforço antes do próximo ciclo de pagamentos, e a discussão já começou com palpites caros.\n\nAlgumas contas parecem confortáveis olhando apenas o saldo inicial, outras tiveram saídas fortes durante o mês e uma delas nem se mexeu, mas ainda assim ficou abaixo da posição mínima esperada.\n\nAntes que a prioridade seja definida pelo volume da voz na reunião, os dados precisam calcular a posição realizada conta por conta.\n\nSua missão é encontrar contas cuja posição realizada ficou abaixo do mínimo definido. Porque em tesouraria saldo inicial é foto antiga; posição realizada é o filme que cobra juros.",
-    "objective": "Sua tarefa: calcule saldo inicial + entradas - saídas por conta em maio de 2026, considerando apenas movimentações confirmadas. Retorne a conta, o saldo realizado, a posição mínima e o valor abaixo do mínimo apenas das contas cujo saldo realizado ficou abaixo da posição mínima. Ordene pelo maior valor abaixo do mínimo e, em caso de empate, por conta em ordem alfabética.",
+    "objective": "Sua tarefa: calcule saldo inicial + entradas - saídas por conta no período de 2026-05-01 até antes de 2026-06-01, usando tipo 'entrada' para entradas, tipo 'saida' para saídas e considerando apenas movimentações com status 'confirmada'. Retorne a conta, o saldo realizado, a posição mínima e o valor abaixo do mínimo apenas das contas cujo saldo realizado ficou abaixo da posição mínima. Ordene pelo maior valor abaixo do mínimo e, em caso de empate, por conta em ordem alfabética.",
     "objective_steps": [
-      "Use uma CTE para somar entradas e saídas confirmadas por conta.",
+      "Use uma CTE para somar tipo 'entrada' e tipo 'saida' com status 'confirmada' por conta.",
       "Relacione as somas ao cadastro de contas.",
       "Use COALESCE para contas sem movimentação no período.",
-      "Calcule o saldo realizado e filtre apenas contas abaixo da posição mínima."
+      "Calcule o saldo realizado e filtre apenas contas abaixo da posição mínima.",
+      "Ordene pelo maior valor abaixo do mínimo e use a conta como desempate."
     ],
     "expected_sql": "WITH movimentos_conta AS (SELECT conta_id, SUM(CASE WHEN tipo = 'entrada' THEN valor ELSE 0 END) AS entradas, SUM(CASE WHEN tipo = 'saida' THEN valor ELSE 0 END) AS saidas FROM movimentacoes_caixa WHERE status = 'confirmada' AND data_movimento >= '2026-05-01' AND data_movimento < '2026-06-01' GROUP BY conta_id), posicoes AS (SELECT c.nome AS conta, c.saldo_inicial + COALESCE(m.entradas, 0) - COALESCE(m.saidas, 0) AS saldo_realizado, c.posicao_minima FROM contas_tesouraria c LEFT JOIN movimentos_conta m ON m.conta_id = c.id) SELECT conta, ROUND(saldo_realizado, 2) AS saldo_realizado, ROUND(posicao_minima, 2) AS posicao_minima, ROUND(posicao_minima - saldo_realizado, 2) AS abaixo_do_minimo FROM posicoes WHERE saldo_realizado < posicao_minima ORDER BY abaixo_do_minimo DESC, conta ASC;",
     "expected_answer": {
@@ -2466,6 +2476,6 @@
         ]
       }
     },
-    "hint": "Agregue entradas e saídas em uma CTE, faça LEFT JOIN com contas e use COALESCE antes de comparar com a posição mínima."
+    "hint": "Agregue tipo 'entrada' e tipo 'saida' em uma CTE, faça LEFT JOIN com contas e use COALESCE antes de comparar com a posição mínima."
   }
 ]

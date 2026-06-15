@@ -61,6 +61,8 @@ function ObjectivePanel({ objective, objectiveSteps }) {
         </div>
       </div>
 
+      <p className="objective-summary">{objective}</p>
+
       <ul className="objective-list">
         {steps.map((step, index) => (
           <li key={`${index}-${step}`}>
