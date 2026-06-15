@@ -570,6 +570,126 @@ def seed_financas() -> None:
     connection.close()
 
 
+def seed_tesouraria() -> None:
+    connection = reset_database("tesouraria.db")
+    connection.executescript(
+        """
+        CREATE TABLE contas_tesouraria (
+            id INTEGER PRIMARY KEY,
+            nome TEXT NOT NULL,
+            saldo_inicial REAL NOT NULL,
+            posicao_minima REAL NOT NULL
+        );
+
+        CREATE TABLE movimentacoes_caixa (
+            id INTEGER PRIMARY KEY,
+            conta_id INTEGER NOT NULL,
+            data_movimento TEXT NOT NULL,
+            tipo TEXT NOT NULL CHECK (tipo IN ('entrada', 'saida')),
+            valor REAL NOT NULL,
+            status TEXT NOT NULL,
+            descricao TEXT NOT NULL,
+            FOREIGN KEY (conta_id) REFERENCES contas_tesouraria(id)
+        );
+
+        CREATE TABLE lancamentos_internos (
+            id INTEGER PRIMARY KEY,
+            conta_id INTEGER NOT NULL,
+            codigo_referencia TEXT NOT NULL,
+            data_lancamento TEXT NOT NULL,
+            descricao TEXT NOT NULL,
+            valor REAL NOT NULL,
+            status TEXT NOT NULL,
+            FOREIGN KEY (conta_id) REFERENCES contas_tesouraria(id)
+        );
+
+        CREATE TABLE extrato_bancario (
+            id INTEGER PRIMARY KEY,
+            conta_id INTEGER NOT NULL,
+            codigo_referencia TEXT NOT NULL,
+            data_extrato TEXT NOT NULL,
+            descricao TEXT NOT NULL,
+            valor REAL NOT NULL,
+            FOREIGN KEY (conta_id) REFERENCES contas_tesouraria(id)
+        );
+        """
+    )
+    insert_many(
+        connection,
+        "contas_tesouraria",
+        ("id", "nome", "saldo_inicial", "posicao_minima"),
+        [
+            (1, "Conta Operacional", 10000.00, 15000.00),
+            (2, "Conta Reservas", 40000.00, 30000.00),
+            (3, "Conta Tributos", 8000.00, 12000.00),
+            (4, "Conta Projetos", 25000.00, 20000.00),
+            (5, "Conta Garantias", 9000.00, 10000.00),
+        ],
+    )
+    insert_many(
+        connection,
+        "movimentacoes_caixa",
+        ("conta_id", "data_movimento", "tipo", "valor", "status", "descricao"),
+        [
+            (1, "2026-05-01", "entrada", 15000.00, "confirmada", "Recebimento comercial"),
+            (1, "2026-05-01", "saida", 3200.00, "confirmada", "Pagamento operacional"),
+            (1, "2026-05-02", "entrada", 8200.00, "confirmada", "Reforço de caixa"),
+            (2, "2026-05-02", "saida", 1250.00, "confirmada", "Despesa administrativa"),
+            (3, "2026-05-03", "saida", 4100.00, "confirmada", "Recolhimento fiscal"),
+            (2, "2026-05-04", "entrada", 5000.00, "confirmada", "Resgate de reserva"),
+            (1, "2026-05-04", "saida", 700.00, "confirmada", "Tarifa de serviço"),
+            (1, "2026-05-06", "saida", 18000.00, "confirmada", "Pagamento extraordinário"),
+            (3, "2026-05-07", "entrada", 1200.00, "confirmada", "Estorno tributário"),
+            (4, "2026-05-08", "saida", 4000.00, "confirmada", "Desembolso de projeto"),
+            (1, "2026-05-02", "entrada", 99999.00, "pendente", "Entrada aguardando confirmação"),
+            (3, "2026-05-03", "saida", 777.00, "pendente", "Saída em aprovação"),
+            (1, "2026-04-30", "entrada", 50000.00, "confirmada", "Movimento fora do período"),
+            (2, "2026-06-01", "saida", 10000.00, "confirmada", "Movimento após o período"),
+        ],
+    )
+    insert_many(
+        connection,
+        "lancamentos_internos",
+        ("conta_id", "codigo_referencia", "data_lancamento", "descricao", "valor", "status"),
+        [
+            (1, "REF-1001", "2026-05-02", "Recebimento de cliente", 2500.00, "confirmado"),
+            (1, "REF-1002", "2026-05-03", "Tarifa operacional", -1200.00, "confirmado"),
+            (2, "REF-1003", "2026-05-04", "Resgate programado", 3400.00, "confirmado"),
+            (3, "REF-1004", "2026-05-05", "Pagamento fornecedor", -4500.00, "confirmado"),
+            (1, "REF-1005", "2026-05-06", "Aporte de caixa", 8000.00, "confirmado"),
+            (2, "REF-1006", "2026-05-07", "Aplicação de excedente", -6000.00, "confirmado"),
+            (1, "REF-1007", "2026-05-08", "Ajuste interno sem extrato", 1500.00, "confirmado"),
+            (3, "REF-1008", "2026-05-09", "Pagamento de guia", -2300.00, "confirmado"),
+            (4, "REF-1009", "2026-05-10", "Transferência agendada", -900.00, "pendente"),
+            (2, "REF-1010", "2026-05-11", "Lançamento cancelado", 999.00, "cancelado"),
+        ],
+    )
+    insert_many(
+        connection,
+        "extrato_bancario",
+        ("conta_id", "codigo_referencia", "data_extrato", "descricao", "valor"),
+        [
+            (1, "REF-1001", "2026-05-02", "Recebimento liquidado", 2500.00),
+            (1, "REF-1002", "2026-05-03", "Tarifa liquidada", -1207.50),
+            (2, "REF-1003", "2026-05-04", "Resgate liquidado", 3475.00),
+            (3, "REF-1004", "2026-05-05", "Pagamento liquidado", -4705.00),
+            (1, "REF-1005", "2026-05-06", "Aporte liquidado", 8000.00),
+            (2, "REF-1006", "2026-05-07", "Aplicação liquidada", -5900.00),
+            (1, "REF-DUP-01", "2026-05-12", "Débito duplicado", -750.00),
+            (1, "REF-DUP-01", "2026-05-12", "Débito duplicado", -750.00),
+            (2, "REF-DUP-02", "2026-05-13", "Crédito duplicado", 1200.00),
+            (2, "REF-DUP-02", "2026-05-13", "Crédito duplicado", 1200.00),
+            (2, "REF-DUP-02", "2026-05-13", "Crédito duplicado", 1200.00),
+            (1, "REF-DUP-01", "2026-05-12", "Valor parecido", -751.00),
+            (1, "REF-DUP-01", "2026-05-13", "Data parecida", -750.00),
+            (2, "REF-DUP-01", "2026-05-12", "Conta parecida", -750.00),
+            (1, "REF-UNICO", "2026-05-12", "Referência parecida", -750.00),
+        ],
+    )
+    connection.commit()
+    connection.close()
+
+
 def seed_carreira_padaria() -> None:
     connection = reset_database("carreira_padaria.db")
     connection.executescript(
@@ -1113,6 +1233,7 @@ def main() -> None:
     seed_logistica()
     seed_games()
     seed_financas()
+    seed_tesouraria()
     seed_carreira_padaria()
     seed_mercado_pleno()
     print(f"Bancos criados em {DATABASES_DIR}")

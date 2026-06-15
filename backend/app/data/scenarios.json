@@ -2187,5 +2187,285 @@
       }
     },
     "hint": "Use uma CTE para somar transações negadas por cartão e outra para calcular a média do grupo."
+  },
+  {
+    "id": "tesouraria_001",
+    "category": "Tesouraria",
+    "title": "Movimentação diária do caixa",
+    "difficulty": "Pleno",
+    "database": "tesouraria.db",
+    "story": "Olá, analista! Hoje você está na sala de tesouraria de uma operação que começou o mês com pagamentos, recebimentos e uma reunião de caixa marcada antes mesmo do café esfriar.\n\nA diretoria quer entender se maio está gerando fôlego ou consumindo liquidez, mas a planilha enviada por e-mail mistura lançamento confirmado, pendência e movimento fora do mês como se tudo tivesse o mesmo peso.\n\nAntes que alguém transforme saldo em opinião otimista, os dados precisam separar entrada real, saída real e promessa ainda sem confirmação.\n\nSua missão é medir a movimentação diária do caixa confirmado em maio de 2026. Porque em tesouraria dinheiro pendente não paga boleto, só melhora apresentação.",
+    "objective": "Sua tarefa: retorne a data, o total de entradas, o total de saídas e o saldo líquido por dia em maio de 2026. Considere apenas movimentações com status 'confirmada' e ordene pela data em ordem crescente.",
+    "objective_steps": [
+      "Comece pelas movimentações de caixa de maio de 2026.",
+      "Mantenha apenas registros confirmados.",
+      "Separe entradas e saídas com CASE WHEN.",
+      "Agrupe os valores por data para calcular o saldo líquido diário."
+    ],
+    "expected_sql": "SELECT data_movimento AS data, SUM(CASE WHEN tipo = 'entrada' THEN valor ELSE 0 END) AS total_entradas, SUM(CASE WHEN tipo = 'saida' THEN valor ELSE 0 END) AS total_saidas, SUM(CASE WHEN tipo = 'entrada' THEN valor ELSE -valor END) AS saldo_liquido FROM movimentacoes_caixa WHERE status = 'confirmada' AND data_movimento >= '2026-05-01' AND data_movimento < '2026-06-01' GROUP BY data_movimento ORDER BY data ASC;",
+    "expected_answer": {
+      "query": "SELECT data_movimento AS data, SUM(CASE WHEN tipo = 'entrada' THEN valor ELSE 0 END) AS total_entradas, SUM(CASE WHEN tipo = 'saida' THEN valor ELSE 0 END) AS total_saidas, SUM(CASE WHEN tipo = 'entrada' THEN valor ELSE -valor END) AS saldo_liquido FROM movimentacoes_caixa WHERE status = 'confirmada' AND data_movimento >= '2026-05-01' AND data_movimento < '2026-06-01' GROUP BY data_movimento ORDER BY data ASC;",
+      "result": {
+        "columns": [
+          "data",
+          "total_entradas",
+          "total_saidas",
+          "saldo_liquido"
+        ],
+        "rows": [
+          [
+            "2026-05-01",
+            15000.0,
+            3200.0,
+            11800.0
+          ],
+          [
+            "2026-05-02",
+            8200.0,
+            1250.0,
+            6950.0
+          ],
+          [
+            "2026-05-03",
+            0,
+            4100.0,
+            -4100.0
+          ],
+          [
+            "2026-05-04",
+            5000.0,
+            700.0,
+            4300.0
+          ],
+          [
+            "2026-05-06",
+            0,
+            18000.0,
+            -18000.0
+          ],
+          [
+            "2026-05-07",
+            1200.0,
+            0,
+            1200.0
+          ],
+          [
+            "2026-05-08",
+            0,
+            4000.0,
+            -4000.0
+          ]
+        ]
+      }
+    },
+    "hint": "Filtre o mês e o status confirmado, depois use CASE WHEN dentro de SUM para separar entradas e saídas."
+  },
+  {
+    "id": "tesouraria_002",
+    "category": "Tesouraria",
+    "title": "Lançamentos sem conciliação",
+    "difficulty": "Pleno",
+    "database": "tesouraria.db",
+    "story": "Olá, analista! Hoje você foi chamado para uma conciliação emergencial depois que a tesouraria encontrou lançamentos internos esperando uma confirmação que nunca apareceu no extrato.\n\nO fechamento mensal está travado porque cada área jura que registrou tudo corretamente, enquanto o caixa só aceita uma linguagem: correspondência objetiva entre controle interno e movimentação externa.\n\nAntes que o fechamento vire uma rodada de encaminhamentos defensivos, os dados precisam apontar quais referências ficaram sem par.\n\nSua missão é encontrar lançamentos internos confirmados que ainda não têm correspondência no extrato. Porque em tesouraria conciliação por confiança costuma terminar em retrabalho.",
+    "objective": "Sua tarefa: retorne o código de referência, a data, a descrição e o valor dos lançamentos internos confirmados sem correspondência no extrato bancário. Considere correspondência por conta e código de referência. Ordene por data e código de referência.",
+    "objective_steps": [
+      "Comece pelos lançamentos internos confirmados.",
+      "Relacione os lançamentos ao extrato usando conta e código de referência.",
+      "Use LEFT JOIN para manter lançamentos sem par.",
+      "Filtre os casos em que o extrato não foi encontrado."
+    ],
+    "expected_sql": "SELECT li.codigo_referencia, li.data_lancamento AS data, li.descricao, li.valor FROM lancamentos_internos li LEFT JOIN extrato_bancario eb ON eb.conta_id = li.conta_id AND eb.codigo_referencia = li.codigo_referencia WHERE li.status = 'confirmado' AND eb.id IS NULL ORDER BY data ASC, li.codigo_referencia ASC;",
+    "expected_answer": {
+      "query": "SELECT li.codigo_referencia, li.data_lancamento AS data, li.descricao, li.valor FROM lancamentos_internos li LEFT JOIN extrato_bancario eb ON eb.conta_id = li.conta_id AND eb.codigo_referencia = li.codigo_referencia WHERE li.status = 'confirmado' AND eb.id IS NULL ORDER BY data ASC, li.codigo_referencia ASC;",
+      "result": {
+        "columns": [
+          "codigo_referencia",
+          "data",
+          "descricao",
+          "valor"
+        ],
+        "rows": [
+          [
+            "REF-1007",
+            "2026-05-08",
+            "Ajuste interno sem extrato",
+            1500.0
+          ],
+          [
+            "REF-1008",
+            "2026-05-09",
+            "Pagamento de guia",
+            -2300.0
+          ]
+        ]
+      }
+    },
+    "hint": "Use LEFT JOIN do controle interno para o extrato e mantenha apenas as linhas em que o id do extrato ficou nulo."
+  },
+  {
+    "id": "tesouraria_003",
+    "category": "Tesouraria",
+    "title": "Classificação das divergências",
+    "difficulty": "Pleno",
+    "database": "tesouraria.db",
+    "story": "Olá, analista! Hoje a conciliação não parou na pergunta se o lançamento existe; agora o problema é descobrir o tamanho da diferença entre o valor interno e o valor liquidado.\n\nA equipe precisa separar ajuste pequeno de divergência crítica antes que todos os casos sejam tratados com a mesma urgência e ninguém resolva o que realmente ameaça o fechamento.\n\nAntes que a fila de análise vire uma coleção de sustos iguais, os dados precisam classificar cada diferença com uma regra clara.\n\nSua missão é comparar valores internos e valores do extrato por referência conciliada. Porque em tesouraria centavos incomodam, mas diferença grande derruba a pauta.",
+    "objective": "Sua tarefa: retorne o código de referência, o valor interno, o valor bancário, a diferença absoluta e a classificação da divergência para lançamentos internos confirmados com correspondência no extrato. Classifique diferença 0 como 'Conciliado', até 10 como 'Pequena divergência', até 100 como 'Divergência moderada' e acima de 100 como 'Divergência crítica'. Ordene da maior diferença para a menor e, em caso de empate, por código de referência.",
+    "objective_steps": [
+      "Comece pelos lançamentos internos confirmados.",
+      "Relacione cada lançamento ao extrato por conta e código de referência.",
+      "Calcule a diferença absoluta entre os valores.",
+      "Classifique a diferença com CASE WHEN."
+    ],
+    "expected_sql": "SELECT li.codigo_referencia, li.valor AS valor_interno, eb.valor AS valor_bancario, ABS(li.valor - eb.valor) AS diferenca, CASE WHEN ABS(li.valor - eb.valor) = 0 THEN 'Conciliado' WHEN ABS(li.valor - eb.valor) <= 10 THEN 'Pequena divergência' WHEN ABS(li.valor - eb.valor) <= 100 THEN 'Divergência moderada' ELSE 'Divergência crítica' END AS classificacao FROM lancamentos_internos li JOIN extrato_bancario eb ON eb.conta_id = li.conta_id AND eb.codigo_referencia = li.codigo_referencia WHERE li.status = 'confirmado' ORDER BY diferenca DESC, li.codigo_referencia ASC;",
+    "expected_answer": {
+      "query": "SELECT li.codigo_referencia, li.valor AS valor_interno, eb.valor AS valor_bancario, ABS(li.valor - eb.valor) AS diferenca, CASE WHEN ABS(li.valor - eb.valor) = 0 THEN 'Conciliado' WHEN ABS(li.valor - eb.valor) <= 10 THEN 'Pequena divergência' WHEN ABS(li.valor - eb.valor) <= 100 THEN 'Divergência moderada' ELSE 'Divergência crítica' END AS classificacao FROM lancamentos_internos li JOIN extrato_bancario eb ON eb.conta_id = li.conta_id AND eb.codigo_referencia = li.codigo_referencia WHERE li.status = 'confirmado' ORDER BY diferenca DESC, li.codigo_referencia ASC;",
+      "result": {
+        "columns": [
+          "codigo_referencia",
+          "valor_interno",
+          "valor_bancario",
+          "diferenca",
+          "classificacao"
+        ],
+        "rows": [
+          [
+            "REF-1004",
+            -4500.0,
+            -4705.0,
+            205.0,
+            "Divergência crítica"
+          ],
+          [
+            "REF-1006",
+            -6000.0,
+            -5900.0,
+            100.0,
+            "Divergência moderada"
+          ],
+          [
+            "REF-1003",
+            3400.0,
+            3475.0,
+            75.0,
+            "Divergência moderada"
+          ],
+          [
+            "REF-1002",
+            -1200.0,
+            -1207.5,
+            7.5,
+            "Pequena divergência"
+          ],
+          [
+            "REF-1001",
+            2500.0,
+            2500.0,
+            0.0,
+            "Conciliado"
+          ],
+          [
+            "REF-1005",
+            8000.0,
+            8000.0,
+            0.0,
+            "Conciliado"
+          ]
+        ]
+      }
+    },
+    "hint": "Depois do JOIN, use ABS para medir a diferença e CASE WHEN para transformar faixas em rótulos."
+  },
+  {
+    "id": "tesouraria_004",
+    "category": "Tesouraria",
+    "title": "Transações bancárias duplicadas",
+    "difficulty": "Pleno",
+    "database": "tesouraria.db",
+    "story": "Olá, analista! Hoje o extrato chegou com aquela cara de normalidade que costuma esconder cobrança repetida, crédito duplicado e um fechamento prestes a ganhar horas extras.\n\nA tesouraria percebeu linhas muito parecidas, mas parecidas não basta: duplicidade real precisa bater em conta, referência, data e valor, sem confundir falsos positivos no meio do caminho.\n\nAntes que alguém saia estornando o que só parece repetido, os dados precisam separar cópia verdadeira de coincidência perigosa.\n\nSua missão é identificar grupos de transações bancárias duplicadas no extrato. Porque em tesouraria duplicidade falsa dá trabalho, mas duplicidade real custa dinheiro.",
+    "objective": "Sua tarefa: retorne a conta, o código de referência, a data, o valor e a quantidade de ocorrências das transações bancárias duplicadas. Considere duplicidade quando conta, referência, data e valor forem iguais. Retorne apenas grupos com mais de uma ocorrência e ordene pela maior quantidade, depois por conta e código de referência.",
+    "objective_steps": [
+      "Comece pelas transações do extrato bancário.",
+      "Agrupe por conta, referência, data e valor.",
+      "Conte quantas linhas existem em cada grupo.",
+      "Use HAVING para manter apenas duplicidades reais."
+    ],
+    "expected_sql": "SELECT c.nome AS conta, eb.codigo_referencia, eb.data_extrato AS data, eb.valor, COUNT(*) AS ocorrencias FROM extrato_bancario eb JOIN contas_tesouraria c ON c.id = eb.conta_id GROUP BY c.nome, eb.codigo_referencia, eb.data_extrato, eb.valor HAVING COUNT(*) > 1 ORDER BY ocorrencias DESC, conta ASC, eb.codigo_referencia ASC;",
+    "expected_answer": {
+      "query": "SELECT c.nome AS conta, eb.codigo_referencia, eb.data_extrato AS data, eb.valor, COUNT(*) AS ocorrencias FROM extrato_bancario eb JOIN contas_tesouraria c ON c.id = eb.conta_id GROUP BY c.nome, eb.codigo_referencia, eb.data_extrato, eb.valor HAVING COUNT(*) > 1 ORDER BY ocorrencias DESC, conta ASC, eb.codigo_referencia ASC;",
+      "result": {
+        "columns": [
+          "conta",
+          "codigo_referencia",
+          "data",
+          "valor",
+          "ocorrencias"
+        ],
+        "rows": [
+          [
+            "Conta Reservas",
+            "REF-DUP-02",
+            "2026-05-13",
+            1200.0,
+            3
+          ],
+          [
+            "Conta Operacional",
+            "REF-DUP-01",
+            "2026-05-12",
+            -750.0,
+            2
+          ]
+        ]
+      }
+    },
+    "hint": "Agrupe exatamente pelos campos que definem duplicidade e use HAVING COUNT(*) > 1."
+  },
+  {
+    "id": "tesouraria_005",
+    "category": "Tesouraria",
+    "title": "Contas abaixo da posição esperada",
+    "difficulty": "Sênior",
+    "database": "tesouraria.db",
+    "story": "Olá, analista! Hoje a tesouraria precisa decidir quais contas exigem reforço antes do próximo ciclo de pagamentos, e a discussão já começou com palpites caros.\n\nAlgumas contas parecem confortáveis olhando apenas o saldo inicial, outras tiveram saídas fortes durante o mês e uma delas nem se mexeu, mas ainda assim ficou abaixo da posição mínima esperada.\n\nAntes que a prioridade seja definida pelo volume da voz na reunião, os dados precisam calcular a posição realizada conta por conta.\n\nSua missão é encontrar contas cuja posição realizada ficou abaixo do mínimo definido. Porque em tesouraria saldo inicial é foto antiga; posição realizada é o filme que cobra juros.",
+    "objective": "Sua tarefa: calcule saldo inicial + entradas - saídas por conta em maio de 2026, considerando apenas movimentações confirmadas. Retorne a conta, o saldo realizado, a posição mínima e o valor abaixo do mínimo apenas das contas cujo saldo realizado ficou abaixo da posição mínima. Ordene pelo maior valor abaixo do mínimo e, em caso de empate, por conta em ordem alfabética.",
+    "objective_steps": [
+      "Use uma CTE para somar entradas e saídas confirmadas por conta.",
+      "Relacione as somas ao cadastro de contas.",
+      "Use COALESCE para contas sem movimentação no período.",
+      "Calcule o saldo realizado e filtre apenas contas abaixo da posição mínima."
+    ],
+    "expected_sql": "WITH movimentos_conta AS (SELECT conta_id, SUM(CASE WHEN tipo = 'entrada' THEN valor ELSE 0 END) AS entradas, SUM(CASE WHEN tipo = 'saida' THEN valor ELSE 0 END) AS saidas FROM movimentacoes_caixa WHERE status = 'confirmada' AND data_movimento >= '2026-05-01' AND data_movimento < '2026-06-01' GROUP BY conta_id), posicoes AS (SELECT c.nome AS conta, c.saldo_inicial + COALESCE(m.entradas, 0) - COALESCE(m.saidas, 0) AS saldo_realizado, c.posicao_minima FROM contas_tesouraria c LEFT JOIN movimentos_conta m ON m.conta_id = c.id) SELECT conta, ROUND(saldo_realizado, 2) AS saldo_realizado, ROUND(posicao_minima, 2) AS posicao_minima, ROUND(posicao_minima - saldo_realizado, 2) AS abaixo_do_minimo FROM posicoes WHERE saldo_realizado < posicao_minima ORDER BY abaixo_do_minimo DESC, conta ASC;",
+    "expected_answer": {
+      "query": "WITH movimentos_conta AS (SELECT conta_id, SUM(CASE WHEN tipo = 'entrada' THEN valor ELSE 0 END) AS entradas, SUM(CASE WHEN tipo = 'saida' THEN valor ELSE 0 END) AS saidas FROM movimentacoes_caixa WHERE status = 'confirmada' AND data_movimento >= '2026-05-01' AND data_movimento < '2026-06-01' GROUP BY conta_id), posicoes AS (SELECT c.nome AS conta, c.saldo_inicial + COALESCE(m.entradas, 0) - COALESCE(m.saidas, 0) AS saldo_realizado, c.posicao_minima FROM contas_tesouraria c LEFT JOIN movimentos_conta m ON m.conta_id = c.id) SELECT conta, ROUND(saldo_realizado, 2) AS saldo_realizado, ROUND(posicao_minima, 2) AS posicao_minima, ROUND(posicao_minima - saldo_realizado, 2) AS abaixo_do_minimo FROM posicoes WHERE saldo_realizado < posicao_minima ORDER BY abaixo_do_minimo DESC, conta ASC;",
+      "result": {
+        "columns": [
+          "conta",
+          "saldo_realizado",
+          "posicao_minima",
+          "abaixo_do_minimo"
+        ],
+        "rows": [
+          [
+            "Conta Tributos",
+            5100.0,
+            12000.0,
+            6900.0
+          ],
+          [
+            "Conta Operacional",
+            11300.0,
+            15000.0,
+            3700.0
+          ],
+          [
+            "Conta Garantias",
+            9000.0,
+            10000.0,
+            1000.0
+          ]
+        ]
+      }
+    },
+    "hint": "Agregue entradas e saídas em uma CTE, faça LEFT JOIN com contas e use COALESCE antes de comparar com a posição mínima."
   }
 ]
