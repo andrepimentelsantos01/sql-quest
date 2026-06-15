@@ -73,7 +73,7 @@
         ]
       }
     },
-    "hint": "Filtre apenas consultas realizadas, calcule AVG de dias_espera e agrupe por especialidade."
+    "hint": "Filtre apenas consultas realizadas, calcule a média de dias_espera e agrupe por especialidade."
   },
   {
     "id": "tecnologia_001",
@@ -199,7 +199,7 @@
         ]
       }
     },
-    "hint": "Filtre status 'concluido', calcule AVG da carga e agrupe por atleta."
+    "hint": "Filtre status 'concluido', calcule a carga média e agrupe por atleta."
   },
   {
     "id": "esporte_002",
@@ -402,7 +402,7 @@
         ]
       }
     },
-    "hint": "Junte disciplinas com avaliações, filtre o segundo bimestre, calcule a média e use HAVING para manter apenas médias abaixo de 7."
+    "hint": "Junte disciplinas com avaliações, filtre o segundo bimestre, calcule a média e aplique o corte depois do agrupamento para manter apenas médias abaixo de 7."
   },
   {
     "id": "arte_001",
@@ -669,7 +669,7 @@
         ]
       }
     },
-    "hint": "Cada movimento conta um pedaço da história do produto. Agrupe por produto e calcule AVG sobre dias_em_estoque."
+    "hint": "Cada movimento conta um pedaço da história do produto. Agrupe por produto e calcule a média sobre dias_em_estoque."
   },
   {
     "id": "games_001",
@@ -753,7 +753,7 @@
         ]
       }
     },
-    "hint": "Use AVG em venceu, já que 1 representa vitória e 0 representa derrota. Inclua personagem na ordenação para resolver empates."
+    "hint": "Calcule a média de venceu, já que 1 representa vitória e 0 representa derrota. Inclua personagem na ordenação para resolver empates."
   },
   {
     "id": "saude_003",
@@ -797,7 +797,7 @@
         ]
       }
     },
-    "hint": "Junte hospitais com internações, filtre o período e calcule AVG de custo_total por cidade."
+    "hint": "Junte hospitais com internações, filtre o período e calcule o custo médio por cidade."
   },
   {
     "id": "tecnologia_003",
@@ -882,7 +882,7 @@
         ]
       }
     },
-    "hint": "Junte jogadores com finalizações, filtre o mês, some os gols e use HAVING para manter quem marcou."
+    "hint": "Junte jogadores com finalizações, filtre o mês, some os gols e aplique o corte depois do agrupamento para manter quem marcou."
   },
   {
     "id": "industria_003",
@@ -923,7 +923,7 @@
         ]
       }
     },
-    "hint": "Filtre o mês, agrupe por motivo, some minutos_parada e aplique HAVING para o corte mínimo."
+    "hint": "Filtre o mês, agrupe por motivo, some minutos_parada e aplique o corte mínimo depois do agrupamento."
   },
   {
     "id": "educacao_003",
@@ -967,7 +967,7 @@
         ]
       }
     },
-    "hint": "Filtre o segundo bimestre, agrupe por aluno e calcule AVG de nota com arredondamento."
+    "hint": "Filtre o segundo bimestre, agrupe por aluno e calcule a nota média com arredondamento."
   },
   {
     "id": "arte_003",
@@ -997,7 +997,7 @@
         ]
       }
     },
-    "hint": "Use LEFT JOIN entre obras e vendas com status 'concluida', depois mantenha apenas registros sem venda correspondente."
+    "hint": "Escolha a junção adequada entre obras e vendas com status 'concluida', depois mantenha apenas registros sem venda correspondente."
   },
   {
     "id": "agricultura_003",
@@ -1094,7 +1094,7 @@
         ]
       }
     },
-    "hint": "Filtre dias_atraso maior que zero, agrupe por origem e destino e calcule AVG de custo_frete."
+    "hint": "Filtre dias_atraso maior que zero, agrupe por origem e destino e calcule o custo médio de frete."
   },
   {
     "id": "games_003",
@@ -1178,7 +1178,7 @@
         ]
       }
     },
-    "hint": "Use uma CTE para somar custos por hospital, outra para calcular a média geral e depois compare cada total com essa média."
+    "hint": "Separe a soma de custos por hospital da média geral e depois compare cada total com essa média."
   },
   {
     "id": "tecnologia_004",
@@ -1309,7 +1309,7 @@
         ]
       }
     },
-    "hint": "Some as paradas por máquina e use uma função de janela particionada por setor para achar a maior de cada grupo."
+    "hint": "Some as paradas por máquina e compare cada setor separadamente para achar a maior de cada grupo."
   },
   {
     "id": "educacao_004",
@@ -1422,7 +1422,7 @@
         ]
       }
     },
-    "hint": "Calcule receita por obra em uma CTE, favoritos em outra e use LEFT JOIN para combinar as duas leituras."
+    "hint": "Calcule receita por obra em uma etapa, favoritos em outra e escolha a junção adequada para combinar as duas leituras sem perder obras relevantes."
   },
   {
     "id": "agricultura_004",
@@ -1478,7 +1478,7 @@
         ]
       }
     },
-    "hint": "Some a irrigação por talhão, calcule produção estimada com área vezes produtividade e aplique RANK sobre a eficiência."
+    "hint": "Some a irrigação por talhão, calcule produção estimada com área vezes produtividade e monte a posição de cada talhão pela eficiência."
   },
   {
     "id": "logistica_004",
@@ -1538,7 +1538,7 @@
         ]
       }
     },
-    "hint": "Agregue entregas por rota, calcule taxa de atraso e use RANK para montar a posição de risco."
+    "hint": "Agregue entregas por rota, calcule taxa de atraso e monte uma posição de risco para comparar as rotas."
   },
   {
     "id": "games_004",
@@ -1751,7 +1751,7 @@
         ]
       }
     },
-    "hint": "Calcule pagamentos por empréstimo, derive saldo aberto e use RANK particionado por segmento para escolher o maior saldo."
+    "hint": "Calcule pagamentos por empréstimo, derive saldo aberto e monte um ranking por segmento para escolher o maior saldo."
   },
   {
     "id": "saude_005",
@@ -2017,7 +2017,7 @@
         ]
       }
     },
-    "hint": "Use julianday para calcular a diferença entre a data de referência e o prazo_entrega."
+    "hint": "Calcule a diferença entre a data de referência e o prazo_entrega."
   },
   {
     "id": "agricultura_005",
@@ -2062,7 +2062,7 @@
         ]
       }
     },
-    "hint": "Agrupe por talhão e praga, calcule AVG de severidade e use HAVING para o corte mínimo."
+    "hint": "Agrupe por talhão e praga, calcule a severidade média e aplique o corte mínimo depois do agrupamento."
   },
   {
     "id": "logistica_005",
@@ -2148,7 +2148,7 @@
         ]
       }
     },
-    "hint": "Use AVG em crash, já que 1 representa crash e 0 representa sessão sem crash."
+    "hint": "Calcule a média de crash, já que 1 representa crash e 0 representa sessão sem crash."
   },
   {
     "id": "financas_005",
@@ -2191,7 +2191,7 @@
         ]
       }
     },
-    "hint": "Use uma CTE para somar transações negadas por cartão e outra para calcular a média do grupo."
+    "hint": "Separe a soma de transações negadas por cartão da média do grupo."
   },
   {
     "id": "tesouraria_001",
@@ -2204,7 +2204,7 @@
     "objective_steps": [
       "Comece pelas movimentações de caixa de 2026-05-01 até antes de 2026-06-01.",
       "Mantenha apenas registros confirmados.",
-      "Separe tipo 'entrada' e tipo 'saida' com CASE WHEN.",
+      "Separe tipo 'entrada' e tipo 'saida' em colunas de totalização.",
       "Agrupe os valores por data para calcular o saldo líquido diário.",
       "Ordene pela data em ordem crescente."
     ],
@@ -2264,7 +2264,7 @@
         ]
       }
     },
-    "hint": "Filtre o mês e status 'confirmada', depois use CASE WHEN dentro de SUM para separar tipo 'entrada' e tipo 'saida'."
+    "hint": "Filtre o mês e status 'confirmada', depois some entradas e saídas em colunas separadas conforme o tipo da movimentação."
   },
   {
     "id": "tesouraria_002",
@@ -2277,7 +2277,7 @@
     "objective_steps": [
       "Comece pelos lançamentos internos confirmados.",
       "Relacione os lançamentos ao extrato usando conta e código de referência.",
-      "Use LEFT JOIN para manter lançamentos sem par.",
+      "Escolha a junção adequada para manter lançamentos sem par.",
       "Filtre os casos em que o extrato não foi encontrado.",
       "Ordene por data e código de referência."
     ],
@@ -2307,7 +2307,7 @@
         ]
       }
     },
-    "hint": "Use LEFT JOIN do controle interno para o extrato e mantenha apenas as linhas em que o id do extrato ficou nulo."
+    "hint": "Relacione o controle interno ao extrato mantendo lançamentos sem par e filtre as linhas em que o extrato não foi encontrado."
   },
   {
     "id": "tesouraria_003",
@@ -2321,7 +2321,7 @@
       "Comece pelos lançamentos internos confirmados.",
       "Relacione cada lançamento ao extrato por conta e código de referência.",
       "Calcule a diferença absoluta entre os valores.",
-      "Classifique a diferença com CASE WHEN.",
+      "Classifique a diferença conforme as faixas do enunciado.",
       "Ordene da maior diferença para a menor e use código de referência como desempate."
     ],
     "expected_sql": "SELECT li.codigo_referencia, li.valor AS valor_interno, eb.valor AS valor_bancario, ABS(li.valor - eb.valor) AS diferenca, CASE WHEN ABS(li.valor - eb.valor) = 0 THEN 'Conciliado' WHEN ABS(li.valor - eb.valor) <= 10 THEN 'Pequena divergência' WHEN ABS(li.valor - eb.valor) <= 100 THEN 'Divergência moderada' ELSE 'Divergência crítica' END AS classificacao FROM lancamentos_internos li JOIN extrato_bancario eb ON eb.conta_id = li.conta_id AND eb.codigo_referencia = li.codigo_referencia WHERE li.status = 'confirmado' ORDER BY diferenca DESC, li.codigo_referencia ASC;",
@@ -2381,7 +2381,7 @@
         ]
       }
     },
-    "hint": "Depois do JOIN, use ABS para medir a diferença e CASE WHEN para transformar faixas em rótulos."
+    "hint": "Depois de relacionar as duas fontes, meça a diferença absoluta e transforme cada faixa em um rótulo."
   },
   {
     "id": "tesouraria_004",
@@ -2395,7 +2395,7 @@
       "Comece pelas transações do extrato bancário.",
       "Agrupe por conta, referência, data e valor.",
       "Conte quantas linhas existem em cada grupo.",
-      "Use HAVING para manter apenas duplicidades reais.",
+      "Aplique o corte depois do agrupamento para manter apenas duplicidades reais.",
       "Ordene pela maior quantidade de ocorrências, depois por conta e referência."
     ],
     "expected_sql": "SELECT c.nome AS conta, eb.codigo_referencia, eb.data_extrato AS data, eb.valor, COUNT(*) AS ocorrencias FROM extrato_bancario eb JOIN contas_tesouraria c ON c.id = eb.conta_id GROUP BY c.nome, eb.codigo_referencia, eb.data_extrato, eb.valor HAVING COUNT(*) > 1 ORDER BY ocorrencias DESC, conta ASC, eb.codigo_referencia ASC;",
@@ -2427,7 +2427,7 @@
         ]
       }
     },
-    "hint": "Agrupe exatamente pelos campos que definem duplicidade e use HAVING COUNT(*) > 1."
+    "hint": "Agrupe exatamente pelos campos que definem duplicidade e mantenha apenas grupos com mais de uma ocorrência."
   },
   {
     "id": "tesouraria_005",
@@ -2438,9 +2438,9 @@
     "story": "Olá, analista! Hoje a tesouraria precisa decidir quais contas exigem reforço antes do próximo ciclo de pagamentos e a discussão já começou com palpites caros.\n\nAlgumas contas parecem confortáveis olhando apenas o saldo inicial, outras tiveram saídas fortes durante o mês e uma delas nem se mexeu, mas ainda assim ficou abaixo da posição mínima esperada.\n\nAntes que a prioridade seja definida pelo volume da voz na reunião, os dados precisam calcular a posição realizada conta por conta.\n\nSua missão é encontrar contas cuja posição realizada ficou abaixo do mínimo definido. Porque em tesouraria saldo inicial é foto antiga; posição realizada é o filme que cobra juros.",
     "objective": "Sua tarefa: calcule saldo inicial + entradas - saídas por conta no período de 2026-05-01 até antes de 2026-06-01, usando tipo 'entrada' para entradas, tipo 'saida' para saídas e considerando apenas movimentações com status 'confirmada'. Retorne a conta, o saldo realizado, a posição mínima e o valor abaixo do mínimo apenas das contas cujo saldo realizado ficou abaixo da posição mínima. Ordene pelo maior valor abaixo do mínimo e em caso de empate, por conta em ordem alfabética.",
     "objective_steps": [
-      "Use uma CTE para somar tipo 'entrada' e tipo 'saida' com status 'confirmada' por conta.",
+      "Crie uma etapa para somar tipo 'entrada' e tipo 'saida' com status 'confirmada' por conta.",
       "Relacione as somas ao cadastro de contas.",
-      "Use COALESCE para contas sem movimentação no período.",
+      "Trate contas sem movimentação no período como zero nas somas.",
       "Calcule o saldo realizado e filtre apenas contas abaixo da posição mínima.",
       "Ordene pelo maior valor abaixo do mínimo e use a conta como desempate."
     ],
@@ -2476,6 +2476,6 @@
         ]
       }
     },
-    "hint": "Agregue tipo 'entrada' e tipo 'saida' em uma CTE, faça LEFT JOIN com contas e use COALESCE antes de comparar com a posição mínima."
+    "hint": "Agregue tipo 'entrada' e tipo 'saida' em uma etapa, relacione com contas mantendo cadastros sem movimentação e trate valores ausentes como zero antes de comparar com a posição mínima."
   }
 ]

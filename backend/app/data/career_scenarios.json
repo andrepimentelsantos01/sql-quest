@@ -31,7 +31,7 @@
           "rows": [["Pão francês", 210]]
         }
       },
-      "hint": "Agrupe as vendas por produto, some as quantidades e use ORDER BY com LIMIT 1."
+      "hint": "Agrupe as vendas por produto, some as quantidades e retorne apenas o produto mais vendido."
     },
     {
       "id": "career_padaria_junior_002",
@@ -127,7 +127,7 @@
           "rows": [["Dona Marta", 4], ["Seu Paulo", 3], ["Ana Clara", 2], ["Bruno Lima", 2], ["Carla Nunes", 2]]
         }
       },
-      "hint": "Conte os pedidos por cliente, ordene pelo total e use LIMIT 5."
+      "hint": "Conte os pedidos por cliente e retorne apenas os cinco maiores totais."
     }
   ],
   "next_arc": {
@@ -187,7 +187,7 @@
             "rows": [["Filial", "tarde", 5], ["Matriz", "manhã", 4], ["Filial", "manhã", 3], ["Matriz", "tarde", 2]]
           }
         },
-        "hint": "Use COUNT(*), agrupe por unidade e turno, depois ordene pelo total de pedidos."
+        "hint": "Conte os pedidos por unidade e turno, depois ordene pelo total de pedidos."
       },
       {
         "id": "career_padaria_junior_008",
@@ -343,7 +343,7 @@
               "rows": [["Moinho Aurora", 3], ["Laticínios Boa Vista", 2], ["Embalagens Sul", 1]]
             }
           },
-          "hint": "Use WHERE com IN para filtrar os status problemáticos e depois conte por fornecedor."
+          "hint": "Filtre os status problemáticos e depois conte as ocorrências por fornecedor."
         },
         {
           "id": "career_padaria_junior_014",
@@ -367,7 +367,7 @@
               "rows": [["Escritório Alameda", 2400.0], ["Clínica Horizonte", 1750.5], ["Escola Girassol", 1280.0], ["Academia Pulse", 900.0], ["Studio Norte", 620.0]]
             }
           },
-          "hint": "Agrupe por cliente_empresa, some valor_total e use LIMIT 5."
+          "hint": "Agrupe por cliente_empresa, some valor_total e retorne apenas os cinco maiores totais."
         },
         {
           "id": "career_padaria_junior_015",
@@ -391,7 +391,7 @@
               "rows": [["Filial", 3.6], ["Matriz", 4.4]]
             }
           },
-          "hint": "Use AVG(nota), agrupe por unidade e ordene pela menor média."
+          "hint": "Calcule a média das notas por unidade e ordene pela menor média."
         }
       ],
       "next_arc": {
@@ -451,7 +451,7 @@
                 "rows": [["Pão francês", 18], ["Croissant", 12], ["Bolo de cenoura", 9], ["Pão de queijo", 5]]
               }
             },
-            "hint": "Agrupe por produto e use SUM na coluna de unidades desperdiçadas."
+            "hint": "Agrupe por produto e some as unidades desperdiçadas."
           },
           {
             "id": "career_padaria_junior_018",
@@ -475,7 +475,7 @@
                 "rows": [["Filial", 8.75], ["Matriz", 5.5]]
               }
             },
-            "hint": "Use AVG no tempo de atendimento e agrupe por unidade."
+            "hint": "Calcule o tempo médio de atendimento por unidade."
           },
           {
             "id": "career_padaria_junior_019",
@@ -499,7 +499,7 @@
                 "rows": [["Filial", "Fermento biológico", 3.0, 8.0], ["Filial", "Farinha de trigo", 14.0, 25.0], ["Matriz", "Embalagens", 18.0, 30.0]]
               }
             },
-            "hint": "Use WHERE quantidade_atual < quantidade_minima."
+            "hint": "Filtre os produtos em que a quantidade atual está abaixo da quantidade mínima."
           },
           {
             "id": "career_padaria_junior_020",
@@ -523,7 +523,7 @@
                 "rows": [["Filial", 3.6], ["Matriz", 4.4]]
               }
             },
-            "hint": "Agrupe as avaliações por unidade e use AVG na nota."
+            "hint": "Agrupe as avaliações por unidade e calcule a nota média."
           }
         ],
         "next_arc": {
@@ -587,7 +587,7 @@
                   "rows": [["Filial Jardim Norte", "Hortifruti", 2], ["Loja Compacta Vila Clara", "Limpeza", 2], ["Filial Jardim Norte", "Açougue", 1], ["Loja Compacta Vila Clara", "Bebidas", 1], ["Matriz Centro", "Frios", 1]]
                 }
               },
-              "hint": "Filtre o estoque abaixo do mínimo e use os joins para descobrir a loja e o setor de cada produto."
+              "hint": "Filtre o estoque abaixo do mínimo e relacione os cadastros necessários para descobrir a loja e o setor de cada produto."
             },
             {
               "id": "carreira_pleno_003",
@@ -602,7 +602,7 @@
                 "Mantenha apenas os status problemáticos.",
                 "Relacione cada entrega ao fornecedor.",
                 "Conte os problemas por fornecedor.",
-                "Use HAVING para manter fornecedores com pelo menos 2 ocorrências.",
+                "Aplique o corte depois do agrupamento para manter fornecedores com pelo menos 2 ocorrências.",
                 "Ordene do fornecedor mais problemático para o menos problemático."
               ],
               "expected_sql": "SELECT f.nome AS fornecedor, COUNT(*) AS entregas_problematicas FROM entregas_fornecedor ef JOIN fornecedores f ON f.id = ef.fornecedor_id WHERE ef.data_entrega >= '2026-07-01' AND ef.data_entrega < '2026-08-01' AND ef.status IN ('atrasada', 'incompleta', 'cancelada') GROUP BY f.nome HAVING COUNT(*) >= 2 ORDER BY entregas_problematicas DESC, fornecedor ASC;",
@@ -613,7 +613,7 @@
                   "rows": [["Horti Vale", 3], ["Carnes Serra", 2], ["Laticínios Boa Vista", 2]]
                 }
               },
-              "hint": "Use IN para filtrar os status problemáticos e HAVING para manter apenas fornecedores com recorrência."
+              "hint": "Filtre os status problemáticos e aplique o corte depois do agrupamento para manter apenas fornecedores com recorrência."
             },
             {
               "id": "carreira_pleno_004",
@@ -656,7 +656,7 @@
                 "Calcule faturamento total por setor.",
                 "Calcule margem bruta por setor.",
                 "Divida margem bruta por faturamento para obter a margem percentual.",
-                "Use HAVING para aplicar as regras de faturamento mínimo e margem baixa.",
+                "Aplique as regras de faturamento mínimo e margem baixa depois do agrupamento.",
                 "Ordene começando pelos setores com margem mais apertada."
               ],
               "expected_sql": "SELECT s.nome AS setor, ROUND(SUM(p.preco_unitario * v.quantidade), 2) AS faturamento_total, ROUND(SUM((p.preco_unitario - p.custo_unitario) * v.quantidade) * 100.0 / SUM(p.preco_unitario * v.quantidade), 2) AS margem_percentual FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome HAVING SUM(p.preco_unitario * v.quantidade) >= 5000 AND (SUM((p.preco_unitario - p.custo_unitario) * v.quantidade) * 100.0 / SUM(p.preco_unitario * v.quantidade)) < 25 ORDER BY margem_percentual ASC, setor ASC;",
@@ -667,7 +667,7 @@
                   "rows": [["Limpeza", 10500.0, 22.67], ["Bebidas", 17100.0, 24.56]]
                 }
               },
-              "hint": "Você vai precisar calcular faturamento e margem no mesmo agrupamento. Use HAVING para filtrar depois da agregação."
+              "hint": "Você vai precisar calcular faturamento e margem no mesmo agrupamento. Aplique os filtros de negócio depois da agregação."
             }
           ]
         }
