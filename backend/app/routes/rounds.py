@@ -18,6 +18,7 @@ from app.services.scenario_service import (
     get_expected_answer_lines,
     get_public_scenario,
     get_random_scenario,
+    get_round_options,
     get_scenario,
     get_scenario_schema,
 )
@@ -33,9 +34,17 @@ def categories() -> list[str]:
     return get_categories()
 
 
+@router.get("/round/options")
+def round_options() -> dict:
+    return get_round_options()
+
+
 @router.get("/round")
-def round_data() -> dict:
-    return get_public_scenario(get_random_scenario())
+def round_data(category: str | None = None, difficulty: str | None = None) -> dict:
+    try:
+        return get_public_scenario(get_random_scenario(category=category, difficulty=difficulty))
+    except LookupError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
 
 
 @router.get("/career/intro")

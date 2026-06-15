@@ -21,6 +21,7 @@ import {
   fetchCareerIntro,
   fetchCareerRound,
   fetchRound,
+  fetchRoundOptions,
   fetchSqlHelpQuestion,
   previewQuery,
   submitQuery,
@@ -71,6 +72,10 @@ export default function App() {
   const [careerStep, setCareerStep] = useState(0);
   const [careerIntroStartStep, setCareerIntroStartStep] = useState(0);
   const [careerCompleteOpen, setCareerCompleteOpen] = useState(false);
+  const [freeModeModalOpen, setFreeModeModalOpen] = useState(false);
+  const [freeRoundOptions, setFreeRoundOptions] = useState({ categories: [], difficulties: [], combinations: [] });
+  const [freeRoundFilters, setFreeRoundFilters] = useState({});
+  const [loadingFreeRoundOptions, setLoadingFreeRoundOptions] = useState(false);
 
   function resetMissionState() {
     setError("");
@@ -89,11 +94,11 @@ export default function App() {
     setQuery(STARTER_QUERY);
   }
 
-  async function loadFreeRound() {
+  async function loadFreeRound(filters = {}) {
     setLoadingRound(true);
     resetMissionState();
     try {
-      const nextScenario = await fetchRound();
+      const nextScenario = await fetchRound(filters);
       setScenario(nextScenario);
     } catch (err) {
       setError(err.message);
@@ -117,13 +122,37 @@ export default function App() {
   }
 
   async function handleSelectFreeMode() {
+    setFreeModeModalOpen(true);
+    if (freeRoundOptions.categories.length || freeRoundOptions.difficulties.length || loadingFreeRoundOptions) {
+      return;
+    }
+
+    setLoadingFreeRoundOptions(true);
+    setError("");
+    try {
+      const options = await fetchRoundOptions();
+      setFreeRoundOptions({
+        categories: options.categories ?? [],
+        difficulties: options.difficulties ?? [],
+        combinations: options.combinations ?? [],
+      });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingFreeRoundOptions(false);
+    }
+  }
+
+  async function handleStartFreeMode(filters = {}) {
+    setFreeModeModalOpen(false);
     setAppMode(MODE_FREE);
     setPlayer(INITIAL_PLAYER);
     setUsedSqlHelpQuestionIds([]);
     setScenario(null);
+    setFreeRoundFilters(filters);
     setCareerCompleteOpen(false);
     setIntroOpen(localStorage.getItem(INTRO_STORAGE_KEY) !== "true");
-    await loadFreeRound();
+    await loadFreeRound(filters);
   }
 
   async function handleSelectCareerMode() {
@@ -225,7 +254,7 @@ export default function App() {
       return;
     }
 
-    await loadFreeRound();
+    await loadFreeRound(freeRoundFilters);
   }
 
   async function handleConfirmAssist() {
@@ -350,7 +379,7 @@ export default function App() {
       return;
     }
 
-    await loadFreeRound();
+    await loadFreeRound(freeRoundFilters);
   }
 
   async function handleRetryGame() {
@@ -362,7 +391,7 @@ export default function App() {
       return;
     }
 
-    await loadFreeRound();
+    await loadFreeRound(freeRoundFilters);
   }
 
   function handleStartIntro() {
@@ -376,6 +405,8 @@ export default function App() {
     setCareerIntroOpen(false);
     setCareerCompleteOpen(false);
     setIntroOpen(false);
+    setFreeModeModalOpen(false);
+    setFreeRoundFilters({});
     setPlayer(INITIAL_PLAYER);
     setUsedSqlHelpQuestionIds([]);
     resetMissionState();
@@ -423,7 +454,7 @@ export default function App() {
                   <MissionBriefing
                     scenario={scenario}
                     onAcceptTask={handleAcceptTask}
-                    onRejectTask={appMode === MODE_FREE ? loadFreeRound : null}
+                    onRejectTask={appMode === MODE_FREE ? () => loadFreeRound(freeRoundFilters) : null}
                     accepted={taskAccepted}
                     loading={loadingRound}
                   />
@@ -472,6 +503,14 @@ export default function App() {
         )}
 
         <ResultModal result={modalResult} onClose={() => setModalResult(null)} onNextRound={handleNextRound} />
+        <FreeModeModal
+          open={freeModeModalOpen}
+          options={freeRoundOptions}
+          loadingOptions={loadingFreeRoundOptions}
+          loadingRound={loadingRound}
+          onCancel={() => setFreeModeModalOpen(false)}
+          onProceed={handleStartFreeMode}
+        />
         <CareerIntroModal
           intro={careerIntro}
           open={careerIntroOpen}
@@ -599,6 +638,140 @@ function ModeBar({ mode, scenario, onBackToMenu }) {
         Voltar ao menu
       </button>
     </div>
+  );
+}
+
+function FreeModeModal({ open, options, loadingOptions, loadingRound, onCancel, onProceed }) {
+  const [selectionMode, setSelectionMode] = useState("random");
+  const [category, setCategory] = useState("");
+  const [difficulty, setDifficulty] = useState("");
+  const combinations = options.combinations ?? [];
+  const availableCategories = options.categories.filter((option) => (
+    !difficulty || combinations.some((combination) => combination.category === option && combination.difficulty === difficulty)
+  ));
+  const availableDifficulties = options.difficulties.filter((option) => (
+    !category || combinations.some((combination) => combination.category === category && combination.difficulty === option)
+  ));
+
+  useEffect(() => {
+    if (!open) {
+      setSelectionMode("random");
+      setCategory("");
+      setDifficulty("");
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (category && !availableCategories.includes(category)) {
+      setCategory("");
+    }
+    if (difficulty && !availableDifficulties.includes(difficulty)) {
+      setDifficulty("");
+    }
+  }, [availableCategories, availableDifficulties, category, difficulty]);
+
+  if (!open) {
+    return null;
+  }
+
+  const filteredMode = selectionMode === "filtered";
+  const hasFilter = Boolean(category || difficulty);
+  const hasMatchingScenario = combinations.some((combination) => (
+    (!category || combination.category === category)
+    && (!difficulty || combination.difficulty === difficulty)
+  ));
+  const canProceed = !loadingRound && (!filteredMode || (hasFilter && hasMatchingScenario));
+
+  function handleProceed() {
+    if (!canProceed) {
+      return;
+    }
+    onProceed(filteredMode ? { category, difficulty } : {});
+  }
+
+  return (
+    <AnimatePresence>
+      <motion.div className="modal-backdrop" role="presentation" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+        <motion.div
+          className="modal free-mode-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="free-mode-title"
+          initial={{ opacity: 0, scale: 0.94, y: 16 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.97, y: 8 }}
+          transition={{ duration: 0.1, ease: "easeOut" }}
+        >
+          <div className="help-modal-header">
+            <span className="help-modal-icon" aria-hidden="true">
+              <Shuffle size={18} />
+            </span>
+            <h3 id="free-mode-title">Como quer jogar o Modo Livre?</h3>
+          </div>
+
+          <div className="free-mode-choice" role="radiogroup" aria-label="Tipo de sorteio do modo livre">
+            <button
+              type="button"
+              className={selectionMode === "random" ? "free-mode-option active" : "free-mode-option"}
+              onClick={() => setSelectionMode("random")}
+              aria-pressed={selectionMode === "random"}
+            >
+              <strong>Cenário aleatório</strong>
+              <span>Sorteia qualquer missão disponível.</span>
+            </button>
+            <button
+              type="button"
+              className={selectionMode === "filtered" ? "free-mode-option active" : "free-mode-option"}
+              onClick={() => setSelectionMode("filtered")}
+              aria-pressed={selectionMode === "filtered"}
+            >
+              <strong>Filtrar cenários</strong>
+              <span>Escolha categoria, nível ou ambos.</span>
+            </button>
+          </div>
+
+          {filteredMode ? (
+            <div className="free-mode-filters">
+              <label>
+                <span>Categoria</span>
+                <select value={category} onChange={(event) => setCategory(event.target.value)} disabled={loadingOptions}>
+                  <option value="">Todas as categorias</option>
+                  {availableCategories.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span>Nível</span>
+                <select value={difficulty} onChange={(event) => setDifficulty(event.target.value)} disabled={loadingOptions}>
+                  <option value="">Todos os níveis</option>
+                  {availableDifficulties.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          ) : null}
+
+          {filteredMode && !hasFilter ? (
+            <div className="free-mode-hint">Selecione pelo menos um filtro para prosseguir.</div>
+          ) : null}
+
+          <div className="modal-actions">
+            <button type="button" className="ghost-button" onClick={onCancel} disabled={loadingRound}>
+              Cancelar
+            </button>
+            <button type="button" className="primary-button" onClick={handleProceed} disabled={!canProceed}>
+              {loadingRound ? "Carregando..." : "Prosseguir"}
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 

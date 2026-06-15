@@ -79,8 +79,37 @@ def get_categories() -> list[str]:
     return sorted({scenario["category"] for scenario in load_scenarios()})
 
 
-def get_random_scenario() -> dict[str, Any]:
-    return random.choice(load_scenarios())
+def get_difficulties() -> list[str]:
+    return sorted({scenario["difficulty"] for scenario in load_scenarios()})
+
+
+def get_round_options() -> dict[str, Any]:
+    scenarios = load_scenarios()
+    return {
+        "categories": sorted({scenario["category"] for scenario in scenarios}),
+        "difficulties": sorted({scenario["difficulty"] for scenario in scenarios}),
+        "combinations": [
+            {"category": category, "difficulty": difficulty}
+            for category, difficulty in sorted(
+                {
+                    (scenario["category"], scenario["difficulty"])
+                    for scenario in scenarios
+                }
+            )
+        ],
+    }
+
+
+def get_random_scenario(category: str | None = None, difficulty: str | None = None) -> dict[str, Any]:
+    scenarios = [
+        scenario
+        for scenario in load_scenarios()
+        if (not category or scenario["category"] == category)
+        and (not difficulty or scenario["difficulty"] == difficulty)
+    ]
+    if not scenarios:
+        raise LookupError("Nenhum cenário encontrado para os filtros selecionados.")
+    return random.choice(scenarios)
 
 
 def get_scenario(scenario_id: str) -> dict[str, Any]:

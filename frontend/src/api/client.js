@@ -17,8 +17,20 @@ async function request(path, options = {}) {
   return response.json();
 }
 
-export function fetchRound() {
-  return request("/api/round");
+export function fetchRound(filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.category) {
+    params.set("category", filters.category);
+  }
+  if (filters.difficulty) {
+    params.set("difficulty", filters.difficulty);
+  }
+  const query = params.toString();
+  return request(`/api/round${query ? `?${query}` : ""}`);
+}
+
+export function fetchRoundOptions() {
+  return request("/api/round/options");
 }
 
 export function fetchCareerIntro() {
