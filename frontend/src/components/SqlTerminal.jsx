@@ -88,7 +88,7 @@ export default function SqlTerminal({
         <TerminalStatusIndicator status={status} errorMessage={errorMessage} hasResult={hasResult} />
       </div>
 
-      <SchemaViewer schema={schema} compact />
+      {schema ? <SchemaViewer schema={schema} compact /> : null}
 
       <div className="codemirror-frame">
         <CodeMirror

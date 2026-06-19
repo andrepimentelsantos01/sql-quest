@@ -5,7 +5,7 @@ from typing import Any
 
 from app.schemas import RoundResult
 from app.services.scenario_service import get_database_path
-from app.services.sql_runner import QueryRejectedError, run_select_query
+from app.services.sql_runner import QueryRejectedError, run_mutation_preview, run_select_query
 
 ORDER_REQUIREMENT_PATTERN = re.compile(
     r"\b(ordene|ordenar|ordenacao|ordena[cç][aã]o|organize|priorize|ranking|rank|primeiro|top|limit|desempate)\b"
@@ -48,7 +48,14 @@ def _get_expected_query(scenario: dict[str, Any]) -> str:
     return scenario.get("expected_answer", {}).get("query") or scenario["expected_sql"]
 
 
+def _is_mutation_scenario(scenario: dict[str, Any]) -> bool:
+    return scenario.get("task_type") == "mutation"
+
+
 def validate_submission(scenario: dict[str, Any], user_query: str) -> RoundResult:
+    if _is_mutation_scenario(scenario):
+        return validate_mutation_submission(scenario, user_query)
+
     database_path = get_database_path(scenario)
     try:
         expected = run_select_query(database_path, scenario["expected_sql"])
@@ -71,6 +78,35 @@ def validate_submission(scenario: dict[str, Any], user_query: str) -> RoundResul
         expected_query = None
     else:
         message = "Ainda não bateu com o resultado esperado. Confira filtros, agrupamentos e regras do enunciado."
+        hint = scenario.get("hint")
+        expected_query = _get_expected_query(scenario)
+
+    return RoundResult(correct=correct, message=message, user_result=user_result, hint=hint, expected_query=expected_query)
+
+
+def validate_mutation_submission(scenario: dict[str, Any], user_query: str) -> RoundResult:
+    database_path = get_database_path(scenario)
+    validation_sql = scenario["validation_sql"]
+    allowed_statement = scenario["allowed_statement"]
+    try:
+        expected = run_mutation_preview(database_path, scenario["expected_sql"], allowed_statement, validation_sql)
+        user_result = run_mutation_preview(database_path, user_query, allowed_statement, validation_sql)
+    except QueryRejectedError as exc:
+        return RoundResult(
+            correct=False,
+            message=str(exc),
+            user_result=None,
+            hint=scenario.get("hint"),
+            expected_query=_get_expected_query(scenario),
+        )
+
+    correct = _normalized_rows(user_result.rows) == _normalized_rows(expected.rows)
+    if correct:
+        message = "Boa! A alteracao ficou igual ao estado esperado."
+        hint = None
+        expected_query = None
+    else:
+        message = "Ainda nao bateu com o estado esperado. Confira o comando e os valores alterados."
         hint = scenario.get("hint")
         expected_query = _get_expected_query(scenario)
 

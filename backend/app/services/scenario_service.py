@@ -10,7 +10,7 @@ DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 SCENARIOS_FILE = DATA_DIR / "scenarios.json"
 CAREER_SCENARIOS_FILE = DATA_DIR / "career_scenarios.json"
 DATABASES_DIR = DATA_DIR / "databases"
-SQL_LINE_BREAK_KEYWORDS = ("FROM", "JOIN", "WHERE", "AND", "GROUP BY", "ORDER BY", "LIMIT")
+SQL_LINE_BREAK_KEYWORDS = ("FROM", "JOIN", "WHERE", "AND", "GROUP BY", "ORDER BY", "LIMIT", "VALUES")
 SQL_TABLE_REFERENCE_PATTERN = re.compile(r"\b(?:FROM|JOIN)\s+([A-Za-z_][A-Za-z0-9_]*)", re.IGNORECASE)
 TEMPORAL_LITERAL_PATTERN = r"\d{4}-\d{2}-\d{2}|\d{2}:\d{2}"
 DATE_RANGE_PATTERN = re.compile(
@@ -31,6 +31,12 @@ BUSINESS_COMPARISON_PATTERN = re.compile(
     r"\b(?P<left>[A-Za-z_][A-Za-z0-9_\.]*|(?:AVG|COUNT|SUM)\([^)]*\))\s*"
     r"(?P<operator><=|>=|<>|!=|=|<|>)\s*"
     r"(?P<value>'[^']+'|-?\d+(?:\.\d+)?)",
+    re.IGNORECASE,
+)
+BUSINESS_FIELD_COMPARISON_PATTERN = re.compile(
+    r"\b(?P<left>[A-Za-z_][A-Za-z0-9_\.]*)\s*"
+    r"(?P<operator><=|>=|<>|!=|<|>)\s*"
+    r"(?P<right>[A-Za-z_][A-Za-z0-9_\.]*)",
     re.IGNORECASE,
 )
 BUSINESS_IN_PATTERN = re.compile(
@@ -100,7 +106,11 @@ def get_round_options() -> dict[str, Any]:
     }
 
 
-def get_random_scenario(category: str | None = None, difficulty: str | None = None) -> dict[str, Any]:
+def get_random_scenario(
+    category: str | None = None,
+    difficulty: str | None = None,
+    previous_scenario_id: str | None = None,
+) -> dict[str, Any]:
     scenarios = [
         scenario
         for scenario in load_scenarios()
@@ -109,7 +119,12 @@ def get_random_scenario(category: str | None = None, difficulty: str | None = No
     ]
     if not scenarios:
         raise LookupError("Nenhum cenário encontrado para os filtros selecionados.")
-    return random.choice(scenarios)
+    available_scenarios = [
+        scenario
+        for scenario in scenarios
+        if scenario["id"] != previous_scenario_id
+    ]
+    return random.choice(available_scenarios or scenarios)
 
 
 def get_scenario(scenario_id: str) -> dict[str, Any]:
@@ -311,6 +326,28 @@ def get_business_rules(scenario: dict[str, Any]) -> dict[str, Any] | None:
             )
             seen_labels.add(label)
 
+    for match in BUSINESS_FIELD_COMPARISON_PATTERN.finditer(query):
+        if is_inside_spans(match.start(), ignored_spans):
+            continue
+
+        operator = match.group("operator")
+        value = normalize_sql_field(match.group("right"))
+        label = get_business_rule_label(match.group("left"), operator, value, scenario)
+        if not label:
+            continue
+        if label in seen_labels:
+            continue
+
+        rules.append(
+            {
+                "field": label.split(":", 1)[0],
+                "operator": operator,
+                "value": value,
+                "label": label,
+            }
+        )
+        seen_labels.add(label)
+
     for match in BUSINESS_COMPARISON_PATTERN.finditer(query):
         if is_inside_spans(match.start(), ignored_spans):
             continue
@@ -508,17 +545,70 @@ def get_expected_answer_lines(scenario: dict[str, Any]) -> list[str]:
     answer = scenario.get("expected_answer", {})
     query = answer.get("query") or scenario["expected_sql"]
     query = query.strip().rstrip(";")
+    if scenario.get("allowed_statement") == "create_table":
+        query = format_create_table_query(query)
     for keyword in SQL_LINE_BREAK_KEYWORDS:
         query = re.sub(rf"\s+({keyword})\b", rf"\n\1", query, flags=re.IGNORECASE)
 
-    lines = [line.strip() for line in query.splitlines() if line.strip()]
+    lines = [line.rstrip() for line in query.splitlines() if line.strip()]
     if lines:
         lines[-1] = f"{lines[-1]};"
     return lines
 
 
+def format_create_table_query(query: str) -> str:
+    match = re.match(
+        r"^(CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?[A-Za-z_][A-Za-z0-9_]*)\s*\((.*)\)$",
+        query,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    if not match:
+        return query
+
+    columns = split_sql_by_top_level_commas(match.group(2))
+    if not columns:
+        return query
+
+    column_lines = ",\n".join(f"  {column.strip()}" for column in columns)
+    return f"{match.group(1)} (\n{column_lines}\n)"
+
+
+def split_sql_by_top_level_commas(sql: str) -> list[str]:
+    parts: list[str] = []
+    current = ""
+    depth = 0
+    quote = None
+
+    for character in sql:
+        if quote:
+            current += character
+            if character == quote:
+                quote = None
+            continue
+
+        if character in ("'", '"'):
+            quote = character
+            current += character
+            continue
+
+        if character == "(":
+            depth += 1
+        elif character == ")" and depth > 0:
+            depth -= 1
+
+        if character == "," and depth == 0:
+            parts.append(current.strip())
+            current = ""
+            continue
+
+        current += character
+
+    parts.append(current.strip())
+    return [part for part in parts if part]
+
+
 def get_public_scenario(scenario: dict[str, Any]) -> dict[str, Any]:
-    return {
+    public = {
         "id": scenario["id"],
         "category": scenario["category"],
         "title": scenario["title"],
@@ -529,3 +619,7 @@ def get_public_scenario(scenario: dict[str, Any]) -> dict[str, Any]:
         "hint": scenario.get("hint"),
         "schema": get_scenario_schema(scenario),
     }
+    if scenario.get("task_type"):
+        public["task_type"] = scenario["task_type"]
+        public["allowed_statement"] = scenario.get("allowed_statement")
+    return public

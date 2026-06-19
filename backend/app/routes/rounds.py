@@ -23,7 +23,7 @@ from app.services.scenario_service import (
     get_scenario_schema,
 )
 from app.services.validator import validate_submission
-from app.services.sql_runner import QueryRejectedError, run_select_query
+from app.services.sql_runner import QueryRejectedError, run_mutation_preview, run_select_query
 from app.services.sql_help import check_sql_help_answer, get_sql_help_question
 
 router = APIRouter()
@@ -40,9 +40,15 @@ def round_options() -> dict:
 
 
 @router.get("/round")
-def round_data(category: str | None = None, difficulty: str | None = None) -> dict:
+def round_data(category: str | None = None, difficulty: str | None = None, previous_scenario_id: str | None = None) -> dict:
     try:
-        return get_public_scenario(get_random_scenario(category=category, difficulty=difficulty))
+        return get_public_scenario(
+            get_random_scenario(
+                category=category,
+                difficulty=difficulty,
+                previous_scenario_id=previous_scenario_id,
+            )
+        )
     except LookupError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
 
@@ -134,6 +140,13 @@ def submit_round(scenario_id: str, submission: QuerySubmission) -> RoundResult:
 def preview_round_query(scenario_id: str, submission: QuerySubmission) -> QueryResult:
     try:
         scenario = get_scenario(scenario_id)
+        if scenario.get("task_type") == "mutation":
+            return run_mutation_preview(
+                get_database_path(scenario),
+                submission.query,
+                scenario["allowed_statement"],
+                scenario["validation_sql"],
+            )
         return run_select_query(get_database_path(scenario), submission.query)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Cenário não encontrado.") from exc

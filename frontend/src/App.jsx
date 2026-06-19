@@ -100,10 +100,11 @@ export default function App() {
   }
 
   async function loadFreeRound(filters = {}) {
+    const previousScenarioId = appMode === MODE_FREE ? scenario?.id : null;
     setLoadingRound(true);
     resetMissionState();
     try {
-      const nextScenario = await fetchRound(filters);
+      const nextScenario = await fetchRound({ ...filters, previousScenarioId });
       setScenario(nextScenario);
     } catch (err) {
       setError(err.message);
@@ -512,7 +513,7 @@ export default function App() {
                       >
                         <div ref={terminalSectionRef}>
                           <SqlTerminal
-                            schema={scenario.schema}
+                            schema={scenario.allowed_statement === "create_table" ? null : scenario.schema}
                             value={query}
                             onChange={handleQueryChange}
                             onPreview={handlePreview}
@@ -1139,6 +1140,10 @@ function normalizeQueryLine(line) {
 function formatSqlQuery(query) {
   let formatted = query.trim().replace(/\s+/g, " ").replace(/;$/, "");
 
+  if (/^CREATE\s+TABLE\b/i.test(formatted)) {
+    return `${formatCreateTableQuery(formatted)};`;
+  }
+
   formatted = formatted
     .replace(/\s+(WITH)\b/gi, "\nWITH")
     .replace(/\s+(SELECT)\b/gi, "\nSELECT")
@@ -1163,6 +1168,60 @@ function formatSqlQuery(query) {
     .filter(Boolean)
     .flatMap(splitSqlLineByTopLevelCommas)
     .join("\n")};`;
+}
+
+function formatCreateTableQuery(query) {
+  const match = query.match(/^(CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?[A-Za-z_][A-Za-z0-9_]*)\s*\((.*)\)$/i);
+  if (!match) {
+    return query;
+  }
+
+  const columns = splitSqlByTopLevelCommas(match[2]);
+  if (!columns.length) {
+    return query;
+  }
+
+  return `${match[1]} (\n${columns.map((column) => `  ${column.trim()}`).join(",\n")}\n)`;
+}
+
+function splitSqlByTopLevelCommas(sql) {
+  const parts = [];
+  let current = "";
+  let depth = 0;
+  let quote = null;
+
+  for (const character of sql) {
+    if (quote) {
+      current += character;
+      if (character === quote) {
+        quote = null;
+      }
+      continue;
+    }
+
+    if (character === "'" || character === '"') {
+      quote = character;
+      current += character;
+      continue;
+    }
+
+    if (character === "(") {
+      depth += 1;
+    } else if (character === ")" && depth > 0) {
+      depth -= 1;
+    }
+
+    if (character === "," && depth === 0) {
+      parts.push(current.trim());
+      current = "";
+      continue;
+    }
+
+    current += character;
+  }
+
+  parts.push(current.trim());
+  return parts.filter(Boolean);
 }
 
 function splitSqlLineByTopLevelCommas(line) {

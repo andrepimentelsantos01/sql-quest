@@ -25,6 +25,9 @@ export function fetchRound(filters = {}) {
   if (filters.difficulty) {
     params.set("difficulty", filters.difficulty);
   }
+  if (filters.previousScenarioId) {
+    params.set("previous_scenario_id", filters.previousScenarioId);
+  }
   const query = params.toString();
   return request(`/api/round${query ? `?${query}` : ""}`);
 }
