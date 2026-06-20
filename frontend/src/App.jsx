@@ -237,7 +237,7 @@ export default function App() {
           });
         }
       }
-      setPlayer((current) => updatePlayer(current, correct));
+      setPlayer((current) => (gameOver ? applyGameOverPenalty(current) : updatePlayer(current, correct)));
     } catch (err) {
       setTerminalError(err.message);
     } finally {
@@ -297,6 +297,7 @@ export default function App() {
         setAssistLineIndex(response.next_index);
         setPlayer((current) => ({
           ...current,
+          streak: current.lives <= 1 ? 0 : current.streak,
           lives: Math.max(0, current.lives - 1),
         }));
       } else {
@@ -363,7 +364,7 @@ export default function App() {
           setSqlHelpQuestion(null);
           setSqlHelpResult(null);
         }
-        setPlayer(applyLifePenalty);
+        setPlayer((current) => (current.lives <= 1 ? applyGameOverPenalty(current) : applyLifePenalty(current)));
       }
     } catch (err) {
       setError(err.message);
@@ -393,7 +394,6 @@ export default function App() {
 
     setPlayer((current) => ({
       ...current,
-      streak: 0,
       lives: Math.max(0, current.lives - 1),
     }));
 
@@ -1428,10 +1428,7 @@ function ReadOnlySqlBlock({ query }) {
 
 function updatePlayer(current, correct) {
   if (!correct) {
-    return {
-      ...applyLifePenalty(current),
-      streak: 0,
-    };
+    return applyLifePenalty(current);
   }
 
   return {
@@ -1462,7 +1459,7 @@ function getTerminalStatus(running, errorMessage, result, dirty) {
 }
 
 function getGameOverStreak(player, mode) {
-  return mode === MODE_FREE ? player.solvedTasks : player.streak;
+  return player.streak;
 }
 
 function createGameOverState(player, mode, scenario, expectedQuery, canReview) {
@@ -1483,5 +1480,12 @@ function applyLifePenalty(current) {
   return {
     ...current,
     lives: Math.max(0, current.lives - 1),
+  };
+}
+
+function applyGameOverPenalty(current) {
+  return {
+    ...applyLifePenalty(current),
+    streak: 0,
   };
 }
