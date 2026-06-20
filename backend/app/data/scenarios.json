@@ -329,7 +329,7 @@
     "difficulty": "Júnior",
     "database": "educacao.db",
     "story": "Olá, analista! Hoje você está na coordenação de uma escola onde cada ausência começa pequena, silenciosa e aparentemente inofensiva até alguém perceber que metade da turma sumiu antes mesmo do fim do semestre.\n\nOs professores relatam alunos desmotivados, os responsáveis juram que os filhos estão frequentando normalmente e a direção quer agir antes que evasão vire indicador oficial no próximo conselho.\n\nAlguns estudantes já estão perigosamente abaixo da frequência mínima e precisam ser identificados rápido.\n\nSua missão é descobrir quais alunos estão mais próximos de desaparecer do mapa, porque em educação problema ignorado costuma chegar no boletim com atraso e reprovação.",
-    "objective": "Sua tarefa: retorne o aluno e a frequência percentual entre 2026-04-01 e 2026-05-01 considerando apenas alunos com frequência abaixo de 75%. Ordene da menor frequência para a maior. Em caso de empate ordene por aluno em ordem alfabética.",
+    "objective": "Sua tarefa: retorne o aluno e a frequência percentual entre 2026-04-01 e 2026-05-01 considerando apenas alunos com frequência abaixo de 75%. Ordene da menor frequência para a maior. Em caso de empate, ordene por aluno em ordem alfabética.",
     "objective_steps": [
       "Comece pelas presenças registradas no período analisado.",
       "Agrupe os registros por aluno.",
@@ -2477,8 +2477,7 @@
       }
     },
     "hint": "Agregue tipo 'entrada' e tipo 'saida' em uma etapa, relacione com contas mantendo cadastros sem movimentação e trate valores ausentes como zero antes de comparar com a posição mínima."
-  }
-  ,
+  },
   {
     "id": "saude_006",
     "category": "Saúde",
@@ -2489,7 +2488,11 @@
     "allowed_statement": "create_table",
     "story": "Olá, analista! Hoje você está na coordenação de enfermagem de um hospital onde os retornos críticos começaram a disputar espaço com lembretes soltos e planilhas antigas.\n\nA equipe precisa acompanhar pacientes que não podem sumir da fila depois da alta. Sem uma tabela própria, cada turno cria seu controle e a reunião vira conferência manual.\n\nAntes de registrar qualquer caso, a base precisa de uma estrutura simples e confiável. Sua missão é criar a tabela que vai sustentar esse acompanhamento. Em saúde, retorno prioritário perdido vira risco real.",
     "objective": "Sua tarefa: crie a tabela agenda_retorno com as colunas id INTEGER PRIMARY KEY, paciente TEXT NOT NULL, especialidade TEXT NOT NULL e data_prevista TEXT NOT NULL.",
-    "objective_steps": ["Use CREATE TABLE para criar agenda_retorno.", "Defina id como INTEGER PRIMARY KEY.", "Defina paciente, especialidade e data_prevista como TEXT NOT NULL."],
+    "objective_steps": [
+      "Use CREATE TABLE para criar agenda_retorno.",
+      "Defina id como INTEGER PRIMARY KEY.",
+      "Defina paciente, especialidade e data_prevista como TEXT NOT NULL."
+    ],
     "expected_sql": "CREATE TABLE agenda_retorno (id INTEGER PRIMARY KEY, paciente TEXT NOT NULL, especialidade TEXT NOT NULL, data_prevista TEXT NOT NULL);",
     "validation_sql": "SELECT name, type, \"notnull\", pk FROM pragma_table_info('agenda_retorno') ORDER BY cid;",
     "hint": "Crie a tabela com exatamente os nomes e tipos pedidos."
@@ -2504,7 +2507,11 @@
     "allowed_statement": "create_table",
     "story": "Olá, analista! Hoje você entrou no war room de confiabilidade depois de uma sequência de incidentes que deixou o canal de alertas parecendo expediente permanente.\n\nO time quer transformar falha em aprendizado antes que cada problema volte com outro nome e a mesma causa. Para isso, os post-mortems precisam sair do documento perdido e entrar no controle oficial.\n\nSua missão é criar a tabela que vai registrar essas análises. Em tecnologia, incidente sem memória vira reincidência com crachá novo.",
     "objective": "Sua tarefa: crie a tabela incidentes_posmortem com id INTEGER PRIMARY KEY, servico TEXT NOT NULL, responsavel TEXT NOT NULL e concluido INTEGER NOT NULL.",
-    "objective_steps": ["Use CREATE TABLE para criar incidentes_posmortem.", "Inclua id como chave primária inteira.", "Inclua servico, responsavel e concluido com obrigatoriedade."],
+    "objective_steps": [
+      "Use CREATE TABLE para criar incidentes_posmortem.",
+      "Inclua id como chave primária inteira.",
+      "Inclua servico, responsavel e concluido com obrigatoriedade."
+    ],
     "expected_sql": "CREATE TABLE incidentes_posmortem (id INTEGER PRIMARY KEY, servico TEXT NOT NULL, responsavel TEXT NOT NULL, concluido INTEGER NOT NULL);",
     "validation_sql": "SELECT name, type, \"notnull\", pk FROM pragma_table_info('incidentes_posmortem') ORDER BY cid;",
     "hint": "A coluna concluido deve ser INTEGER NOT NULL para representar 0 ou 1."
@@ -2519,7 +2526,11 @@
     "allowed_statement": "create_table",
     "story": "Olá, analista! Hoje você está no centro de desempenho de um clube onde a comissão técnica discute carga física antes que a próxima partida cobre a conta.\n\nOs treinos diários já mostram esforço, mas as avaliações precisam de registro próprio para não virarem observação solta no fim do relatório.\n\nSua missão é criar a estrutura mínima para receber esses testes. Em esporte profissional, sensação de cansaço até ajuda na conversa, mas dado organizado decide prioridade.",
     "objective": "Sua tarefa: crie a tabela avaliacoes_fisicas com id INTEGER PRIMARY KEY, atleta TEXT NOT NULL, data_avaliacao TEXT NOT NULL e indice_fadiga REAL NOT NULL.",
-    "objective_steps": ["Use CREATE TABLE para criar avaliacoes_fisicas.", "Defina o identificador como INTEGER PRIMARY KEY.", "Registre atleta, data da avaliação e índice de fadiga com preenchimento obrigatório."],
+    "objective_steps": [
+      "Use CREATE TABLE para criar avaliacoes_fisicas.",
+      "Defina o identificador como INTEGER PRIMARY KEY.",
+      "Registre atleta, data da avaliação e índice de fadiga com preenchimento obrigatório."
+    ],
     "expected_sql": "CREATE TABLE avaliacoes_fisicas (id INTEGER PRIMARY KEY, atleta TEXT NOT NULL, data_avaliacao TEXT NOT NULL, indice_fadiga REAL NOT NULL);",
     "validation_sql": "SELECT name, type, \"notnull\", pk FROM pragma_table_info('avaliacoes_fisicas') ORDER BY cid;",
     "hint": "Use REAL para indice_fadiga e TEXT para a data."
@@ -2534,7 +2545,11 @@
     "allowed_statement": "create_table",
     "story": "Olá, analista! Hoje você está no chão de fábrica depois de mais uma parada que ninguém colocou no planejamento e todo mundo colocou na conta do azar.\n\nA operação quer trocar susto por calendário. Sem uma tabela de preventivas, cada manutenção depende de memória, rádio e fé no turno anterior.\n\nSua missão é criar a estrutura que vai organizar as manutenções programadas. Em indústria, máquina parada fala alto, mas SQL fala antes.",
     "objective": "Sua tarefa: crie a tabela manutencoes_preventivas com id INTEGER PRIMARY KEY, maquina TEXT NOT NULL, data_programada TEXT NOT NULL e status TEXT NOT NULL.",
-    "objective_steps": ["Use CREATE TABLE para criar manutencoes_preventivas.", "Inclua uma chave primária id.", "Inclua máquina, data programada e status como campos obrigatórios."],
+    "objective_steps": [
+      "Use CREATE TABLE para criar manutencoes_preventivas.",
+      "Inclua uma chave primária id.",
+      "Inclua máquina, data programada e status como campos obrigatórios."
+    ],
     "expected_sql": "CREATE TABLE manutencoes_preventivas (id INTEGER PRIMARY KEY, maquina TEXT NOT NULL, data_programada TEXT NOT NULL, status TEXT NOT NULL);",
     "validation_sql": "SELECT name, type, \"notnull\", pk FROM pragma_table_info('manutencoes_preventivas') ORDER BY cid;",
     "hint": "Mantenha os nomes das colunas exatamente como no enunciado."
@@ -2549,7 +2564,11 @@
     "allowed_statement": "create_table",
     "story": "Olá, analista! Hoje você foi chamado pela coordenação pedagógica enquanto professores fecham notas e famílias cobram uma resposta clara sobre recuperação.\n\nOs planos precisam sair das planilhas soltas antes que prazo, disciplina e aluno virem três versões da mesma história.\n\nSua missão é criar a tabela base para acompanhar esses planos. Em educação, recuperação sem registro vira promessa difícil de auditar.",
     "objective": "Sua tarefa: crie a tabela planos_recuperacao com id INTEGER PRIMARY KEY, aluno TEXT NOT NULL, disciplina TEXT NOT NULL e prazo_entrega TEXT NOT NULL.",
-    "objective_steps": ["Use CREATE TABLE para criar planos_recuperacao.", "Crie id como INTEGER PRIMARY KEY.", "Crie aluno, disciplina e prazo_entrega como TEXT NOT NULL."],
+    "objective_steps": [
+      "Use CREATE TABLE para criar planos_recuperacao.",
+      "Crie id como INTEGER PRIMARY KEY.",
+      "Crie aluno, disciplina e prazo_entrega como TEXT NOT NULL."
+    ],
     "expected_sql": "CREATE TABLE planos_recuperacao (id INTEGER PRIMARY KEY, aluno TEXT NOT NULL, disciplina TEXT NOT NULL, prazo_entrega TEXT NOT NULL);",
     "validation_sql": "SELECT name, type, \"notnull\", pk FROM pragma_table_info('planos_recuperacao') ORDER BY cid;",
     "hint": "Todas as colunas de texto precisam ser NOT NULL."
@@ -2564,7 +2583,11 @@
     "allowed_statement": "create_table",
     "story": "Olá, analista! Hoje você está em uma galeria que prepara o transporte de obras valiosas antes de uma exposição com seguradora, curadoria e logística olhando para o mesmo relógio.\n\nNinguém quer descobrir a cobertura depois que a obra já saiu pela porta. O controle precisa existir antes do primeiro movimento.\n\nSua missão é criar a tabela de seguros das obras. Em arte, beleza encanta o público, mas cobertura registrada acalma a operação.",
     "objective": "Sua tarefa: crie a tabela seguros_obras com id INTEGER PRIMARY KEY, obra TEXT NOT NULL, seguradora TEXT NOT NULL e valor_cobertura REAL NOT NULL.",
-    "objective_steps": ["Use CREATE TABLE para criar seguros_obras.", "Inclua id como chave primária inteira.", "Inclua obra, seguradora e valor_cobertura com obrigatoriedade."],
+    "objective_steps": [
+      "Use CREATE TABLE para criar seguros_obras.",
+      "Inclua id como chave primária inteira.",
+      "Inclua obra, seguradora e valor_cobertura com obrigatoriedade."
+    ],
     "expected_sql": "CREATE TABLE seguros_obras (id INTEGER PRIMARY KEY, obra TEXT NOT NULL, seguradora TEXT NOT NULL, valor_cobertura REAL NOT NULL);",
     "validation_sql": "SELECT name, type, \"notnull\", pk FROM pragma_table_info('seguros_obras') ORDER BY cid;",
     "hint": "valor_cobertura deve ser REAL NOT NULL."
@@ -2579,7 +2602,11 @@
     "allowed_statement": "create_table",
     "story": "Olá, analista! Hoje você está na fazenda durante uma revisão de safra em que cada talhão tem uma explicação diferente para a produtividade.\n\nAntes de discutir clima, solo ou fornecedor, a operação precisa saber exatamente quais insumos foram aplicados e em qual quantidade.\n\nSua missão é criar a tabela que vai rastrear essas aplicações. Em agricultura, palpite cresce rápido, mas dado bem plantado sustenta a colheita.",
     "objective": "Sua tarefa: crie a tabela aplicacoes_insumos com id INTEGER PRIMARY KEY, talhao TEXT NOT NULL, insumo TEXT NOT NULL, quantidade_kg REAL NOT NULL e data_aplicacao TEXT NOT NULL.",
-    "objective_steps": ["Use CREATE TABLE para criar aplicacoes_insumos.", "Inclua id como INTEGER PRIMARY KEY.", "Inclua talhao, insumo, quantidade_kg e data_aplicacao com os tipos solicitados."],
+    "objective_steps": [
+      "Use CREATE TABLE para criar aplicacoes_insumos.",
+      "Inclua id como INTEGER PRIMARY KEY.",
+      "Inclua talhao, insumo, quantidade_kg e data_aplicacao com os tipos solicitados."
+    ],
     "expected_sql": "CREATE TABLE aplicacoes_insumos (id INTEGER PRIMARY KEY, talhao TEXT NOT NULL, insumo TEXT NOT NULL, quantidade_kg REAL NOT NULL, data_aplicacao TEXT NOT NULL);",
     "validation_sql": "SELECT name, type, \"notnull\", pk FROM pragma_table_info('aplicacoes_insumos') ORDER BY cid;",
     "hint": "Use REAL para quantidade_kg e TEXT para os demais campos descritivos."
@@ -2594,7 +2621,11 @@
     "allowed_statement": "create_table",
     "story": "Olá, analista! Hoje você entrou no estúdio de games depois de uma rodada de testes em que os jogadores encontraram falhas mais rápido do que o time conseguiu organizar os relatos.\n\nA equipe de QA quer parar de caçar bug em mensagem solta, print perdido e comentário no canal errado. Severidade e dispositivo precisam virar registro confiável.\n\nSua missão é criar a tabela para guardar bugs reportados por jogadores. Em games, bug sem cadastro vira lenda urbana com patch atrasado.",
     "objective": "Sua tarefa: crie a tabela bugs_reportados com id INTEGER PRIMARY KEY, jogador TEXT NOT NULL, dispositivo TEXT NOT NULL, severidade TEXT NOT NULL e criado_em TEXT NOT NULL.",
-    "objective_steps": ["Use CREATE TABLE para criar bugs_reportados.", "Defina id como INTEGER PRIMARY KEY.", "Inclua jogador, dispositivo, severidade e criado_em como TEXT NOT NULL."],
+    "objective_steps": [
+      "Use CREATE TABLE para criar bugs_reportados.",
+      "Defina id como INTEGER PRIMARY KEY.",
+      "Inclua jogador, dispositivo, severidade e criado_em como TEXT NOT NULL."
+    ],
     "expected_sql": "CREATE TABLE bugs_reportados (id INTEGER PRIMARY KEY, jogador TEXT NOT NULL, dispositivo TEXT NOT NULL, severidade TEXT NOT NULL, criado_em TEXT NOT NULL);",
     "validation_sql": "SELECT name, type, \"notnull\", pk FROM pragma_table_info('bugs_reportados') ORDER BY cid;",
     "hint": "A validação confere a estrutura da tabela criada."
@@ -2609,7 +2640,11 @@
     "allowed_statement": "insert",
     "story": "Olá, analista! Hoje você está na farmácia hospitalar minutos antes da reunião de suprimentos, e um item crítico acabou de chegar sem aparecer no controle.\n\nO Pronto Atendimento precisa enxergar essa posição de estoque antes que a conversa vire busca por culpados no almoxarifado.\n\nSua missão é registrar a nova entrada com os valores corretos. Em saúde, estoque invisível parece detalhe até faltar no atendimento.",
     "objective": "Sua tarefa: insira em medicamentos_estoque o medicamento 'Adrenalina', unidade 'Pronto Atendimento', estoque_atual 6 e estoque_minimo 15.",
-    "objective_steps": ["Use INSERT INTO na tabela medicamentos_estoque.", "Preencha medicamento, unidade, estoque_atual e estoque_minimo.", "Não informe id; deixe o SQLite gerar."],
+    "objective_steps": [
+      "Use INSERT INTO na tabela medicamentos_estoque.",
+      "Preencha medicamento, unidade, estoque_atual e estoque_minimo.",
+      "Não informe id; deixe o SQLite gerar."
+    ],
     "expected_sql": "INSERT INTO medicamentos_estoque (medicamento, unidade, estoque_atual, estoque_minimo) VALUES ('Adrenalina', 'Pronto Atendimento', 6, 15);",
     "validation_sql": "SELECT medicamento, unidade, estoque_atual, estoque_minimo FROM medicamentos_estoque WHERE medicamento = 'Adrenalina' ORDER BY medicamento;",
     "hint": "Informe apenas as quatro colunas de negócio e os valores exatos do enunciado."
@@ -2624,7 +2659,11 @@
     "allowed_statement": "insert",
     "story": "Olá, analista! Hoje você está na retrospectiva de engenharia e alguém percebeu que um deploy com rollback ficou fora do histórico oficial.\n\nO time precisa corrigir o registro antes que a conversa sobre estabilidade use números incompletos e conclusões confortáveis demais.\n\nSua missão é inserir o deploy esquecido com aplicação, rollback e data corretos. Em tecnologia, rollback não registrado vira aprendizado que nunca aconteceu.",
     "objective": "Sua tarefa: insira em deploys a aplicação 'Gateway Pix', rollback 1 e criado_em '2026-04-28'.",
-    "objective_steps": ["Use INSERT INTO na tabela deploys.", "Preencha aplicacao, rollback e criado_em.", "Use rollback igual a 1."],
+    "objective_steps": [
+      "Use INSERT INTO na tabela deploys.",
+      "Preencha aplicacao, rollback e criado_em.",
+      "Use rollback igual a 1."
+    ],
     "expected_sql": "INSERT INTO deploys (aplicacao, rollback, criado_em) VALUES ('Gateway Pix', 1, '2026-04-28');",
     "validation_sql": "SELECT aplicacao, rollback, criado_em FROM deploys WHERE aplicacao = 'Gateway Pix' ORDER BY criado_em;",
     "hint": "O campo rollback é numérico: use 1 para verdadeiro."
@@ -2639,7 +2678,11 @@
     "allowed_statement": "insert",
     "story": "Olá, analista! Hoje você está no departamento de futebol enquanto a diretoria fecha um novo vínculo e já prepara a análise de renovações.\n\nSe o contrato não entrar no controle agora, a próxima reunião começa com lista incompleta e decisão baseada em memória de bastidor.\n\nSua missão é inserir o contrato do reforço com posição e fim de vínculo. Em esporte, talento chama atenção, mas contrato fora da base vira problema administrativo.",
     "objective": "Sua tarefa: insira em contratos_atletas o atleta 'Nina Alves', posição 'Meia' e fim_contrato '2026-10-31'.",
-    "objective_steps": ["Use INSERT INTO na tabela contratos_atletas.", "Preencha atleta, posicao e fim_contrato.", "Não informe id."],
+    "objective_steps": [
+      "Use INSERT INTO na tabela contratos_atletas.",
+      "Preencha atleta, posicao e fim_contrato.",
+      "Não informe id."
+    ],
     "expected_sql": "INSERT INTO contratos_atletas (atleta, posicao, fim_contrato) VALUES ('Nina Alves', 'Meia', '2026-10-31');",
     "validation_sql": "SELECT atleta, posicao, fim_contrato FROM contratos_atletas WHERE atleta = 'Nina Alves';",
     "hint": "Use a data no formato YYYY-MM-DD."
@@ -2654,7 +2697,11 @@
     "allowed_statement": "insert",
     "story": "Olá, analista! Hoje você está na sala de controle da fábrica depois que uma leitura crítica chegou tarde demais para o fechamento operacional.\n\nA análise de temperatura precisa desse registro antes que alguém declare estabilidade olhando para uma série incompleta.\n\nSua missão é inserir a leitura do sensor com máquina, data e temperatura corretas. Em indústria, dado atrasado ainda é dado, desde que entre antes da decisão.",
     "objective": "Sua tarefa: insira em leituras_sensores maquina_id 102, data_leitura '2026-05-25' e temperatura_c 91.5.",
-    "objective_steps": ["Use INSERT INTO na tabela leituras_sensores.", "Preencha maquina_id, data_leitura e temperatura_c.", "Use o valor decimal solicitado."],
+    "objective_steps": [
+      "Use INSERT INTO na tabela leituras_sensores.",
+      "Preencha maquina_id, data_leitura e temperatura_c.",
+      "Use o valor decimal solicitado."
+    ],
     "expected_sql": "INSERT INTO leituras_sensores (maquina_id, data_leitura, temperatura_c) VALUES (102, '2026-05-25', 91.5);",
     "validation_sql": "SELECT maquina_id, data_leitura, temperatura_c FROM leituras_sensores WHERE maquina_id = 102 AND data_leitura = '2026-05-25';",
     "hint": "A máquina já existe; insira somente a leitura."
@@ -2669,7 +2716,11 @@
     "allowed_statement": "insert",
     "story": "Olá, analista! Hoje você está na secretaria acadêmica depois que o comitê aprovou uma nova bolsa pouco antes do fechamento financeiro.\n\nO valor precisa aparecer no banco para que orçamento, curso e status contem a mesma história na prestação de contas.\n\nSua missão é inserir a bolsa aprovada com os dados exatos. Em educação, benefício aprovado fora da base vira dúvida na hora de pagar.",
     "objective": "Sua tarefa: insira em bolsas_estudo o aluno 'Helena Martins', curso 'Engenharia de Software', valor_mensal 2100.00 e status 'ativa'.",
-    "objective_steps": ["Use INSERT INTO na tabela bolsas_estudo.", "Preencha aluno, curso, valor_mensal e status.", "Não informe id."],
+    "objective_steps": [
+      "Use INSERT INTO na tabela bolsas_estudo.",
+      "Preencha aluno, curso, valor_mensal e status.",
+      "Não informe id."
+    ],
     "expected_sql": "INSERT INTO bolsas_estudo (aluno, curso, valor_mensal, status) VALUES ('Helena Martins', 'Engenharia de Software', 2100.00, 'ativa');",
     "validation_sql": "SELECT aluno, curso, valor_mensal, status FROM bolsas_estudo WHERE aluno = 'Helena Martins';",
     "hint": "O valor mensal deve ser numérico, sem aspas."
@@ -2684,7 +2735,11 @@
     "allowed_statement": "insert",
     "story": "Olá, analista! Hoje você está nos bastidores de uma mostra que abre em poucos dias e uma obra acaba de entrar na fila de restauração.\n\nA curadoria quer acompanhar responsável, prazo e status sem depender de recado atravessado no corredor da galeria.\n\nSua missão é registrar o novo trabalho de restauração. Em arte, improviso pode até caber no ateliê, mas prazo de exposição precisa de banco atualizado.",
     "objective": "Sua tarefa: insira em restauracoes a obra 'Sol Partido', restaurador 'Lina Prado', prazo_entrega '2026-05-28' e status 'em andamento'.",
-    "objective_steps": ["Use INSERT INTO na tabela restauracoes.", "Preencha obra, restaurador, prazo_entrega e status.", "Não informe id."],
+    "objective_steps": [
+      "Use INSERT INTO na tabela restauracoes.",
+      "Preencha obra, restaurador, prazo_entrega e status.",
+      "Não informe id."
+    ],
     "expected_sql": "INSERT INTO restauracoes (obra, restaurador, prazo_entrega, status) VALUES ('Sol Partido', 'Lina Prado', '2026-05-28', 'em andamento');",
     "validation_sql": "SELECT obra, restaurador, prazo_entrega, status FROM restauracoes WHERE obra = 'Sol Partido';",
     "hint": "Use exatamente o status 'em andamento'."
@@ -2699,7 +2754,11 @@
     "allowed_statement": "insert",
     "story": "Olá, analista! Hoje você está na central logística depois que uma entrega contratada por fora ficou fora da carga inicial do corredor.\n\nO custo precisa fechar antes da revisão com transporte e financeiro. Sem esse registro, a operação parece mais barata do que realmente foi.\n\nSua missão é inserir a entrega manual com os dados corretos. Em logística, frete esquecido não desaparece, só volta maior na conciliação.",
     "objective": "Sua tarefa: insira em entregas origem 'Recife', destino 'Fortaleza', dias_atraso 1 e custo_frete 640.0.",
-    "objective_steps": ["Use INSERT INTO na tabela entregas.", "Preencha origem, destino, dias_atraso e custo_frete.", "Não informe id."],
+    "objective_steps": [
+      "Use INSERT INTO na tabela entregas.",
+      "Preencha origem, destino, dias_atraso e custo_frete.",
+      "Não informe id."
+    ],
     "expected_sql": "INSERT INTO entregas (origem, destino, dias_atraso, custo_frete) VALUES ('Recife', 'Fortaleza', 1, 640.0);",
     "validation_sql": "SELECT origem, destino, dias_atraso, custo_frete FROM entregas WHERE origem = 'Recife' AND destino = 'Fortaleza';",
     "hint": "O atraso é inteiro e o custo é numérico."
@@ -2714,7 +2773,11 @@
     "allowed_statement": "insert",
     "story": "Olá, analista! Hoje você está na mesa financeira quando um pagamento cai depois da conciliação e muda a exposição de um empréstimo ainda em acompanhamento.\n\nO histórico precisa refletir a baixa antes que o próximo relatório mostre risco maior do que o real.\n\nSua missão é inserir o pagamento regularizado no controle. Em finanças, dinheiro sem registro vira ruído caro na decisão.",
     "objective": "Sua tarefa: insira em pagamentos o emprestimo_id 2, valor_pago 15000.0 e data_pagamento '2026-05-06'.",
-    "objective_steps": ["Use INSERT INTO na tabela pagamentos.", "Preencha emprestimo_id, valor_pago e data_pagamento.", "Use o empréstimo 2."],
+    "objective_steps": [
+      "Use INSERT INTO na tabela pagamentos.",
+      "Preencha emprestimo_id, valor_pago e data_pagamento.",
+      "Use o empréstimo 2."
+    ],
     "expected_sql": "INSERT INTO pagamentos (emprestimo_id, valor_pago, data_pagamento) VALUES (2, 15000.0, '2026-05-06');",
     "validation_sql": "SELECT emprestimo_id, valor_pago, data_pagamento FROM pagamentos WHERE emprestimo_id = 2 AND data_pagamento = '2026-05-06';",
     "hint": "Não informe id; ele é gerado automaticamente."
@@ -2729,7 +2792,11 @@
     "allowed_statement": "insert",
     "story": "Olá, analista! Hoje você está na tesouraria perto da próxima conciliação e um lançamento aprovado ainda não entrou no controle interno.\n\nA equipe precisa registrar a movimentação antes que saldo, centro de custo e justificativa comecem a contar versões diferentes.\n\nSua missão é inserir o lançamento pendente com os dados corretos. Em tesouraria, lançamento aprovado fora da base é convite para retrabalho.",
     "objective": "Sua tarefa: insira em lancamentos_internos conta_id 4, codigo_referencia 'REF-1011', data_lancamento '2026-05-12', descricao 'Reembolso de projeto', valor 2200.0 e status 'confirmado'.",
-    "objective_steps": ["Use INSERT INTO na tabela lancamentos_internos.", "Preencha conta, referência, data, descrição, valor e status.", "Use status 'confirmado'."],
+    "objective_steps": [
+      "Use INSERT INTO na tabela lancamentos_internos.",
+      "Preencha conta, referência, data, descrição, valor e status.",
+      "Use status 'confirmado'."
+    ],
     "expected_sql": "INSERT INTO lancamentos_internos (conta_id, codigo_referencia, data_lancamento, descricao, valor, status) VALUES (4, 'REF-1011', '2026-05-12', 'Reembolso de projeto', 2200.0, 'confirmado');",
     "validation_sql": "SELECT conta_id, codigo_referencia, data_lancamento, descricao, valor, status FROM lancamentos_internos WHERE codigo_referencia = 'REF-1011';",
     "hint": "Inclua todas as colunas de negócio, exceto id."
@@ -2744,7 +2811,11 @@
     "allowed_statement": "delete",
     "story": "Olá, analista! Hoje você está revisando o painel de fila de consultas antes da validação com a gestão clínica.\n\nO problema é que consultas canceladas ainda aparecem na cópia de trabalho e inflam a fila como se pacientes estivessem aguardando atendimento.\n\nSua missão é remover esses registros da cópia usada na análise. Em saúde, fila artificial também consome decisão real.",
     "objective": "Sua tarefa: delete da tabela consultas todos os registros com status 'cancelada'.",
-    "objective_steps": ["Use DELETE FROM na tabela consultas.", "Filtre apenas status 'cancelada'.", "Não remova consultas realizadas."],
+    "objective_steps": [
+      "Use DELETE FROM na tabela consultas.",
+      "Filtre apenas status 'cancelada'.",
+      "Não remova consultas realizadas."
+    ],
     "expected_sql": "DELETE FROM consultas WHERE status = 'cancelada';",
     "validation_sql": "SELECT status, COUNT(*) AS registros FROM consultas GROUP BY status ORDER BY status;",
     "hint": "A cláusula WHERE é obrigatória para remover somente canceladas."
@@ -2759,7 +2830,11 @@
     "allowed_statement": "delete",
     "story": "Olá, analista! Hoje você está na reunião de custos de cloud e o relatório mistura recurso ativo com sobra desligada.\n\nA liderança quer saber onde cortar gasto, mas a cópia temporária ainda carrega itens inativos que distorcem o mapa de consumo.\n\nSua missão é limpar esses custos antes da leitura final. Em tecnologia, recurso morto no relatório continua cobrando atenção.",
     "objective": "Sua tarefa: delete da tabela cloud_custos todos os registros com status 'inativo'.",
-    "objective_steps": ["Use DELETE FROM em cloud_custos.", "Filtre status igual a 'inativo'.", "Preserve os recursos ativos."],
+    "objective_steps": [
+      "Use DELETE FROM em cloud_custos.",
+      "Filtre status igual a 'inativo'.",
+      "Preserve os recursos ativos."
+    ],
     "expected_sql": "DELETE FROM cloud_custos WHERE status = 'inativo';",
     "validation_sql": "SELECT status, COUNT(*) AS registros FROM cloud_custos GROUP BY status ORDER BY status;",
     "hint": "Remova somente status 'inativo'."
@@ -2774,7 +2849,11 @@
     "allowed_statement": "delete",
     "story": "Olá, analista! Hoje você está no fechamento industrial de maio e a análise mensal recebeu registros que não pertencem ao período.\n\nSe essa sujeira ficar na cópia de trabalho, a produção do mês ganha volume que nunca deveria entrar na conta.\n\nSua missão é remover os registros fora do corte antes do fechamento. Em indústria, período errado fabrica conclusão errada.",
     "objective": "Sua tarefa: delete de producao_diaria os registros com data anterior a '2026-05-01' ou data maior ou igual a '2026-06-01'.",
-    "objective_steps": ["Use DELETE FROM em producao_diaria.", "Remova datas fora de maio de 2026.", "Preserve registros entre 2026-05-01 e antes de 2026-06-01."],
+    "objective_steps": [
+      "Use DELETE FROM em producao_diaria.",
+      "Remova datas fora de maio de 2026.",
+      "Preserve registros entre 2026-05-01 e antes de 2026-06-01."
+    ],
     "expected_sql": "DELETE FROM producao_diaria WHERE data < '2026-05-01' OR data >= '2026-06-01';",
     "validation_sql": "SELECT MIN(data) AS primeira_data, MAX(data) AS ultima_data, COUNT(*) AS registros FROM producao_diaria;",
     "hint": "Use OR para capturar os dois lados fora da janela."
@@ -2789,7 +2868,11 @@
     "allowed_statement": "delete",
     "story": "Olá, analista! Hoje você está na secretaria escolar fechando a apuração de abril quando uma presença de maio aparece na cópia temporária.\n\nO erro parece pequeno, mas muda frequência, relatório e conversa com responsáveis se passar pela validação.\n\nSua missão é remover o registro fora do corte. Em educação, presença no mês errado ensina a métrica errada.",
     "objective": "Sua tarefa: delete da tabela presencas os registros com data maior ou igual a '2026-05-01'.",
-    "objective_steps": ["Use DELETE FROM em presencas.", "Filtre datas a partir de 2026-05-01.", "Preserve os registros de abril."],
+    "objective_steps": [
+      "Use DELETE FROM em presencas.",
+      "Filtre datas a partir de 2026-05-01.",
+      "Preserve os registros de abril."
+    ],
     "expected_sql": "DELETE FROM presencas WHERE data >= '2026-05-01';",
     "validation_sql": "SELECT MIN(data) AS primeira_data, MAX(data) AS ultima_data, COUNT(*) AS registros FROM presencas;",
     "hint": "O campo de data se chama data."
@@ -2804,7 +2887,11 @@
     "allowed_statement": "delete",
     "story": "Olá, analista! Hoje você está na galeria fechando o relatório de vendas concluídas antes da prestação de contas da exposição.\n\nAlgumas negociações canceladas ainda aparecem na cópia de trabalho e fazem a receita parecer mais elegante do que foi.\n\nSua missão é remover essas vendas da análise. Em arte, obra vendida precisa de comprador, não de otimismo no relatório.",
     "objective": "Sua tarefa: delete da tabela vendas todos os registros com status 'cancelada'.",
-    "objective_steps": ["Use DELETE FROM em vendas.", "Filtre status 'cancelada'.", "Não remova vendas concluídas ou reservadas."],
+    "objective_steps": [
+      "Use DELETE FROM em vendas.",
+      "Filtre status 'cancelada'.",
+      "Não remova vendas concluídas ou reservadas."
+    ],
     "expected_sql": "DELETE FROM vendas WHERE status = 'cancelada';",
     "validation_sql": "SELECT status, COUNT(*) AS registros FROM vendas GROUP BY status ORDER BY status;",
     "hint": "Use WHERE status = 'cancelada'."
@@ -2819,7 +2906,11 @@
     "allowed_statement": "delete",
     "story": "Olá, analista! Hoje você está revisando consumo de irrigação da safra de 2026 quando uma linha do ano anterior entra no meio da análise.\n\nA fazenda quer recalcular uso de água por talhão sem carregar histórico que pertence a outro ciclo.\n\nSua missão é limpar a cópia temporária antes do recálculo. Em agricultura, safra misturada rende número bonito e decisão torta.",
     "objective": "Sua tarefa: delete da tabela irrigacoes os registros com data anterior a '2026-01-01'.",
-    "objective_steps": ["Use DELETE FROM em irrigacoes.", "Filtre datas anteriores a 2026-01-01.", "Preserve todas as irrigações de 2026."],
+    "objective_steps": [
+      "Use DELETE FROM em irrigacoes.",
+      "Filtre datas anteriores a 2026-01-01.",
+      "Preserve todas as irrigações de 2026."
+    ],
     "expected_sql": "DELETE FROM irrigacoes WHERE data < '2026-01-01';",
     "validation_sql": "SELECT MIN(data) AS primeira_data, COUNT(*) AS registros FROM irrigacoes;",
     "hint": "A limpeza é apenas para datas anteriores a 2026."
@@ -2834,7 +2925,11 @@
     "allowed_statement": "delete",
     "story": "Olá, analista! Hoje você está no estúdio de games com o time de estabilidade investigando sessões que terminaram em crash.\n\nA cópia temporária ainda mistura sessões saudáveis com falhas reais. Se isso continuar, a taxa crítica vira média confortável e o problema escapa pela porta dos fundos.\n\nSua missão é remover as sessões sem falha antes do cálculo. Em games, crash raro no relatório ainda pode ser desastre comum para quem joga.",
     "objective": "Sua tarefa: delete de sessoes_dispositivo todos os registros em que crash = 0.",
-    "objective_steps": ["Use DELETE FROM em sessoes_dispositivo.", "Remova apenas registros com crash igual a 0.", "Preserve as sessões com crash igual a 1."],
+    "objective_steps": [
+      "Use DELETE FROM em sessoes_dispositivo.",
+      "Remova apenas registros com crash igual a 0.",
+      "Preserve as sessões com crash igual a 1."
+    ],
     "expected_sql": "DELETE FROM sessoes_dispositivo WHERE crash = 0;",
     "validation_sql": "SELECT crash, COUNT(*) AS registros FROM sessoes_dispositivo GROUP BY crash ORDER BY crash;",
     "hint": "Use WHERE crash = 0 para manter somente sessões com falha."
@@ -2849,7 +2944,11 @@
     "allowed_statement": "delete",
     "story": "Olá, analista! Hoje você está na tesouraria durante uma conciliação sensível e uma linha foi marcada como duplicada só porque parecia familiar demais.\n\nRemover o registro errado distorce o saldo e transforma limpeza em erro financeiro com aparência de eficiência.\n\nSua missão é excluir somente esse falso positivo da cópia de trabalho. Em tesouraria, parecido não é duplicado até o dado provar.",
     "objective": "Sua tarefa: delete da tabela extrato_bancario o registro com codigo_referencia 'REF-UNICO'.",
-    "objective_steps": ["Use DELETE FROM em extrato_bancario.", "Filtre codigo_referencia igual a 'REF-UNICO'.", "Não remova os grupos REF-DUP."],
+    "objective_steps": [
+      "Use DELETE FROM em extrato_bancario.",
+      "Filtre codigo_referencia igual a 'REF-UNICO'.",
+      "Não remova os grupos REF-DUP."
+    ],
     "expected_sql": "DELETE FROM extrato_bancario WHERE codigo_referencia = 'REF-UNICO';",
     "validation_sql": "SELECT codigo_referencia, COUNT(*) AS registros FROM extrato_bancario WHERE codigo_referencia IN ('REF-UNICO', 'REF-DUP-01', 'REF-DUP-02') GROUP BY codigo_referencia ORDER BY codigo_referencia;",
     "hint": "A referência única deve sair; as duplicadas reais devem permanecer."

@@ -27,8 +27,16 @@
       "expected_answer": {
         "query": "SELECT produto, SUM(quantidade) AS total_vendido FROM padaria_vendas GROUP BY produto ORDER BY total_vendido DESC LIMIT 1;",
         "result": {
-          "columns": ["produto", "total_vendido"],
-          "rows": [["Pão francês", 210]]
+          "columns": [
+            "produto",
+            "total_vendido"
+          ],
+          "rows": [
+            [
+              "Pão francês",
+              648
+            ]
+          ]
         }
       },
       "hint": "Agrupe as vendas por produto, some as quantidades e retorne apenas o produto mais vendido."
@@ -51,8 +59,28 @@
       "expected_answer": {
         "query": "SELECT hora_pedido AS hora, COUNT(*) AS pedidos FROM padaria_pedidos WHERE hora_pedido >= '06:00' AND hora_pedido < '10:00' GROUP BY hora_pedido ORDER BY pedidos DESC, hora ASC;",
         "result": {
-          "columns": ["hora", "pedidos"],
-          "rows": [["07:00", 4], ["08:00", 3], ["09:00", 2], ["06:00", 1]]
+          "columns": [
+            "hora",
+            "pedidos"
+          ],
+          "rows": [
+            [
+              "07:00",
+              12
+            ],
+            [
+              "08:00",
+              6
+            ],
+            [
+              "09:00",
+              4
+            ],
+            [
+              "06:00",
+              2
+            ]
+          ]
         }
       },
       "hint": "Filtre as vendas do período da manhã, agrupe por hora e conte os pedidos."
@@ -75,8 +103,103 @@
       "expected_answer": {
         "query": "SELECT ingrediente, quantidade_atual, quantidade_minima FROM padaria_estoque WHERE quantidade_atual < quantidade_minima ORDER BY quantidade_atual ASC, ingrediente ASC;",
         "result": {
-          "columns": ["ingrediente", "quantidade_atual", "quantidade_minima"],
-          "rows": [["Fermento biológico", 4.0, 10.0], ["Farinha de trigo", 12.0, 25.0], ["Manteiga", 15.0, 20.0]]
+          "columns": [
+            "ingrediente",
+            "quantidade_atual",
+            "quantidade_minima"
+          ],
+          "rows": [
+            [
+              "Fermento biológico",
+              4.0,
+              10.0
+            ],
+            [
+              "Fermento biológico",
+              4.12,
+              10.3
+            ],
+            [
+              "Fermento biológico",
+              4.12,
+              10.3
+            ],
+            [
+              "Fermento biológico",
+              4.12,
+              10.3
+            ],
+            [
+              "Fermento biológico",
+              4.12,
+              10.3
+            ],
+            [
+              "Fermento biológico",
+              4.12,
+              10.3
+            ],
+            [
+              "Farinha de trigo",
+              12.0,
+              25.0
+            ],
+            [
+              "Farinha de trigo",
+              12.72,
+              26.5
+            ],
+            [
+              "Farinha de trigo",
+              12.72,
+              26.5
+            ],
+            [
+              "Farinha de trigo",
+              12.72,
+              26.5
+            ],
+            [
+              "Farinha de trigo",
+              12.72,
+              26.5
+            ],
+            [
+              "Farinha de trigo",
+              12.72,
+              26.5
+            ],
+            [
+              "Manteiga",
+              15.0,
+              20.0
+            ],
+            [
+              "Manteiga",
+              16.35,
+              21.8
+            ],
+            [
+              "Manteiga",
+              16.35,
+              21.8
+            ],
+            [
+              "Manteiga",
+              16.35,
+              21.8
+            ],
+            [
+              "Manteiga",
+              16.35,
+              21.8
+            ],
+            [
+              "Manteiga",
+              16.35,
+              21.8
+            ]
+          ]
         }
       },
       "hint": "Compare a quantidade atual com a quantidade mínima usando WHERE."
@@ -99,8 +222,32 @@
       "expected_answer": {
         "query": "SELECT produto, ROUND(SUM(quantidade * preco_unitario), 2) AS receita_total FROM padaria_vendas GROUP BY produto ORDER BY receita_total DESC;",
         "result": {
-          "columns": ["produto", "receita_total"],
-          "rows": [["Bolo de cenoura", 702.0], ["Pão francês", 189.0], ["Croissant", 178.5], ["Pão de queijo", 168.0], ["Café coado", 144.0]]
+          "columns": [
+            "produto",
+            "receita_total"
+          ],
+          "rows": [
+            [
+              "Bolo de cenoura",
+              2386.08
+            ],
+            [
+              "Croissant",
+              663.54
+            ],
+            [
+              "Pão francês",
+              605.66
+            ],
+            [
+              "Pão de queijo",
+              562.29
+            ],
+            [
+              "Café coado",
+              464.0
+            ]
+          ]
         }
       },
       "hint": "Multiplique quantidade por preço unitário e depois some o resultado por produto."
@@ -111,7 +258,7 @@
       "title": "Freguesia de valor",
       "difficulty": "Júnior",
       "database": "carreira_padaria.db",
-      "story": "Olá, analista! Hoje a padaria quer entender melhor seus clientes mais fiéis. Seu Joaquim conhece vários pelo nome, alguns pelo pedido e pelo menos um apenas como o senhor do pão bem passado, mas não queimado.\n\nA ideia de abrir novas filiais deixou uma pergunta importante no ar: quem são os clientes que mais voltam? Se a padaria quer crescer, precisa entender o comportamento da freguesia antes de achar que todo bairro funciona igual.\n\nO balcão tem histórias, mas o banco de dados tem registros. E, por mais carismático que seja lembrar o pedido de alguém, frequência de compra ainda precisa ser contada.\n\nSua missão é encontrar os clientes com mais pedidos registrados. Porque cliente fiel é bonito no discurso, mas fica ainda melhor quando aparece no COUNT.",
+      "story": "Olá, analista! Hoje a padaria quer entender melhor seus clientes mais fiéis. Seu Joaquim conhece vários pelo nome, alguns pelo pedido e pelo menos um apenas como o senhor do pão bem passado, mas não queimado.\n\nA ideia de abrir novas filiais deixou uma pergunta importante no ar: quem são os clientes que mais voltam? Se a padaria quer crescer, precisa entender o comportamento da freguesia antes de achar que todo bairro funciona igual.\n\nO balcão tem histórias, mas o banco de dados tem registros. E por mais carismático que seja lembrar o pedido de alguém, frequência de compra ainda precisa ser contada.\n\nSua missão é encontrar os clientes com mais pedidos registrados. Porque cliente fiel é bonito no discurso, mas fica ainda melhor quando aparece no COUNT.",
       "objective": "Sua tarefa: retorne o cliente e a quantidade de pedidos realizados. Agrupe os pedidos por cliente, ordene da maior quantidade para a menor e traga os 5 primeiros resultados. Em caso de empate, ordene por cliente em ordem alfabética.",
       "objective_steps": [
         "Comece pelos pedidos registrados.",
@@ -123,8 +270,32 @@
       "expected_answer": {
         "query": "SELECT cliente, COUNT(*) AS pedidos FROM padaria_pedidos GROUP BY cliente ORDER BY pedidos DESC, cliente ASC LIMIT 5;",
         "result": {
-          "columns": ["cliente", "pedidos"],
-          "rows": [["Dona Marta", 4], ["Seu Paulo", 3], ["Ana Clara", 2], ["Bruno Lima", 2], ["Carla Nunes", 2]]
+          "columns": [
+            "cliente",
+            "pedidos"
+          ],
+          "rows": [
+            [
+              "Dona Marta",
+              9
+            ],
+            [
+              "Seu Paulo",
+              7
+            ],
+            [
+              "Ana Clara",
+              5
+            ],
+            [
+              "Bruno Lima",
+              5
+            ],
+            [
+              "Carla Nunes",
+              4
+            ]
+          ]
         }
       },
       "hint": "Conte os pedidos por cliente e retorne apenas os cinco maiores totais."
@@ -134,7 +305,7 @@
     "intro": {
       "title": "Agora são duas padarias e o dobro dos problemas",
       "arc": "Júnior 2 - A primeira filial",
-      "story": "Olá, analista! Depois de ajudar a Padaria Pão Nosso de Cada Dia a sair do achismo e entrar no perigoso mundo das decisões baseadas em dados, você sobreviveu ao primeiro arco da carreira.\n\nSeu Joaquim ficou tão empolgado com os resultados que fez o que todo empreendedor otimista faz depois de ver um gráfico subindo: abriu uma filial.\n\nAgora a padaria virou uma pequena rede, com uma matriz no bairro original e uma filial recém-inaugurada do outro lado da cidade. O sonho cresceu, a operação cresceu, os problemas cresceram e, por algum motivo, todo mundo acha que você, Analista de Dados Júnior, já deveria saber lidar com isso com a serenidade de um diretor de BI.\n\nA nova fase traz vendas por unidade, funcionários em turnos diferentes entregas entre lojas estoque compartilhado e clientes comparando o pão francês da matriz com o da filial como se fosse final de campeonato.\n\nSua missão é continuar ajudando a padaria a crescer sem virar uma bagunça com logotipo. Porque abrir filial é bonito no Instagram, mas quem segura a operação no mundo real é consulta SQL bem feita."
+      "story": "Olá, analista! Depois de ajudar a Padaria Pão Nosso de Cada Dia a sair do achismo e entrar no perigoso mundo das decisões baseadas em dados, você sobreviveu ao primeiro arco da carreira.\n\nSeu Joaquim ficou tão empolgado com os resultados que fez o que todo empreendedor otimista faz depois de ver um gráfico subindo: abriu uma filial.\n\nAgora a padaria virou uma pequena rede, com uma matriz no bairro original e uma filial recém-inaugurada do outro lado da cidade. O sonho cresceu, a operação cresceu, os problemas cresceram e por algum motivo, todo mundo acha que você, Analista de Dados Júnior, já deveria saber lidar com isso com a serenidade de um diretor de BI.\n\nA nova fase traz vendas por unidade, funcionários em turnos diferentes entregas entre lojas estoque compartilhado e clientes comparando o pão francês da matriz com o da filial como se fosse final de campeonato.\n\nSua missão é continuar ajudando a padaria a crescer sem virar uma bagunça com logotipo. Porque abrir filial é bonito no Instagram, mas quem segura a operação no mundo real é consulta SQL bem feita."
     },
     "completion": {
       "title": "Filial funcionando, caos catalogado",
@@ -148,22 +319,58 @@
         "difficulty": "Júnior",
         "database": "carreira_padaria.db",
         "story": "Olá, analista! A Padaria Pão Nosso de Cada Dia agora tem duas unidades e, como era inevitável, a matriz e a filial já começaram uma competição silenciosa pelo título de verdadeira responsável pelo sucesso.\n\nA equipe da matriz diz que carrega a tradição. A filial diz que representa o futuro. Seu Joaquim diz que ama as duas igualmente, mas abriu a planilha de vendas com a expressão de quem quer saber qual filha está pagando mais boleto.\n\nAntes que a rivalidade vire camiseta personalizada, os dados precisam mostrar quanto cada unidade vendeu no período.\n\nSua missão é comparar o faturamento total da matriz e da filial. Porque em rede de padarias, orgulho local é importante, mas receita ainda fala mais alto que discurso de balcão.",
-        "objective": "Sua tarefa: retorne a unidade e o faturamento total. Calcule o faturamento como quantidade vendida multiplicada pelo preço unitário, agrupe por unidade e ordene do maior faturamento para o menor.",
+        "objective": "Sua tarefa: retorne a unidade, o produto e o faturamento total. Calcule o faturamento como quantidade vendida multiplicada pelo pre?o unit?rio, agrupe por unidade e produto, mantenha apenas combina??es com faturamento maior ou igual a 200 e ordene do maior faturamento para o menor.",
         "objective_steps": [
           "Comece pelas vendas da rede.",
           "Calcule o faturamento de cada venda.",
-          "Agrupe os valores por unidade.",
-          "Ordene pelas unidades com maior faturamento."
+          "Agrupe por unidade e produto.",
+          "Use HAVING para manter apenas combina??es relevantes.",
+          "Ordene pelo maior faturamento."
         ],
-        "expected_sql": "SELECT unidade, ROUND(SUM(quantidade * preco_unitario), 2) AS faturamento_total FROM rede_vendas GROUP BY unidade ORDER BY faturamento_total DESC;",
+        "expected_sql": "SELECT unidade, produto, ROUND(SUM(quantidade * preco_unitario), 2) AS faturamento_total FROM rede_vendas GROUP BY unidade, produto HAVING SUM(quantidade * preco_unitario) >= 200 ORDER BY faturamento_total DESC, unidade ASC, produto ASC;",
         "expected_answer": {
-          "query": "SELECT unidade, ROUND(SUM(quantidade * preco_unitario), 2) AS faturamento_total FROM rede_vendas GROUP BY unidade ORDER BY faturamento_total DESC;",
+          "query": "SELECT unidade, produto, ROUND(SUM(quantidade * preco_unitario), 2) AS faturamento_total FROM rede_vendas GROUP BY unidade, produto HAVING SUM(quantidade * preco_unitario) >= 200 ORDER BY faturamento_total DESC, unidade ASC, produto ASC;",
           "result": {
-            "columns": ["unidade", "faturamento_total"],
-            "rows": [["Filial", 772.5], ["Matriz", 568.0]]
+            "columns": [
+              "unidade",
+              "produto",
+              "faturamento_total"
+            ],
+            "rows": [
+              [
+                "Filial",
+                "Bolo de cenoura",
+                2575.8
+              ],
+              [
+                "Matriz",
+                "Bolo de cenoura",
+                2106.72
+              ],
+              [
+                "Filial",
+                "Pão de queijo",
+                1032.13
+              ],
+              [
+                "Filial",
+                "Café coado",
+                701.73
+              ],
+              [
+                "Matriz",
+                "Pão francês",
+                583.33
+              ],
+              [
+                "Matriz",
+                "Café coado",
+                559.4
+              ]
+            ]
           }
         },
-        "hint": "Agrupe as vendas por unidade e some quantidade * preco_unitario."
+        "hint": "Aplique o corte de faturamento depois do GROUP BY usando HAVING."
       },
       {
         "id": "career_padaria_junior_007",
@@ -172,22 +379,52 @@
         "difficulty": "Júnior",
         "database": "carreira_padaria.db",
         "story": "Olá, analista! Com duas unidades funcionando, a padaria descobriu uma verdade operacional antiga: quanto mais portas abertas, mais gente perguntando por que a fila está parada.\n\nNa matriz, o movimento da manhã continua intenso. Na filial, o horário da tarde parece ter virado ponto de encontro oficial do bairro. Os funcionários dizem que estão fazendo o possível, os clientes dizem que estão esperando demais e seu Joaquim diz que precisa ver isso com dados, frase que agora ele usa para quase tudo.\n\nA gestão quer entender quais turnos estão concentrando mais atendimentos para ajustar escala sem transformar o balcão em zona de guerra.\n\nSua missão é contar quantos pedidos foram atendidos por turno em cada unidade. Porque funcionário cansado erra comanda e comanda errada vira reunião.",
-        "objective": "Sua tarefa: retorne a unidade, o turno e a quantidade de pedidos atendidos. Agrupe por unidade e turno. Ordene da maior quantidade de pedidos para a menor. Em caso de empate, ordene por unidade e turno em ordem alfabética.",
+        "objective": "Sua tarefa: retorne a unidade, o turno, a quantidade de pedidos e a classifica??o do volume. Classifique como alto quando houver 5 ou mais pedidos no grupo, caso contr?rio use normal. Agrupe por unidade e turno e ordene pela maior quantidade de pedidos.",
         "objective_steps": [
-          "Comece pelos pedidos da rede.",
-          "Agrupe os registros por unidade e turno.",
+          "Agrupe os pedidos por unidade e turno.",
           "Conte os pedidos de cada grupo.",
-          "Ordene os turnos com maior pressão operacional."
+          "Use CASE para classificar o volume.",
+          "Ordene pelos turnos mais pressionados."
         ],
-        "expected_sql": "SELECT unidade, turno, COUNT(*) AS pedidos FROM rede_pedidos GROUP BY unidade, turno ORDER BY pedidos DESC, unidade ASC, turno ASC;",
+        "expected_sql": "SELECT unidade, turno, COUNT(*) AS pedidos, CASE WHEN COUNT(*) >= 5 THEN 'alto' ELSE 'normal' END AS volume FROM rede_pedidos GROUP BY unidade, turno ORDER BY pedidos DESC, unidade ASC, turno ASC;",
         "expected_answer": {
-          "query": "SELECT unidade, turno, COUNT(*) AS pedidos FROM rede_pedidos GROUP BY unidade, turno ORDER BY pedidos DESC, unidade ASC, turno ASC;",
+          "query": "SELECT unidade, turno, COUNT(*) AS pedidos, CASE WHEN COUNT(*) >= 5 THEN 'alto' ELSE 'normal' END AS volume FROM rede_pedidos GROUP BY unidade, turno ORDER BY pedidos DESC, unidade ASC, turno ASC;",
           "result": {
-            "columns": ["unidade", "turno", "pedidos"],
-            "rows": [["Filial", "tarde", 5], ["Matriz", "manhã", 4], ["Filial", "manhã", 3], ["Matriz", "tarde", 2]]
+            "columns": [
+              "unidade",
+              "turno",
+              "pedidos",
+              "volume"
+            ],
+            "rows": [
+              [
+                "Filial",
+                "tarde",
+                10,
+                "alto"
+              ],
+              [
+                "Matriz",
+                "manhã",
+                10,
+                "alto"
+              ],
+              [
+                "Filial",
+                "manhã",
+                6,
+                "alto"
+              ],
+              [
+                "Matriz",
+                "tarde",
+                4,
+                "normal"
+              ]
+            ]
           }
         },
-        "hint": "Conte os pedidos por unidade e turno, depois ordene pelo total de pedidos."
+        "hint": "O CASE pode usar o COUNT(*) dentro da pr?pria consulta agregada."
       },
       {
         "id": "career_padaria_junior_008",
@@ -196,22 +433,155 @@
         "difficulty": "Júnior",
         "database": "carreira_padaria.db",
         "story": "Olá, analista! A filial está indo bem, mas agora existe um novo problema: ingredientes não se teletransportam. Apesar de algumas pessoas da operação aparentemente acreditarem nisso.\n\nA matriz virou ponto de apoio para a filial enviando farinha, fermento embalagens e outros itens quando o estoque aperta. O problema é que algumas entregas internas estão demorando mais do que deveriam e quando o fermento atrasa, o clima cresce menos que a massa.\n\nSeu Joaquim quer saber quais transferências entre unidades chegaram atrasadas para ajustar a logística antes que a expansão vire uma novela com planilha compartilhada.\n\nSua missão é identificar as entregas internas atrasadas entre matriz e filial. Porque em padaria, atraso de ingrediente não aparece no relatório: aparece na vitrine vazia.",
-        "objective": "Sua tarefa: retorne o item, a unidade de origem, a unidade de destino e os dias de atraso das transferências com atraso maior que zero. Ordene pelo maior atraso primeiro. Em caso de empate, ordene por item em ordem alfabética.",
+        "objective": "Sua tarefa: retorne o item, a origem, o destino, os dias de atraso e uma prioridade. Classifique como alta quando o atraso for de 2 dias ou mais, caso contr?rio use acompanhar. Considere apenas transfer?ncias atrasadas e ordene pelo maior atraso.",
         "objective_steps": [
-          "Comece pelas transferências entre unidades.",
-          "Mantenha apenas entregas com atraso maior que zero.",
-          "Retorne item, origem, destino e dias de atraso.",
+          "Filtre transfer?ncias com atraso maior que zero.",
+          "Use CASE para classificar a prioridade.",
+          "Retorne os dados operacionais principais.",
           "Ordene pelos atrasos mais graves."
         ],
-        "expected_sql": "SELECT item, origem, destino, dias_atraso FROM transferencias_unidades WHERE dias_atraso > 0 ORDER BY dias_atraso DESC, item ASC;",
+        "expected_sql": "SELECT item, origem, destino, dias_atraso, CASE WHEN dias_atraso >= 2 THEN 'alta' ELSE 'acompanhar' END AS prioridade FROM transferencias_unidades WHERE dias_atraso > 0 ORDER BY dias_atraso DESC, item ASC;",
         "expected_answer": {
-          "query": "SELECT item, origem, destino, dias_atraso FROM transferencias_unidades WHERE dias_atraso > 0 ORDER BY dias_atraso DESC, item ASC;",
+          "query": "SELECT item, origem, destino, dias_atraso, CASE WHEN dias_atraso >= 2 THEN 'alta' ELSE 'acompanhar' END AS prioridade FROM transferencias_unidades WHERE dias_atraso > 0 ORDER BY dias_atraso DESC, item ASC;",
           "result": {
-            "columns": ["item", "origem", "destino", "dias_atraso"],
-            "rows": [["Farinha de trigo", "Matriz", "Filial", 3], ["Embalagens", "Matriz", "Filial", 2], ["Fermento biológico", "Matriz", "Filial", 1]]
+            "columns": [
+              "item",
+              "origem",
+              "destino",
+              "dias_atraso",
+              "prioridade"
+            ],
+            "rows": [
+              [
+                "Farinha de trigo",
+                "Matriz",
+                "Filial",
+                9,
+                "alta"
+              ],
+              [
+                "Embalagens",
+                "Matriz",
+                "Filial",
+                8,
+                "alta"
+              ],
+              [
+                "Farinha de trigo",
+                "Matriz",
+                "Filial",
+                8,
+                "alta"
+              ],
+              [
+                "Embalagens",
+                "Matriz",
+                "Filial",
+                7,
+                "alta"
+              ],
+              [
+                "Farinha de trigo",
+                "Matriz",
+                "Filial",
+                7,
+                "alta"
+              ],
+              [
+                "Embalagens",
+                "Matriz",
+                "Filial",
+                5,
+                "alta"
+              ],
+              [
+                "Farinha de trigo",
+                "Matriz",
+                "Filial",
+                5,
+                "alta"
+              ],
+              [
+                "Embalagens",
+                "Matriz",
+                "Filial",
+                3,
+                "alta"
+              ],
+              [
+                "Farinha de trigo",
+                "Matriz",
+                "Filial",
+                3,
+                "alta"
+              ],
+              [
+                "Farinha de trigo",
+                "Matriz",
+                "Filial",
+                3,
+                "alta"
+              ],
+              [
+                "Embalagens",
+                "Matriz",
+                "Filial",
+                2,
+                "alta"
+              ],
+              [
+                "Embalagens",
+                "Matriz",
+                "Filial",
+                2,
+                "alta"
+              ],
+              [
+                "Fermento biológico",
+                "Matriz",
+                "Filial",
+                1,
+                "acompanhar"
+              ],
+              [
+                "Fermento biológico",
+                "Matriz",
+                "Filial",
+                1,
+                "acompanhar"
+              ],
+              [
+                "Fermento biológico",
+                "Matriz",
+                "Filial",
+                1,
+                "acompanhar"
+              ],
+              [
+                "Fermento biológico",
+                "Matriz",
+                "Filial",
+                1,
+                "acompanhar"
+              ],
+              [
+                "Fermento biológico",
+                "Matriz",
+                "Filial",
+                1,
+                "acompanhar"
+              ],
+              [
+                "Fermento biológico",
+                "Matriz",
+                "Filial",
+                1,
+                "acompanhar"
+              ]
+            ]
           }
         },
-        "hint": "Filtre as transferências em que dias_atraso > 0 e ordene pelos maiores atrasos."
+        "hint": "Use CASE para transformar dias_atraso em uma prioridade textual."
       },
       {
         "id": "career_padaria_junior_009",
@@ -220,22 +590,34 @@
         "difficulty": "Júnior",
         "database": "carreira_padaria.db",
         "story": "Olá, analista! Agora que existem duas padarias, controlar estoque deixou de ser dar uma olhada no depósito e virou uma operação com nome, unidade, responsável e potencial para confusão.\n\nA matriz ainda tem certa folga em alguns ingredientes, mas a filial está aprendendo que vender bem também significa acabar com tudo mais rápido. O gerente da filial mandou três mensagens sobre estoque baixo, duas fotos de prateleira vazia e um áudio de quarenta segundos contendo apenas preocupação.\n\nAntes de comprar em excesso ou deixar produto faltar, a rede precisa saber quais itens estão abaixo do estoque mínimo em cada unidade.\n\nSua missão é listar os produtos com estoque crítico por loja. Porque quando a padaria vira rede, deve ter lá no fundo deixa de ser estratégia e passa a ser risco operacional.",
-        "objective": "Sua tarefa: retorne a unidade, o item, a quantidade atual e a quantidade mínima dos produtos em que a quantidade atual está abaixo da quantidade mínima. Ordene por unidade em ordem alfabética e depois pela menor quantidade atual.",
+        "objective": "Sua tarefa: retorne a unidade e a quantidade de itens abaixo do estoque m?nimo. Agrupe por unidade, mantenha apenas unidades com 2 ou mais itens cr?ticos e ordene pela maior quantidade cr?tica.",
         "objective_steps": [
-          "Comece pelo estoque por unidade.",
-          "Compare a quantidade atual com a quantidade mínima.",
-          "Mantenha apenas itens abaixo do mínimo.",
-          "Ordene por unidade e criticidade do estoque."
+          "Compare quantidade atual com quantidade m?nima.",
+          "Agrupe os itens cr?ticos por unidade.",
+          "Use HAVING para manter unidades com recorr?ncia do problema.",
+          "Ordene pela maior quantidade cr?tica."
         ],
-        "expected_sql": "SELECT unidade, item, quantidade_atual, quantidade_minima FROM estoque_unidades WHERE quantidade_atual < quantidade_minima ORDER BY unidade ASC, quantidade_atual ASC;",
+        "expected_sql": "SELECT unidade, COUNT(*) AS itens_criticos FROM estoque_unidades WHERE quantidade_atual < quantidade_minima GROUP BY unidade HAVING COUNT(*) >= 2 ORDER BY itens_criticos DESC, unidade ASC;",
         "expected_answer": {
-          "query": "SELECT unidade, item, quantidade_atual, quantidade_minima FROM estoque_unidades WHERE quantidade_atual < quantidade_minima ORDER BY unidade ASC, quantidade_atual ASC;",
+          "query": "SELECT unidade, COUNT(*) AS itens_criticos FROM estoque_unidades WHERE quantidade_atual < quantidade_minima GROUP BY unidade HAVING COUNT(*) >= 2 ORDER BY itens_criticos DESC, unidade ASC;",
           "result": {
-            "columns": ["unidade", "item", "quantidade_atual", "quantidade_minima"],
-            "rows": [["Filial", "Fermento biológico", 3.0, 8.0], ["Filial", "Farinha de trigo", 14.0, 25.0], ["Matriz", "Embalagens", 18.0, 30.0]]
+            "columns": [
+              "unidade",
+              "itens_criticos"
+            ],
+            "rows": [
+              [
+                "Filial",
+                12
+              ],
+              [
+                "Matriz",
+                6
+              ]
+            ]
           }
         },
-        "hint": "Compare quantidade_atual com quantidade_minima e mantenha apenas os itens abaixo do mínimo."
+        "hint": "WHERE filtra os itens cr?ticos; HAVING filtra as unidades depois da contagem."
       },
       {
         "id": "career_padaria_junior_010",
@@ -244,22 +626,42 @@
         "difficulty": "Júnior",
         "database": "carreira_padaria.db",
         "story": "Olá, analista! A matriz e a filial vendem os mesmos produtos, mas os clientes já começaram a provar que bairro nenhum respeita completamente o planejamento comercial.\n\nNa matriz, o pão francês continua reinando com a autoridade de um clássico. Na filial, produtos diferentes começaram a ganhar força e a equipe quer entender se isso é tendência real ou só empolgação de inauguração.\n\nSeu Joaquim quer comparar os produtos mais vendidos por unidade antes de decidir o que destacar nas vitrines, quais fornadas aumentar e quais apostas talvez precisem voltar discretamente para o canto da prateleira.\n\nSua missão é mostrar quais produtos mais venderam em cada unidade. Porque expansão boa não é copiar tudo: é descobrir onde cada loja tem sua própria freguesia.",
-        "objective": "Sua tarefa: retorne a unidade, o produto e o total de unidades vendidas. Some a quantidade vendida por produto em cada unidade. Ordene por unidade em ordem alfabética e, dentro de cada unidade, pelo maior total vendido.",
+        "objective": "Sua tarefa: retorne a unidade, o produto e o total vendido somente dos produtos que venderam acima da m?dia geral de quantidade por registro. Agrupe por unidade e produto e ordene por unidade e maior volume vendido.",
         "objective_steps": [
-          "Comece pelas vendas da rede.",
+          "Calcule a m?dia geral de quantidade com uma subconsulta.",
+          "Filtre vendas acima dessa m?dia.",
           "Agrupe por unidade e produto.",
-          "Some as unidades vendidas em cada grupo.",
-          "Ordene primeiro pela unidade e depois pelo maior volume vendido."
+          "Ordene para comparar os destaques de cada unidade."
         ],
-        "expected_sql": "SELECT unidade, produto, SUM(quantidade) AS total_vendido FROM rede_vendas GROUP BY unidade, produto ORDER BY unidade ASC, total_vendido DESC;",
+        "expected_sql": "SELECT unidade, produto, SUM(quantidade) AS total_vendido FROM rede_vendas WHERE quantidade > (SELECT AVG(quantidade) FROM rede_vendas) GROUP BY unidade, produto ORDER BY unidade ASC, total_vendido DESC;",
         "expected_answer": {
-          "query": "SELECT unidade, produto, SUM(quantidade) AS total_vendido FROM rede_vendas GROUP BY unidade, produto ORDER BY unidade ASC, total_vendido DESC;",
+          "query": "SELECT unidade, produto, SUM(quantidade) AS total_vendido FROM rede_vendas WHERE quantidade > (SELECT AVG(quantidade) FROM rede_vendas) GROUP BY unidade, produto ORDER BY unidade ASC, total_vendido DESC;",
           "result": {
-            "columns": ["unidade", "produto", "total_vendido"],
-            "rows": [["Filial", "Pão de queijo", 70], ["Filial", "Café coado", 55], ["Filial", "Bolo de cenoura", 25], ["Matriz", "Pão francês", 120], ["Matriz", "Café coado", 25], ["Matriz", "Bolo de cenoura", 20]]
+            "columns": [
+              "unidade",
+              "produto",
+              "total_vendido"
+            ],
+            "rows": [
+              [
+                "Filial",
+                "Pão de queijo",
+                356
+              ],
+              [
+                "Filial",
+                "Café coado",
+                289
+              ],
+              [
+                "Matriz",
+                "Pão francês",
+                615
+              ]
+            ]
           }
         },
-        "hint": "Agrupe por unidade e produto, some as quantidades e ordene primeiro pela unidade, depois pelo total vendido."
+        "hint": "Use uma subconsulta no WHERE para comparar cada venda com a m?dia geral."
       }
     ],
     "next_arc": {
@@ -280,22 +682,37 @@
           "difficulty": "Júnior",
           "database": "carreira_padaria.db",
           "story": "Olá, analista! A padaria entrou no delivery e descobriu uma verdade dura: pão chega quentinho só quando a operação, o trânsito e o aplicativo decidem colaborar no mesmo dia.\n\nOs pedidos começaram a crescer, mas algumas entregas estão atrasando mais do que deveriam. Clientes mandam mensagem perguntando se o café da manhã virou café da tarde entregadores culpam rota, chuva e semáforo e seu Joaquim está tentando não responder avaliações com emoção.\n\nAntes de trocar todo o raio de entrega ou prometer teletransporte no plano de expansão, os dados precisam mostrar quais bairros concentram mais atrasos.\n\nSua missão é identificar os bairros com mais entregas atrasadas. Porque delivery sem análise vira só uma forma moderna de levar reclamação até a porta do cliente.",
-          "objective": "Sua tarefa: retorne o bairro e a quantidade de entregas atrasadas. Considere apenas pedidos com minutos de atraso maior que zero. Agrupe por bairro e ordene da maior quantidade de atrasos para a menor. Em caso de empate, ordene por bairro em ordem alfabética.",
+          "objective": "Sua tarefa: retorne o bairro, a quantidade de entregas atrasadas e o atraso m?dio em minutos. Considere apenas pedidos com atraso maior que zero, agrupe por bairro e mantenha bairros com atraso m?dio de pelo menos 15 minutos.",
           "objective_steps": [
-            "Comece pelos pedidos de delivery.",
-            "Mantenha apenas entregas com atraso maior que zero.",
-            "Agrupe os atrasos por bairro.",
-            "Ordene os bairros com maior concentração de problema."
+            "Filtre apenas entregas atrasadas.",
+            "Agrupe por bairro.",
+            "Conte atrasos e calcule o atraso m?dio.",
+            "Use HAVING para manter bairros com atraso m?dio relevante."
           ],
-          "expected_sql": "SELECT bairro, COUNT(*) AS entregas_atrasadas FROM delivery_pedidos WHERE minutos_atraso > 0 GROUP BY bairro ORDER BY entregas_atrasadas DESC, bairro ASC;",
+          "expected_sql": "SELECT bairro, COUNT(*) AS entregas_atrasadas, ROUND(AVG(minutos_atraso), 2) AS atraso_medio FROM delivery_pedidos WHERE minutos_atraso > 0 GROUP BY bairro HAVING AVG(minutos_atraso) >= 15 ORDER BY atraso_medio DESC, bairro ASC;",
           "expected_answer": {
-            "query": "SELECT bairro, COUNT(*) AS entregas_atrasadas FROM delivery_pedidos WHERE minutos_atraso > 0 GROUP BY bairro ORDER BY entregas_atrasadas DESC, bairro ASC;",
+            "query": "SELECT bairro, COUNT(*) AS entregas_atrasadas, ROUND(AVG(minutos_atraso), 2) AS atraso_medio FROM delivery_pedidos WHERE minutos_atraso > 0 GROUP BY bairro HAVING AVG(minutos_atraso) >= 15 ORDER BY atraso_medio DESC, bairro ASC;",
             "result": {
-              "columns": ["bairro", "entregas_atrasadas"],
-              "rows": [["Centro", 3], ["Jardim Norte", 2], ["Vila Clara", 1]]
+              "columns": [
+                "bairro",
+                "entregas_atrasadas",
+                "atraso_medio"
+              ],
+              "rows": [
+                [
+                  "Jardim Norte",
+                  8,
+                  17.25
+                ],
+                [
+                  "Centro",
+                  12,
+                  15.33
+                ]
+              ]
             }
           },
-          "hint": "Filtre minutos_atraso maior que zero, agrupe por bairro e conte os pedidos."
+          "hint": "A regra de atraso m?dio precisa ficar no HAVING."
         },
         {
           "id": "career_padaria_junior_012",
@@ -304,22 +721,38 @@
           "difficulty": "Júnior",
           "database": "carreira_padaria.db",
           "story": "Olá, analista! No fechamento da padaria, a vitrine anda parecendo retrospectiva de decisões otimistas demais. Alguns produtos sobram, outros desaparecem cedo e todo mundo tem uma teoria com cheiro de achismo recém-assado.\n\nA produção quer evitar falta. O caixa quer evitar perda. Seu Joaquim quer evitar olhar para uma bandeja cheia no fim do dia e sentir que está financiando tristeza com cobertura de açúcar.\n\nAntes de ajustar fornadas no impulso, a rede precisa saber quais produtos estão gerando mais desperdício.\n\nSua missão é somar o descarte por produto. Porque produto parado na vitrine pode até parecer bonito, mas no relatório financeiro ele atende pelo nome de dinheiro indo embora.",
-          "objective": "Sua tarefa: retorne o produto e o total desperdiçado. Some a quantidade descartada por produto e ordene do maior desperdício para o menor. Em caso de empate, ordene por produto em ordem alfabética.",
+          "objective": "Sua tarefa: retorne o produto e o total desperdi?ado apenas para produtos com desperd?cio acima da m?dia por registro. Agrupe por produto e ordene do maior desperd?cio para o menor.",
           "objective_steps": [
-            "Comece pelos registros de desperdício diário.",
-            "Agrupe os registros por produto.",
-            "Some as quantidades descartadas.",
-            "Ordene pelos produtos que mais geraram perda."
+            "Use uma subconsulta para obter a m?dia de descarte por registro.",
+            "Mantenha registros acima dessa m?dia.",
+            "Agrupe por produto.",
+            "Some o desperd?cio dos produtos destacados."
           ],
-          "expected_sql": "SELECT produto, SUM(quantidade_descartada) AS total_desperdicio FROM desperdicio_diario GROUP BY produto ORDER BY total_desperdicio DESC, produto ASC;",
+          "expected_sql": "SELECT produto, SUM(quantidade_descartada) AS total_desperdicio FROM desperdicio_diario WHERE quantidade_descartada > (SELECT AVG(quantidade_descartada) FROM desperdicio_diario) GROUP BY produto ORDER BY total_desperdicio DESC, produto ASC;",
           "expected_answer": {
-            "query": "SELECT produto, SUM(quantidade_descartada) AS total_desperdicio FROM desperdicio_diario GROUP BY produto ORDER BY total_desperdicio DESC, produto ASC;",
+            "query": "SELECT produto, SUM(quantidade_descartada) AS total_desperdicio FROM desperdicio_diario WHERE quantidade_descartada > (SELECT AVG(quantidade_descartada) FROM desperdicio_diario) GROUP BY produto ORDER BY total_desperdicio DESC, produto ASC;",
             "result": {
-              "columns": ["produto", "total_desperdicio"],
-              "rows": [["Pão francês", 18], ["Croissant", 12], ["Bolo de cenoura", 9], ["Pão de queijo", 5]]
+              "columns": [
+                "produto",
+                "total_desperdicio"
+              ],
+              "rows": [
+                [
+                  "Pão francês",
+                  94
+                ],
+                [
+                  "Bolo de cenoura",
+                  60
+                ],
+                [
+                  "Croissant",
+                  57
+                ]
+              ]
             }
           },
-          "hint": "Agrupe por produto e some quantidade_descartada."
+          "hint": "Compare quantidade_descartada com uma subconsulta de AVG antes de agrupar."
         },
         {
           "id": "career_padaria_junior_013",
@@ -328,22 +761,42 @@
           "difficulty": "Júnior",
           "database": "carreira_padaria.db",
           "story": "Olá, analista! Com duas unidades e delivery rodando, fornecedor deixou de ser detalhe administrativo e virou parte do suspense operacional da semana.\n\nAlgumas entregas chegam no prazo. Outras chegam atrasadas, incompletas ou acompanhadas de explicações que começam com então, veja bem. A produção finge calma, o estoque faz conta no canto e seu Joaquim já aprendeu que promessa de fornecedor não entra no forno.\n\nAntes de trocar contrato na base da irritação, os dados precisam mostrar quais fornecedores mais geraram problema.\n\nSua missão é contar entregas atrasadas ou incompletas por fornecedor. Porque parceria comercial é linda, mas farinha que não chega não vira pão por força de relacionamento.",
-          "objective": "Sua tarefa: retorne o fornecedor e a quantidade de problemas. Considere apenas entregas com status 'atrasada' ou 'incompleta'. Agrupe por fornecedor e ordene da maior quantidade de problemas para a menor. Em caso de empate, ordene por fornecedor em ordem alfabética.",
+          "objective": "Sua tarefa: retorne o fornecedor, a quantidade de problemas e a quantidade total de entregas registradas. Considere problemas os status 'atrasada' ou 'incompleta'. Agrupe por fornecedor e mantenha apenas fornecedores com 2 ou mais problemas.",
           "objective_steps": [
-            "Comece pelas entregas de fornecedores.",
-            "Mantenha apenas entregas atrasadas ou incompletas.",
-            "Agrupe os problemas por fornecedor.",
-            "Ordene pelos fornecedores com maior volume de falhas."
+            "Agrupe as entregas por fornecedor.",
+            "Conte problemas usando SUM com CASE.",
+            "Conte tamb?m o total de entregas.",
+            "Use HAVING para manter fornecedores com recorr?ncia."
           ],
-          "expected_sql": "SELECT fornecedor, COUNT(*) AS problemas FROM fornecedores_entregas WHERE status_entrega IN ('atrasada', 'incompleta') GROUP BY fornecedor ORDER BY problemas DESC, fornecedor ASC;",
+          "expected_sql": "SELECT fornecedor, SUM(CASE WHEN status_entrega IN ('atrasada', 'incompleta') THEN 1 ELSE 0 END) AS problemas, COUNT(*) AS entregas_total FROM fornecedores_entregas GROUP BY fornecedor HAVING SUM(CASE WHEN status_entrega IN ('atrasada', 'incompleta') THEN 1 ELSE 0 END) >= 2 ORDER BY problemas DESC, fornecedor ASC;",
           "expected_answer": {
-            "query": "SELECT fornecedor, COUNT(*) AS problemas FROM fornecedores_entregas WHERE status_entrega IN ('atrasada', 'incompleta') GROUP BY fornecedor ORDER BY problemas DESC, fornecedor ASC;",
+            "query": "SELECT fornecedor, SUM(CASE WHEN status_entrega IN ('atrasada', 'incompleta') THEN 1 ELSE 0 END) AS problemas, COUNT(*) AS entregas_total FROM fornecedores_entregas GROUP BY fornecedor HAVING SUM(CASE WHEN status_entrega IN ('atrasada', 'incompleta') THEN 1 ELSE 0 END) >= 2 ORDER BY problemas DESC, fornecedor ASC;",
             "result": {
-              "columns": ["fornecedor", "problemas"],
-              "rows": [["Moinho Aurora", 3], ["Laticínios Boa Vista", 2], ["Embalagens Sul", 1]]
+              "columns": [
+                "fornecedor",
+                "problemas",
+                "entregas_total"
+              ],
+              "rows": [
+                [
+                  "Moinho Aurora",
+                  12,
+                  15
+                ],
+                [
+                  "Laticínios Boa Vista",
+                  8,
+                  8
+                ],
+                [
+                  "Embalagens Sul",
+                  4,
+                  7
+                ]
+              ]
             }
           },
-          "hint": "Filtre os status problemáticos e depois conte as ocorrências por fornecedor."
+          "hint": "SUM(CASE WHEN ... THEN 1 ELSE 0 END) conta ocorr?ncias condicionais."
         },
         {
           "id": "career_padaria_junior_014",
@@ -352,22 +805,53 @@
           "difficulty": "Júnior",
           "database": "carreira_padaria.db",
           "story": "Olá, analista! As empresas da região descobriram que pedir café da manhã da padaria deixa reunião menos triste embora ainda não resolva pauta mal escrita.\n\nAgora surgiram encomendas corporativas: kits, bandejas, combos e pedidos grandes o suficiente para fazer o forno parecer participante de reunião estratégica. Seu Joaquim gostou da novidade, principalmente da parte em que empresas pagam mais do que clientes pedindo só um pão na chapa.\n\nAntes de dar desconto para todo mundo ou chamar qualquer compra grande de conta-chave, a padaria precisa saber quais clientes corporativos mais compraram.\n\nSua missão é listar as empresas com maior valor encomendado. Porque cliente importante não é quem manda e-mail com logo bonito, é quem aparece bem no SUM.",
-          "objective": "Sua tarefa: retorne o cliente corporativo e o valor total encomendado. Some o valor das encomendas por cliente, arredonde para 2 casas decimais, ordene do maior total para o menor e traga apenas os 5 primeiros resultados.",
+          "objective": "Sua tarefa: retorne o cliente corporativo, o valor total encomendado e o ticket m?dio. Agrupe por cliente, mantenha clientes com pelo menos 2 encomendas e ordene pelo maior valor total.",
           "objective_steps": [
-            "Comece pelas encomendas corporativas.",
-            "Agrupe os registros por cliente empresa.",
-            "Some o valor total de cada cliente.",
-            "Ordene pelos maiores compradores e limite aos 5 primeiros."
+            "Agrupe encomendas por cliente.",
+            "Some o valor total.",
+            "Calcule o ticket m?dio.",
+            "Use HAVING para manter clientes recorrentes.",
+            "Ordene pelo maior total encomendado."
           ],
-          "expected_sql": "SELECT cliente_empresa, ROUND(SUM(valor_total), 2) AS total_encomendado FROM encomendas_corporativas GROUP BY cliente_empresa ORDER BY total_encomendado DESC LIMIT 5;",
+          "expected_sql": "SELECT cliente_empresa, ROUND(SUM(valor_total), 2) AS total_encomendado, ROUND(AVG(valor_total), 2) AS ticket_medio FROM encomendas_corporativas GROUP BY cliente_empresa HAVING COUNT(*) >= 2 ORDER BY total_encomendado DESC, cliente_empresa ASC;",
           "expected_answer": {
-            "query": "SELECT cliente_empresa, ROUND(SUM(valor_total), 2) AS total_encomendado FROM encomendas_corporativas GROUP BY cliente_empresa ORDER BY total_encomendado DESC LIMIT 5;",
+            "query": "SELECT cliente_empresa, ROUND(SUM(valor_total), 2) AS total_encomendado, ROUND(AVG(valor_total), 2) AS ticket_medio FROM encomendas_corporativas GROUP BY cliente_empresa HAVING COUNT(*) >= 2 ORDER BY total_encomendado DESC, cliente_empresa ASC;",
             "result": {
-              "columns": ["cliente_empresa", "total_encomendado"],
-              "rows": [["Escritório Alameda", 2400.0], ["Clínica Horizonte", 1750.5], ["Escola Girassol", 1280.0], ["Academia Pulse", 900.0], ["Studio Norte", 620.0]]
+              "columns": [
+                "cliente_empresa",
+                "total_encomendado",
+                "ticket_medio"
+              ],
+              "rows": [
+                [
+                  "Escritório Alameda",
+                  12612.0,
+                  1261.2
+                ],
+                [
+                  "Clínica Horizonte",
+                  7266.09,
+                  908.26
+                ],
+                [
+                  "Escola Girassol",
+                  5388.8,
+                  1347.2
+                ],
+                [
+                  "Academia Pulse",
+                  3735.0,
+                  933.75
+                ],
+                [
+                  "Studio Norte",
+                  2628.8,
+                  657.2
+                ]
+              ]
             }
           },
-          "hint": "Agrupe por cliente_empresa, some valor_total e retorne apenas os cinco maiores totais."
+          "hint": "Use COUNT(*) no HAVING para separar clientes recorrentes."
         },
         {
           "id": "career_padaria_junior_015",
@@ -376,22 +860,38 @@
           "difficulty": "Júnior",
           "database": "carreira_padaria.db",
           "story": "Olá, analista! A rede começou a coletar avaliações dos clientes essa invenção moderna que transforma opinião sobre atendimento em número e número em reunião.\n\nA matriz está confiante, a filial diz que ainda está pegando ritmo e alguns clientes avaliaram com a severidade de jurado de reality gastronômico. Seu Joaquim quer entender se existe alguma unidade precisando de atenção antes que nota baixa vire reputação baixa.\n\nAntes de concluir que foi só azar ou que cliente não entende a pressão do balcão, os dados precisam comparar a média de avaliação por unidade.\n\nSua missão é descobrir qual unidade tem pior média de satisfação. Porque sorriso no atendimento ajuda, mas AVG baixo pede ação.",
-          "objective": "Sua tarefa: retorne a unidade e a média de avaliação. Calcule a média das notas por unidade, arredonde para 2 casas decimais e ordene da menor média para a maior.",
+          "objective": "Sua tarefa: retorne a unidade, a m?dia de avalia??o e a quantidade de avalia??es. Agrupe por unidade, mantenha apenas unidades com pelo menos 5 avalia??es e ordene da menor m?dia para a maior.",
           "objective_steps": [
-            "Comece pelas avaliações dos clientes.",
-            "Agrupe as notas por unidade.",
-            "Calcule a média de avaliação.",
-            "Ordene começando pela unidade com pior média."
+            "Agrupe avalia??es por unidade.",
+            "Calcule a m?dia das notas.",
+            "Conte a base de avalia??es.",
+            "Use HAVING para garantir volume m?nimo.",
+            "Ordene pelas piores m?dias primeiro."
           ],
-          "expected_sql": "SELECT unidade, ROUND(AVG(nota), 2) AS media_avaliacao FROM avaliacoes_clientes GROUP BY unidade ORDER BY media_avaliacao ASC;",
+          "expected_sql": "SELECT unidade, ROUND(AVG(nota), 2) AS media_avaliacao, COUNT(*) AS avaliacoes FROM avaliacoes_clientes GROUP BY unidade HAVING COUNT(*) >= 5 ORDER BY media_avaliacao ASC, unidade ASC;",
           "expected_answer": {
-            "query": "SELECT unidade, ROUND(AVG(nota), 2) AS media_avaliacao FROM avaliacoes_clientes GROUP BY unidade ORDER BY media_avaliacao ASC;",
+            "query": "SELECT unidade, ROUND(AVG(nota), 2) AS media_avaliacao, COUNT(*) AS avaliacoes FROM avaliacoes_clientes GROUP BY unidade HAVING COUNT(*) >= 5 ORDER BY media_avaliacao ASC, unidade ASC;",
             "result": {
-              "columns": ["unidade", "media_avaliacao"],
-              "rows": [["Filial", 3.6], ["Matriz", 4.4]]
+              "columns": [
+                "unidade",
+                "media_avaliacao",
+                "avaliacoes"
+              ],
+              "rows": [
+                [
+                  "Filial",
+                  3.74,
+                  15
+                ],
+                [
+                  "Matriz",
+                  4.58,
+                  15
+                ]
+              ]
             }
           },
-          "hint": "Calcule a média das notas por unidade e ordene pela menor média."
+          "hint": "Al?m da m?dia, conte avalia??es para n?o comparar amostras pequenas."
         }
       ],
       "next_arc": {
@@ -412,22 +912,41 @@
             "difficulty": "Júnior",
             "database": "carreira_padaria.db",
             "story": "Olá, analista! A reunião com Dona Célia começou com uma pergunta simples, o tipo de pergunta que parece inofensiva até alguém perceber que não sabe responder sem abrir sete abas de planilha.\n\nEla quer saber qual unidade está gerando mais faturamento. A matriz afirma que tem tradição. A filial afirma que tem potencial. Seu Joaquim afirma que as duas são importantes, mas falou isso com a voz de quem quer muito ver o ranking.\n\nAntes que a apresentação vire uma disputa familiar com crachá corporativo, os dados precisam mostrar qual unidade realmente está sustentando a expansão.\n\nSua missão é calcular o faturamento total por unidade. Porque no mundo dos negócios, potencial é bonito, mas faturamento ainda é o idioma que investidor entende sem legenda.",
-            "objective": "Sua tarefa: retorne a unidade e o faturamento total. Calcule o faturamento como quantidade vendida multiplicada pelo preço unitário. Agrupe por unidade e ordene do maior faturamento para o menor.",
+            "objective": "Sua tarefa: retorne a unidade, o faturamento total, o total desperdi?ado e o desperd?cio por 100 reais vendidos. Use uma CTE para calcular o faturamento por unidade e outra para calcular o desperd?cio por unidade a partir dos produtos.",
             "objective_steps": [
-              "Comece pelas vendas da rede.",
-              "Calcule o faturamento de cada venda.",
-              "Agrupe o resultado por unidade.",
-              "Ordene pelas unidades com maior faturamento."
+              "Crie uma CTE com faturamento por unidade.",
+              "Crie outra CTE com desperd?cio estimado por unidade usando produto.",
+              "Una os resumos pela unidade.",
+              "Calcule desperd?cio por 100 reais vendidos.",
+              "Ordene pelo pior ?ndice."
             ],
-            "expected_sql": "SELECT unidade, ROUND(SUM(quantidade * preco_unitario), 2) AS faturamento_total FROM rede_vendas GROUP BY unidade ORDER BY faturamento_total DESC;",
+            "expected_sql": "WITH faturamento AS (SELECT unidade, SUM(quantidade * preco_unitario) AS total_vendido FROM rede_vendas GROUP BY unidade), desperdicio AS (SELECT rv.unidade, SUM(d.quantidade_descartada) AS total_desperdicio FROM desperdicio_diario d JOIN rede_vendas rv ON rv.produto = d.produto GROUP BY rv.unidade) SELECT f.unidade, ROUND(f.total_vendido, 2) AS faturamento_total, d.total_desperdicio, ROUND(d.total_desperdicio * 100.0 / f.total_vendido, 2) AS desperdicio_por_100 FROM faturamento f JOIN desperdicio d ON d.unidade = f.unidade ORDER BY desperdicio_por_100 DESC, f.unidade ASC;",
             "expected_answer": {
-              "query": "SELECT unidade, ROUND(SUM(quantidade * preco_unitario), 2) AS faturamento_total FROM rede_vendas GROUP BY unidade ORDER BY faturamento_total DESC;",
+              "query": "WITH faturamento AS (SELECT unidade, SUM(quantidade * preco_unitario) AS total_vendido FROM rede_vendas GROUP BY unidade), desperdicio AS (SELECT rv.unidade, SUM(d.quantidade_descartada) AS total_desperdicio FROM desperdicio_diario d JOIN rede_vendas rv ON rv.produto = d.produto GROUP BY rv.unidade) SELECT f.unidade, ROUND(f.total_vendido, 2) AS faturamento_total, d.total_desperdicio, ROUND(d.total_desperdicio * 100.0 / f.total_vendido, 2) AS desperdicio_por_100 FROM faturamento f JOIN desperdicio d ON d.unidade = f.unidade ORDER BY desperdicio_por_100 DESC, f.unidade ASC;",
               "result": {
-                "columns": ["unidade", "faturamento_total"],
-                "rows": [["Filial", 772.5], ["Matriz", 568.0]]
+                "columns": [
+                  "unidade",
+                  "faturamento_total",
+                  "total_desperdicio",
+                  "desperdicio_por_100"
+                ],
+                "rows": [
+                  [
+                    "Matriz",
+                    3249.45,
+                    855,
+                    26.31
+                  ],
+                  [
+                    "Filial",
+                    4309.66,
+                    445,
+                    10.33
+                  ]
+                ]
               }
             },
-            "hint": "Some quantidade * preco_unitario e agrupe o resultado por unidade."
+            "hint": "Use CTEs para quebrar o problema em dois resumos antes de comparar."
           },
           {
             "id": "career_padaria_junior_017",
@@ -436,22 +955,47 @@
             "difficulty": "Júnior",
             "database": "carreira_padaria.db",
             "story": "Olá, analista! Dona Célia olhou para os números de venda, sorriu por meio segundo e fez a pergunta que derruba qualquer clima de comemoração: e quanto vocês perdem no fim do dia?\n\nO silêncio foi tão grande que deu para ouvir um croissant perdendo crocância na vitrine.\n\nA padaria vende bastante, mas alguns produtos também sobram demais no fechamento. Seu Joaquim chama isso de margem para encantar o cliente. A operação chama de produção otimista. O financeiro chama de dinheiro assado e jogado fora.\n\nSua missão é identificar quais produtos acumulam maior desperdício. Porque crescer vendendo é bom, mas crescer desperdiçando é só fazer prejuízo com cheiro de baunilha.",
-            "objective": "Sua tarefa: retorne o produto e o total de unidades desperdiçadas. Some as unidades desperdiçadas por produto e ordene do maior desperdício para o menor. Em caso de empate, ordene por produto em ordem alfabética.",
+            "objective": "Sua tarefa: retorne produto, vendido, desperdi?ado e percentual de desperd?cio sobre unidades vendidas. Compare vendas da rede com desperd?cio por produto e mantenha apenas produtos com desperd?cio registrado.",
             "objective_steps": [
-              "Comece pelos registros de desperdício.",
-              "Agrupe os registros por produto.",
-              "Some as unidades desperdiçadas.",
-              "Ordene pelos produtos com maior perda."
+              "Some vendas por produto.",
+              "Some desperd?cio por produto.",
+              "Junte os dois resumos pelo produto.",
+              "Calcule o percentual de desperd?cio.",
+              "Ordene pelo maior percentual."
             ],
-            "expected_sql": "SELECT produto, SUM(quantidade_descartada) AS unidades_desperdicadas FROM desperdicio_diario GROUP BY produto ORDER BY unidades_desperdicadas DESC, produto ASC;",
+            "expected_sql": "WITH vendas_produto AS (SELECT produto, SUM(quantidade) AS vendido FROM rede_vendas GROUP BY produto), desperdicio_produto AS (SELECT produto, SUM(quantidade_descartada) AS desperdicado FROM desperdicio_diario GROUP BY produto) SELECT v.produto, v.vendido, d.desperdicado, ROUND(d.desperdicado * 100.0 / v.vendido, 2) AS percentual_desperdicio FROM vendas_produto v JOIN desperdicio_produto d ON d.produto = v.produto ORDER BY percentual_desperdicio DESC, v.produto ASC;",
             "expected_answer": {
-              "query": "SELECT produto, SUM(quantidade_descartada) AS unidades_desperdicadas FROM desperdicio_diario GROUP BY produto ORDER BY unidades_desperdicadas DESC, produto ASC;",
+              "query": "WITH vendas_produto AS (SELECT produto, SUM(quantidade) AS vendido FROM rede_vendas GROUP BY produto), desperdicio_produto AS (SELECT produto, SUM(quantidade_descartada) AS desperdicado FROM desperdicio_diario GROUP BY produto) SELECT v.produto, v.vendido, d.desperdicado, ROUND(d.desperdicado * 100.0 / v.vendido, 2) AS percentual_desperdicio FROM vendas_produto v JOIN desperdicio_produto d ON d.produto = v.produto ORDER BY percentual_desperdicio DESC, v.produto ASC;",
               "result": {
-                "columns": ["produto", "unidades_desperdicadas"],
-                "rows": [["Pão francês", 18], ["Croissant", 12], ["Bolo de cenoura", 9], ["Pão de queijo", 5]]
+                "columns": [
+                  "produto",
+                  "vendido",
+                  "desperdicado",
+                  "percentual_desperdicio"
+                ],
+                "rows": [
+                  [
+                    "Bolo de cenoura",
+                    247,
+                    69,
+                    27.94
+                  ],
+                  [
+                    "Pão francês",
+                    615,
+                    102,
+                    16.59
+                  ],
+                  [
+                    "Pão de queijo",
+                    356,
+                    20,
+                    5.62
+                  ]
+                ]
               }
             },
-            "hint": "Agrupe por produto e some as unidades desperdiçadas."
+            "hint": "Monte dois agregados por produto e compare os totais no SELECT final."
           },
           {
             "id": "career_padaria_junior_018",
@@ -460,22 +1004,41 @@
             "difficulty": "Júnior",
             "database": "carreira_padaria.db",
             "story": "Olá, analista! A investidora visitou as duas unidades disfarçada de cliente comum, o que seria convincente se ela não tivesse chegado anotando tempo de atendimento em um bloquinho com cara de due diligence.\n\nNa matriz, a fila anda com certa dignidade. Na filial, depende do horário, da sorte e da velocidade com que alguém encontra a maquininha. Os funcionários dizem que o movimento está alto. Os clientes dizem que a fila está longa. Seu Joaquim diz que é sinal de sucesso, frase perigosa quando dita perto de uma pessoa segurando senha 42.\n\nAgora a padaria precisa saber qual unidade tem o maior tempo médio de atendimento.\n\nSua missão é medir o tempo médio de atendimento por unidade. Porque fila grande pode parecer popularidade, mas em auditoria também pode parecer gargalo com uniforme.",
-            "objective": "Sua tarefa: retorne a unidade e o tempo médio de atendimento em minutos. Calcule a média do tempo de atendimento por unidade, arredonde para 2 casas decimais e ordene da maior média para a menor.",
+            "objective": "Sua tarefa: retorne a unidade, tempo m?dio de atendimento, nota m?dia dos clientes e uma prioridade. Classifique como revisar quando o tempo m?dio for maior que 7 ou a nota m?dia for menor que 4.",
             "objective_steps": [
-              "Comece pelos atendimentos registrados.",
-              "Agrupe os tempos por unidade.",
-              "Calcule a média de atendimento.",
-              "Ordene pelas maiores médias."
+              "Calcule atendimento m?dio por unidade.",
+              "Calcule nota m?dia por unidade.",
+              "Junte os dois resumos.",
+              "Use CASE para classificar a prioridade.",
+              "Ordene pelas unidades que exigem revis?o."
             ],
-            "expected_sql": "SELECT unidade, ROUND(AVG(tempo_atendimento_min), 2) AS tempo_medio_min FROM atendimentos_unidades GROUP BY unidade ORDER BY tempo_medio_min DESC;",
+            "expected_sql": "WITH atendimento AS (SELECT unidade, AVG(tempo_atendimento_min) AS tempo_medio FROM atendimentos_unidades GROUP BY unidade), avaliacao AS (SELECT unidade, AVG(nota) AS nota_media FROM avaliacoes_clientes GROUP BY unidade) SELECT a.unidade, ROUND(a.tempo_medio, 2) AS tempo_medio_min, ROUND(v.nota_media, 2) AS nota_media, CASE WHEN a.tempo_medio > 7 OR v.nota_media < 4 THEN 'revisar' ELSE 'ok' END AS prioridade FROM atendimento a JOIN avaliacao v ON v.unidade = a.unidade ORDER BY prioridade DESC, tempo_medio_min DESC, a.unidade ASC;",
             "expected_answer": {
-              "query": "SELECT unidade, ROUND(AVG(tempo_atendimento_min), 2) AS tempo_medio_min FROM atendimentos_unidades GROUP BY unidade ORDER BY tempo_medio_min DESC;",
+              "query": "WITH atendimento AS (SELECT unidade, AVG(tempo_atendimento_min) AS tempo_medio FROM atendimentos_unidades GROUP BY unidade), avaliacao AS (SELECT unidade, AVG(nota) AS nota_media FROM avaliacoes_clientes GROUP BY unidade) SELECT a.unidade, ROUND(a.tempo_medio, 2) AS tempo_medio_min, ROUND(v.nota_media, 2) AS nota_media, CASE WHEN a.tempo_medio > 7 OR v.nota_media < 4 THEN 'revisar' ELSE 'ok' END AS prioridade FROM atendimento a JOIN avaliacao v ON v.unidade = a.unidade ORDER BY prioridade DESC, tempo_medio_min DESC, a.unidade ASC;",
               "result": {
-                "columns": ["unidade", "tempo_medio_min"],
-                "rows": [["Filial", 8.75], ["Matriz", 5.5]]
+                "columns": [
+                  "unidade",
+                  "tempo_medio_min",
+                  "nota_media",
+                  "prioridade"
+                ],
+                "rows": [
+                  [
+                    "Filial",
+                    9.16,
+                    3.74,
+                    "revisar"
+                  ],
+                  [
+                    "Matriz",
+                    5.72,
+                    4.58,
+                    "ok"
+                  ]
+                ]
               }
             },
-            "hint": "Calcule o tempo médio de atendimento por unidade."
+            "hint": "Resolva atendimento e avalia??o separadamente, depois una por unidade."
           },
           {
             "id": "career_padaria_junior_019",
@@ -484,22 +1047,38 @@
             "difficulty": "Júnior",
             "database": "carreira_padaria.db",
             "story": "Olá, analista! Faltando poucas horas para a apresentação final, a filial avisou que alguns ingredientes estão perigosamente baixos. A matriz respondeu que talvez tenha um pouco sobrando, o que em linguagem operacional significa que ninguém tem certeza de nada.\n\nDona Célia quer saber se a rede consegue manter padrão entre unidades. Seu Joaquim quer responder claro com confiança. O estoque, infelizmente, parece estar preparando uma versão alternativa dessa resposta.\n\nAntes que alguém prometa expansão nacional sem saber se há fermento suficiente para amanhã, os dados precisam listar os itens em risco.\n\nSua missão é encontrar os ingredientes abaixo do estoque mínimo em cada unidade. Porque investidor pode até aceitar risco calculado, mas não costuma gostar de risco escondido atrás de saco de farinha.",
-            "objective": "Sua tarefa: retorne a unidade, o ingrediente, a quantidade atual e a quantidade mínima. Considere apenas itens em que a quantidade atual está abaixo da quantidade mínima. Ordene por unidade em ordem alfabética e depois pela menor quantidade atual.",
+            "objective": "Sua tarefa: retorne a unidade, os itens cr?ticos e o menor percentual de cobertura de estoque. Considere itens abaixo do m?nimo e calcule cobertura como quantidade_atual / quantidade_minima * 100.",
             "objective_steps": [
-              "Comece pelo estoque por unidade.",
-              "Compare a quantidade atual com a quantidade mínima.",
-              "Mantenha apenas itens abaixo do limite.",
-              "Ordene por unidade e criticidade."
+              "Filtre itens abaixo do m?nimo.",
+              "Agrupe por unidade.",
+              "Conte itens cr?ticos.",
+              "Calcule a pior cobertura do grupo.",
+              "Ordene pela pior cobertura."
             ],
-            "expected_sql": "SELECT unidade, item AS ingrediente, quantidade_atual, quantidade_minima FROM estoque_unidades WHERE quantidade_atual < quantidade_minima ORDER BY unidade ASC, quantidade_atual ASC;",
+            "expected_sql": "SELECT unidade, COUNT(*) AS itens_criticos, ROUND(MIN(quantidade_atual * 100.0 / quantidade_minima), 2) AS menor_cobertura_percentual FROM estoque_unidades WHERE quantidade_atual < quantidade_minima GROUP BY unidade ORDER BY menor_cobertura_percentual ASC, unidade ASC;",
             "expected_answer": {
-              "query": "SELECT unidade, item AS ingrediente, quantidade_atual, quantidade_minima FROM estoque_unidades WHERE quantidade_atual < quantidade_minima ORDER BY unidade ASC, quantidade_atual ASC;",
+              "query": "SELECT unidade, COUNT(*) AS itens_criticos, ROUND(MIN(quantidade_atual * 100.0 / quantidade_minima), 2) AS menor_cobertura_percentual FROM estoque_unidades WHERE quantidade_atual < quantidade_minima GROUP BY unidade ORDER BY menor_cobertura_percentual ASC, unidade ASC;",
               "result": {
-                "columns": ["unidade", "ingrediente", "quantidade_atual", "quantidade_minima"],
-                "rows": [["Filial", "Fermento biológico", 3.0, 8.0], ["Filial", "Farinha de trigo", 14.0, 25.0], ["Matriz", "Embalagens", 18.0, 30.0]]
+                "columns": [
+                  "unidade",
+                  "itens_criticos",
+                  "menor_cobertura_percentual"
+                ],
+                "rows": [
+                  [
+                    "Filial",
+                    12,
+                    37.5
+                  ],
+                  [
+                    "Matriz",
+                    6,
+                    60.0
+                  ]
+                ]
               }
             },
-            "hint": "Filtre os produtos em que a quantidade atual está abaixo da quantidade mínima."
+            "hint": "MIN sobre a cobertura percentual mostra o item mais cr?tico de cada unidade."
           },
           {
             "id": "career_padaria_junior_020",
@@ -508,22 +1087,41 @@
             "difficulty": "Júnior",
             "database": "carreira_padaria.db",
             "story": "Olá, analista! A última pergunta de Dona Célia veio com sorriso calmo e potencial destrutivo: os clientes estão satisfeitos?\n\nSeu Joaquim quase respondeu sim eles sempre voltam, mas você sentiu no ar aquele momento em que uma resposta sem dados poderia encerrar uma carreira inteira antes do café.\n\nA padaria começou a coletar avaliações dos clientes nas duas unidades. Tem elogio sobre pão quente, reclamação sobre fila, comentário sobre atendimento e uma avaliação de duas estrelas escrita apenas cadê meu sonho?, que ninguém soube interpretar se era produto ou filosofia.\n\nAgora é hora de medir a satisfação média por unidade.\n\nSua missão é calcular a nota média dos clientes em cada loja. Porque cliente satisfeito recomenda, cliente irritado também recomenda, mas com outro objetivo.",
-            "objective": "Sua tarefa: retorne a unidade e a nota média dos clientes. Calcule a média das avaliações, arredonde para 2 casas decimais e ordene da menor nota média para a maior.",
+            "objective": "Sua tarefa: retorne a unidade, nota m?dia, tempo m?dio e um diagn?stico final. Use CTEs para comparar satisfa??o e atendimento e classifique como risco quando a nota m?dia for menor que 4 ou o tempo m?dio for maior que 7.",
             "objective_steps": [
-              "Comece pelas avaliações dos clientes.",
-              "Agrupe as notas por unidade.",
-              "Calcule a média de satisfação.",
-              "Ordene começando pela menor nota média."
+              "Calcule a nota m?dia por unidade.",
+              "Calcule o tempo m?dio por unidade.",
+              "Una os resumos.",
+              "Classifique o diagn?stico com CASE.",
+              "Ordene primeiro os riscos."
             ],
-            "expected_sql": "SELECT unidade, ROUND(AVG(nota), 2) AS nota_media FROM avaliacoes_clientes GROUP BY unidade ORDER BY nota_media ASC;",
+            "expected_sql": "WITH notas AS (SELECT unidade, AVG(nota) AS nota_media FROM avaliacoes_clientes GROUP BY unidade), tempos AS (SELECT unidade, AVG(tempo_atendimento_min) AS tempo_medio FROM atendimentos_unidades GROUP BY unidade) SELECT n.unidade, ROUND(n.nota_media, 2) AS nota_media, ROUND(t.tempo_medio, 2) AS tempo_medio_min, CASE WHEN n.nota_media < 4 OR t.tempo_medio > 7 THEN 'risco' ELSE 'estavel' END AS diagnostico FROM notas n JOIN tempos t ON t.unidade = n.unidade ORDER BY diagnostico DESC, nota_media ASC, n.unidade ASC;",
             "expected_answer": {
-              "query": "SELECT unidade, ROUND(AVG(nota), 2) AS nota_media FROM avaliacoes_clientes GROUP BY unidade ORDER BY nota_media ASC;",
+              "query": "WITH notas AS (SELECT unidade, AVG(nota) AS nota_media FROM avaliacoes_clientes GROUP BY unidade), tempos AS (SELECT unidade, AVG(tempo_atendimento_min) AS tempo_medio FROM atendimentos_unidades GROUP BY unidade) SELECT n.unidade, ROUND(n.nota_media, 2) AS nota_media, ROUND(t.tempo_medio, 2) AS tempo_medio_min, CASE WHEN n.nota_media < 4 OR t.tempo_medio > 7 THEN 'risco' ELSE 'estavel' END AS diagnostico FROM notas n JOIN tempos t ON t.unidade = n.unidade ORDER BY diagnostico DESC, nota_media ASC, n.unidade ASC;",
               "result": {
-                "columns": ["unidade", "nota_media"],
-                "rows": [["Filial", 3.6], ["Matriz", 4.4]]
+                "columns": [
+                  "unidade",
+                  "nota_media",
+                  "tempo_medio_min",
+                  "diagnostico"
+                ],
+                "rows": [
+                  [
+                    "Filial",
+                    3.74,
+                    9.16,
+                    "risco"
+                  ],
+                  [
+                    "Matriz",
+                    4.58,
+                    5.72,
+                    "estavel"
+                  ]
+                ]
               }
             },
-            "hint": "Agrupe as avaliações por unidade e calcule a nota média."
+            "hint": "O arco final J?nior combina dois indicadores; CTE deixa a consulta mais leg?vel."
           }
         ],
         "next_arc": {
@@ -557,8 +1155,40 @@
               "expected_answer": {
                 "query": "SELECT s.nome AS setor, ROUND(SUM((p.preco_unitario - p.custo_unitario) * v.quantidade), 2) AS margem_bruta FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome ORDER BY margem_bruta DESC, setor ASC;",
                 "result": {
-                  "columns": ["setor", "margem_bruta"],
-                  "rows": [["Mercearia", 5400.0], ["Açougue", 4380.0], ["Bebidas", 4200.0], ["Frios", 4080.0], ["Hortifruti", 3400.0], ["Padaria", 3150.0], ["Limpeza", 2380.0]]
+                  "columns": [
+                    "setor",
+                    "margem_bruta"
+                  ],
+                  "rows": [
+                    [
+                      "Mercearia",
+                      5400.0
+                    ],
+                    [
+                      "Padaria",
+                      4501.35
+                    ],
+                    [
+                      "Açougue",
+                      4380.0
+                    ],
+                    [
+                      "Bebidas",
+                      4200.0
+                    ],
+                    [
+                      "Frios",
+                      4080.0
+                    ],
+                    [
+                      "Hortifruti",
+                      3400.0
+                    ],
+                    [
+                      "Limpeza",
+                      2380.0
+                    ]
+                  ]
                 }
               },
               "hint": "Junte vendas, produtos e setores. Depois calcule a diferença entre preço e custo antes de somar por setor."
@@ -583,8 +1213,38 @@
               "expected_answer": {
                 "query": "SELECT l.nome AS loja, s.nome AS setor, COUNT(*) AS produtos_criticos FROM estoque e JOIN lojas l ON l.id = e.loja_id JOIN produtos p ON p.id = e.produto_id JOIN setores s ON s.id = p.setor_id WHERE e.quantidade_atual < e.quantidade_minima GROUP BY l.nome, s.nome ORDER BY produtos_criticos DESC, loja ASC, setor ASC;",
                 "result": {
-                  "columns": ["loja", "setor", "produtos_criticos"],
-                  "rows": [["Filial Jardim Norte", "Hortifruti", 2], ["Loja Compacta Vila Clara", "Limpeza", 2], ["Filial Jardim Norte", "Açougue", 1], ["Loja Compacta Vila Clara", "Bebidas", 1], ["Matriz Centro", "Frios", 1]]
+                  "columns": [
+                    "loja",
+                    "setor",
+                    "produtos_criticos"
+                  ],
+                  "rows": [
+                    [
+                      "Filial Jardim Norte",
+                      "Hortifruti",
+                      6
+                    ],
+                    [
+                      "Loja Compacta Vila Clara",
+                      "Limpeza",
+                      6
+                    ],
+                    [
+                      "Filial Jardim Norte",
+                      "Açougue",
+                      3
+                    ],
+                    [
+                      "Loja Compacta Vila Clara",
+                      "Bebidas",
+                      3
+                    ],
+                    [
+                      "Matriz Centro",
+                      "Frios",
+                      3
+                    ]
+                  ]
                 }
               },
               "hint": "Filtre o estoque abaixo do mínimo e relacione os cadastros necessários para descobrir a loja e o setor de cada produto."
@@ -609,8 +1269,28 @@
               "expected_answer": {
                 "query": "SELECT f.nome AS fornecedor, COUNT(*) AS entregas_problematicas FROM entregas_fornecedor ef JOIN fornecedores f ON f.id = ef.fornecedor_id WHERE ef.data_entrega >= '2026-07-01' AND ef.data_entrega < '2026-08-01' AND ef.status IN ('atrasada', 'incompleta', 'cancelada') GROUP BY f.nome HAVING COUNT(*) >= 2 ORDER BY entregas_problematicas DESC, fornecedor ASC;",
                 "result": {
-                  "columns": ["fornecedor", "entregas_problematicas"],
-                  "rows": [["Horti Vale", 3], ["Carnes Serra", 2], ["Laticínios Boa Vista", 2]]
+                  "columns": [
+                    "fornecedor",
+                    "entregas_problematicas"
+                  ],
+                  "rows": [
+                    [
+                      "Horti Vale",
+                      9
+                    ],
+                    [
+                      "Carnes Serra",
+                      6
+                    ],
+                    [
+                      "Laticínios Boa Vista",
+                      5
+                    ],
+                    [
+                      "Distribuidora Limpa Tudo",
+                      2
+                    ]
+                  ]
                 }
               },
               "hint": "Filtre os status problemáticos e aplique o corte depois do agrupamento para manter apenas fornecedores com recorrência."
@@ -635,8 +1315,24 @@
               "expected_answer": {
                 "query": "SELECT l.nome AS loja, ROUND(SUM(pe.quantidade_perdida * p.custo_unitario), 2) AS valor_perdido FROM perdas pe JOIN lojas l ON l.id = pe.loja_id JOIN produtos p ON p.id = pe.produto_id WHERE pe.data_perda >= '2026-07-01' AND pe.data_perda < '2026-08-01' GROUP BY l.nome ORDER BY valor_perdido DESC, loja ASC;",
                 "result": {
-                  "columns": ["loja", "valor_perdido"],
-                  "rows": [["Matriz Centro", 616.0], ["Loja Compacta Vila Clara", 497.0], ["Filial Jardim Norte", 400.0]]
+                  "columns": [
+                    "loja",
+                    "valor_perdido"
+                  ],
+                  "rows": [
+                    [
+                      "Matriz Centro",
+                      5330.0
+                    ],
+                    [
+                      "Loja Compacta Vila Clara",
+                      1575.3
+                    ],
+                    [
+                      "Filial Jardim Norte",
+                      1203.0
+                    ]
+                  ]
                 }
               },
               "hint": "A perda financeira depende do custo do produto. Junte perdas com produtos antes de somar."
@@ -663,13 +1359,1221 @@
               "expected_answer": {
                 "query": "SELECT s.nome AS setor, ROUND(SUM(p.preco_unitario * v.quantidade), 2) AS faturamento_total, ROUND(SUM((p.preco_unitario - p.custo_unitario) * v.quantidade) * 100.0 / SUM(p.preco_unitario * v.quantidade), 2) AS margem_percentual FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome HAVING SUM(p.preco_unitario * v.quantidade) >= 5000 AND (SUM((p.preco_unitario - p.custo_unitario) * v.quantidade) * 100.0 / SUM(p.preco_unitario * v.quantidade)) < 25 ORDER BY margem_percentual ASC, setor ASC;",
                 "result": {
-                  "columns": ["setor", "faturamento_total", "margem_percentual"],
-                  "rows": [["Limpeza", 10500.0, 22.67], ["Bebidas", 17100.0, 24.56]]
+                  "columns": [
+                    "setor",
+                    "faturamento_total",
+                    "margem_percentual"
+                  ],
+                  "rows": [
+                    [
+                      "Limpeza",
+                      10500.0,
+                      22.67
+                    ],
+                    [
+                      "Bebidas",
+                      17100.0,
+                      24.56
+                    ]
+                  ]
                 }
               },
               "hint": "Você vai precisar calcular faturamento e margem no mesmo agrupamento. Aplique os filtros de negócio depois da agregação."
             }
-          ]
+          ],
+          "next_arc": {
+            "intro": {
+              "title": "Cliente n?o ? s? cupom",
+              "arc": "Pleno 2 - Clientes, canais e recorr?ncia",
+              "story": "Ol?, analista! O Mercado P?o Nosso j? sabe olhar margem, estoque e fornecedor. Agora a diretoria quer entender quem compra, por onde compra e quais clientes voltam antes que a concorr?ncia descubra primeiro.\n\nEste arco aumenta a dificuldade com comportamento de cliente, ticket m?dio, canais e recorr?ncia. A regra continua clara: consultas mais compostas, mas sempre com um motivo de neg?cio."
+            },
+            "completion": {
+              "title": "Cliente deixou rastro ?til",
+              "story": "Voc? saiu do relat?rio operacional e come?ou a enxergar comportamento. Ticket, canal, recorr?ncia e bairro agora fazem parte da conversa sem transformar a an?lise em adivinha??o."
+            },
+            "scenarios": [
+              {
+                "id": "carreira_pleno_006",
+                "category": "Carreira",
+                "title": "Ticket por bairro",
+                "difficulty": "Pleno",
+                "database": "mercado_pleno.db",
+                "story": "A diretoria quer saber quais bairros concentram clientes com maior ticket m?dio no m?s.",
+                "objective": "Sua tarefa: retorne o bairro, a quantidade de compras e o ticket m?dio entre 2026-07-01 e 2026-08-01. Junte clientes e compras, agrupe por bairro, mantenha bairros com pelo menos 2 compras e ordene pelo maior ticket m?dio.",
+                "objective_steps": [
+                  "Junte compras com clientes.",
+                  "Filtre o per?odo de julho.",
+                  "Agrupe por bairro.",
+                  "Calcule quantidade de compras e ticket m?dio.",
+                  "Use HAVING para garantir volume m?nimo."
+                ],
+                "expected_sql": "SELECT c.bairro, COUNT(*) AS compras, ROUND(AVG(cc.valor_total), 2) AS ticket_medio FROM compras_clientes cc JOIN clientes_mercado c ON c.id = cc.cliente_id WHERE cc.data_compra >= '2026-07-01' AND cc.data_compra < '2026-08-01' GROUP BY c.bairro HAVING COUNT(*) >= 2 ORDER BY ticket_medio DESC, c.bairro ASC;",
+                "expected_answer": {
+                  "query": "SELECT c.bairro, COUNT(*) AS compras, ROUND(AVG(cc.valor_total), 2) AS ticket_medio FROM compras_clientes cc JOIN clientes_mercado c ON c.id = cc.cliente_id WHERE cc.data_compra >= '2026-07-01' AND cc.data_compra < '2026-08-01' GROUP BY c.bairro HAVING COUNT(*) >= 2 ORDER BY ticket_medio DESC, c.bairro ASC;",
+                  "result": {
+                    "columns": [
+                      "bairro",
+                      "compras",
+                      "ticket_medio"
+                    ],
+                    "rows": [
+                      [
+                        "Centro",
+                        12,
+                        201.32
+                      ],
+                      [
+                        "Jardim Norte",
+                        9,
+                        116.26
+                      ],
+                      [
+                        "Vila Clara",
+                        5,
+                        104.13
+                      ]
+                    ]
+                  }
+                },
+                "hint": "Ticket m?dio por bairro exige juntar compra e cliente antes de agrupar."
+              },
+              {
+                "id": "carreira_pleno_007",
+                "category": "Carreira",
+                "title": "Canal que puxa carrinho",
+                "difficulty": "Pleno",
+                "database": "mercado_pleno.db",
+                "story": "O time digital quer saber se app e loja f?sica trazem compras com perfis diferentes.",
+                "objective": "Sua tarefa: retorne o canal, o total vendido, o total de compras e o valor m?dio por compra no per?odo de julho. Agrupe por canal e ordene pelo maior total vendido.",
+                "objective_steps": [
+                  "Filtre compras de julho.",
+                  "Agrupe por canal.",
+                  "Some valor_total.",
+                  "Conte compras.",
+                  "Calcule a m?dia por compra."
+                ],
+                "expected_sql": "SELECT canal, ROUND(SUM(valor_total), 2) AS total_vendido, COUNT(*) AS compras, ROUND(AVG(valor_total), 2) AS valor_medio FROM compras_clientes WHERE data_compra >= '2026-07-01' AND data_compra < '2026-08-01' GROUP BY canal ORDER BY total_vendido DESC, canal ASC;",
+                "expected_answer": {
+                  "query": "SELECT canal, ROUND(SUM(valor_total), 2) AS total_vendido, COUNT(*) AS compras, ROUND(AVG(valor_total), 2) AS valor_medio FROM compras_clientes WHERE data_compra >= '2026-07-01' AND data_compra < '2026-08-01' GROUP BY canal ORDER BY total_vendido DESC, canal ASC;",
+                  "result": {
+                    "columns": [
+                      "canal",
+                      "total_vendido",
+                      "compras",
+                      "valor_medio"
+                    ],
+                    "rows": [
+                      [
+                        "loja",
+                        3016.34,
+                        16,
+                        188.52
+                      ],
+                      [
+                        "app",
+                        966.45,
+                        10,
+                        96.65
+                      ]
+                    ]
+                  }
+                },
+                "hint": "Resolva tudo em um agrupamento por canal."
+              },
+              {
+                "id": "carreira_pleno_008",
+                "category": "Carreira",
+                "title": "Recorr?ncia de verdade",
+                "difficulty": "Pleno",
+                "database": "mercado_pleno.db",
+                "story": "O marketing quer separar cliente fiel de cliente que apareceu uma vez por causa de promo??o.",
+                "objective": "Sua tarefa: retorne cliente, segmento, quantidade de compras e valor total em julho. Considere apenas clientes com 2 ou mais compras no per?odo e ordene pelo maior valor total.",
+                "objective_steps": [
+                  "Junte clientes e compras.",
+                  "Filtre julho.",
+                  "Agrupe por cliente e segmento.",
+                  "Use HAVING para recorr?ncia.",
+                  "Ordene pelo valor total."
+                ],
+                "expected_sql": "SELECT c.nome AS cliente, c.segmento, COUNT(*) AS compras, ROUND(SUM(cc.valor_total), 2) AS valor_total FROM compras_clientes cc JOIN clientes_mercado c ON c.id = cc.cliente_id WHERE cc.data_compra >= '2026-07-01' AND cc.data_compra < '2026-08-01' GROUP BY c.nome, c.segmento HAVING COUNT(*) >= 2 ORDER BY valor_total DESC, cliente ASC;",
+                "expected_answer": {
+                  "query": "SELECT c.nome AS cliente, c.segmento, COUNT(*) AS compras, ROUND(SUM(cc.valor_total), 2) AS valor_total FROM compras_clientes cc JOIN clientes_mercado c ON c.id = cc.cliente_id WHERE cc.data_compra >= '2026-07-01' AND cc.data_compra < '2026-08-01' GROUP BY c.nome, c.segmento HAVING COUNT(*) >= 2 ORDER BY valor_total DESC, cliente ASC;",
+                  "result": {
+                    "columns": [
+                      "cliente",
+                      "segmento",
+                      "compras",
+                      "valor_total"
+                    ],
+                    "rows": [
+                      [
+                        "João Mendes",
+                        "recorrente",
+                        4,
+                        1166.4
+                      ],
+                      [
+                        "Marina Costa",
+                        "recorrente",
+                        6,
+                        1146.4
+                      ],
+                      [
+                        "Rafael Nunes",
+                        "recorrente",
+                        4,
+                        467.4
+                      ],
+                      [
+                        "Bruno Prado",
+                        "recorrente",
+                        2,
+                        400.0
+                      ],
+                      [
+                        "Diego Lima",
+                        "novo",
+                        2,
+                        280.0
+                      ],
+                      [
+                        "Bianca Alves",
+                        "novo",
+                        3,
+                        240.64
+                      ],
+                      [
+                        "Clara Rocha",
+                        "promocional",
+                        3,
+                        178.95
+                      ],
+                      [
+                        "Ana Torres",
+                        "promocional",
+                        2,
+                        103.0
+                      ]
+                    ]
+                  }
+                },
+                "hint": "Recorr?ncia ? filtro p?s-agrupamento, ent?o use HAVING."
+              },
+              {
+                "id": "carreira_pleno_009",
+                "category": "Carreira",
+                "title": "Campanha pagou o caf??",
+                "difficulty": "Pleno",
+                "database": "mercado_pleno.db",
+                "story": "A empresa gastou com campanha e agora algu?m precisa dizer se o retorno justifica a empolga??o.",
+                "objective": "Sua tarefa: retorne campanha, canal, receita gerada, custo e retorno l?quido. Junte campanhas e resgates, agrupe por campanha e ordene pelo maior retorno l?quido.",
+                "objective_steps": [
+                  "Junte campanhas com resgates.",
+                  "Some o valor das compras geradas.",
+                  "Subtraia o custo da campanha.",
+                  "Agrupe por campanha e canal.",
+                  "Ordene pelo melhor retorno."
+                ],
+                "expected_sql": "SELECT ca.nome AS campanha, ca.canal, ROUND(SUM(r.valor_compra), 2) AS receita_gerada, ca.custo, ROUND(SUM(r.valor_compra) - ca.custo, 2) AS retorno_liquido FROM campanhas ca JOIN resgates_campanha r ON r.campanha_id = ca.id GROUP BY ca.nome, ca.canal, ca.custo ORDER BY retorno_liquido DESC, campanha ASC;",
+                "expected_answer": {
+                  "query": "SELECT ca.nome AS campanha, ca.canal, ROUND(SUM(r.valor_compra), 2) AS receita_gerada, ca.custo, ROUND(SUM(r.valor_compra) - ca.custo, 2) AS retorno_liquido FROM campanhas ca JOIN resgates_campanha r ON r.campanha_id = ca.id GROUP BY ca.nome, ca.canal, ca.custo ORDER BY retorno_liquido DESC, campanha ASC;",
+                  "result": {
+                    "columns": [
+                      "campanha",
+                      "canal",
+                      "receita_gerada",
+                      "custo",
+                      "retorno_liquido"
+                    ],
+                    "rows": [
+                      [
+                        "Frios da Semana",
+                        "loja",
+                        1061.9,
+                        700.0,
+                        361.9
+                      ],
+                      [
+                        "Fim de Semana da Padaria",
+                        "loja",
+                        926.85,
+                        650.0,
+                        276.85
+                      ],
+                      [
+                        "Clube Limpeza",
+                        "email",
+                        726.6,
+                        500.0,
+                        226.6
+                      ],
+                      [
+                        "Volta do Hortifruti",
+                        "app",
+                        1043.55,
+                        900.0,
+                        143.55
+                      ],
+                      [
+                        "Bebidas Geladas",
+                        "app",
+                        912.8,
+                        800.0,
+                        112.8
+                      ]
+                    ]
+                  }
+                },
+                "hint": "O custo est? na campanha; a receita vem dos resgates."
+              },
+              {
+                "id": "carreira_pleno_010",
+                "category": "Carreira",
+                "title": "Clientes em risco de sumir",
+                "difficulty": "Pleno",
+                "database": "mercado_pleno.db",
+                "story": "Seu Joaquim quer uma lista curta de clientes que compraram pouco ou gastaram baixo no m?s para uma a??o de reten??o.",
+                "objective": "Sua tarefa: retorne cliente, bairro, quantidade de compras e valor total em julho. Mantenha clientes com at? 2 compras ou valor total abaixo de 250, e ordene pelo menor valor total.",
+                "objective_steps": [
+                  "Junte clientes com compras.",
+                  "Filtre julho.",
+                  "Agrupe por cliente e bairro.",
+                  "Use HAVING com condi??o alternativa.",
+                  "Ordene pelos menores valores."
+                ],
+                "expected_sql": "SELECT c.nome AS cliente, c.bairro, COUNT(*) AS compras, ROUND(SUM(cc.valor_total), 2) AS valor_total FROM clientes_mercado c JOIN compras_clientes cc ON cc.cliente_id = c.id WHERE cc.data_compra >= '2026-07-01' AND cc.data_compra < '2026-08-01' GROUP BY c.nome, c.bairro HAVING COUNT(*) <= 2 OR SUM(cc.valor_total) < 250 ORDER BY valor_total ASC, cliente ASC;",
+                "expected_answer": {
+                  "query": "SELECT c.nome AS cliente, c.bairro, COUNT(*) AS compras, ROUND(SUM(cc.valor_total), 2) AS valor_total FROM clientes_mercado c JOIN compras_clientes cc ON cc.cliente_id = c.id WHERE cc.data_compra >= '2026-07-01' AND cc.data_compra < '2026-08-01' GROUP BY c.nome, c.bairro HAVING COUNT(*) <= 2 OR SUM(cc.valor_total) < 250 ORDER BY valor_total ASC, cliente ASC;",
+                  "result": {
+                    "columns": [
+                      "cliente",
+                      "bairro",
+                      "compras",
+                      "valor_total"
+                    ],
+                    "rows": [
+                      [
+                        "Ana Torres",
+                        "Centro",
+                        2,
+                        103.0
+                      ],
+                      [
+                        "Clara Rocha",
+                        "Jardim Norte",
+                        3,
+                        178.95
+                      ],
+                      [
+                        "Bianca Alves",
+                        "Vila Clara",
+                        3,
+                        240.64
+                      ],
+                      [
+                        "Diego Lima",
+                        "Vila Clara",
+                        2,
+                        280.0
+                      ],
+                      [
+                        "Bruno Prado",
+                        "Jardim Norte",
+                        2,
+                        400.0
+                      ]
+                    ]
+                  }
+                },
+                "hint": "HAVING aceita regras combinadas sobre COUNT e SUM."
+              }
+            ],
+            "next_arc": {
+              "intro": {
+                "title": "Meta, campanha e decis?o",
+                "arc": "Pleno 3 - Gest?o de performance",
+                "story": "Ol?, analista! Agora a conversa subiu um andar: n?o basta saber o que aconteceu, ? preciso comparar contra meta, explicar campanha e priorizar a??o.\n\nEste arco fecha o Pleno com an?lises que combinam vendas, metas, campanhas e perdas. A dificuldade sobe por composi??o, n?o por truque."
+              },
+              "completion": {
+                "title": "Pleno fechado com crit?rio",
+                "story": "Voc? conectou metas, perdas e campanhas sem transformar consulta em labirinto. A partir daqui, o jogo come?a a cobrar racioc?nio anal?tico mais s?nior: decompor problemas, comparar per?odos e priorizar decis?o."
+              },
+              "scenarios": [
+                {
+                  "id": "carreira_pleno_011",
+                  "category": "Carreira",
+                  "title": "Meta por setor",
+                  "difficulty": "Pleno",
+                  "database": "mercado_pleno.db",
+                  "story": "A diretoria quer saber quais lojas e setores bateram ou ficaram abaixo da meta mensal.",
+                  "objective": "Sua tarefa: retorne loja, setor, faturamento, meta e diferen?a para a meta em julho. Junte vendas, produtos, setores, lojas e metas. Ordene pela maior diferen?a negativa primeiro.",
+                  "objective_steps": [
+                    "Calcule faturamento por loja e setor.",
+                    "Junte com a meta mensal correspondente.",
+                    "Calcule faturamento menos meta.",
+                    "Ordene come?ando pelos piores desvios."
+                  ],
+                  "expected_sql": "WITH faturamento AS (SELECT v.loja_id, p.setor_id, SUM(p.preco_unitario * v.quantidade) AS total FROM vendas v JOIN produtos p ON p.id = v.produto_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY v.loja_id, p.setor_id) SELECT l.nome AS loja, s.nome AS setor, ROUND(f.total, 2) AS faturamento, m.meta_faturamento, ROUND(f.total - m.meta_faturamento, 2) AS diferenca_meta FROM faturamento f JOIN metas_setor m ON m.loja_id = f.loja_id AND m.setor_id = f.setor_id AND m.mes = '2026-07' JOIN lojas l ON l.id = f.loja_id JOIN setores s ON s.id = f.setor_id ORDER BY diferenca_meta ASC, loja ASC, setor ASC;",
+                  "expected_answer": {
+                    "query": "WITH faturamento AS (SELECT v.loja_id, p.setor_id, SUM(p.preco_unitario * v.quantidade) AS total FROM vendas v JOIN produtos p ON p.id = v.produto_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY v.loja_id, p.setor_id) SELECT l.nome AS loja, s.nome AS setor, ROUND(f.total, 2) AS faturamento, m.meta_faturamento, ROUND(f.total - m.meta_faturamento, 2) AS diferenca_meta FROM faturamento f JOIN metas_setor m ON m.loja_id = f.loja_id AND m.setor_id = f.setor_id AND m.mes = '2026-07' JOIN lojas l ON l.id = f.loja_id JOIN setores s ON s.id = f.setor_id ORDER BY diferenca_meta ASC, loja ASC, setor ASC;",
+                    "result": {
+                      "columns": [
+                        "loja",
+                        "setor",
+                        "faturamento",
+                        "meta_faturamento",
+                        "diferenca_meta"
+                      ],
+                      "rows": [
+                        [
+                          "Filial Jardim Norte",
+                          "Limpeza",
+                          3750.0,
+                          5600.0,
+                          -1850.0
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Hortifruti",
+                          3500.0,
+                          5040.0,
+                          -1540.0
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          "Limpeza",
+                          3750.0,
+                          5000.0,
+                          -1250.0
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Hortifruti",
+                          3500.0,
+                          4635.0,
+                          -1135.0
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Hortifruti",
+                          3500.0,
+                          4500.0,
+                          -1000.0
+                        ],
+                        [
+                          "Loja Compacta Vila Clara",
+                          "Frios",
+                          1920.0,
+                          2756.0,
+                          -836.0
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Açougue",
+                          4800.0,
+                          5512.0,
+                          -712.0
+                        ],
+                        [
+                          "Loja Compacta Vila Clara",
+                          "Frios",
+                          1920.0,
+                          2600.0,
+                          -680.0
+                        ],
+                        [
+                          "Loja Compacta Vila Clara",
+                          "Hortifruti",
+                          2000.0,
+                          2575.0,
+                          -575.0
+                        ],
+                        [
+                          "Loja Compacta Vila Clara",
+                          "Hortifruti",
+                          2000.0,
+                          2500.0,
+                          -500.0
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Açougue",
+                          4800.0,
+                          5200.0,
+                          -400.0
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Açougue",
+                          4800.0,
+                          5200.0,
+                          -400.0
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Mercearia",
+                          7530.0,
+                          7630.0,
+                          -100.0
+                        ],
+                        [
+                          "Loja Compacta Vila Clara",
+                          "Limpeza",
+                          1750.0,
+                          1744.0,
+                          6.0
+                        ],
+                        [
+                          "Loja Compacta Vila Clara",
+                          "Bebidas",
+                          7000.0,
+                          6944.0,
+                          56.0
+                        ],
+                        [
+                          "Loja Compacta Vila Clara",
+                          "Limpeza",
+                          1750.0,
+                          1600.0,
+                          150.0
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Mercearia",
+                          7530.0,
+                          7210.0,
+                          320.0
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          "Bebidas",
+                          8000.0,
+                          7600.0,
+                          400.0
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          "Bebidas",
+                          8000.0,
+                          7600.0,
+                          400.0
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Mercearia",
+                          7530.0,
+                          7000.0,
+                          530.0
+                        ],
+                        [
+                          "Loja Compacta Vila Clara",
+                          "Bebidas",
+                          7000.0,
+                          6200.0,
+                          800.0
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          "Padaria",
+                          4501.8,
+                          3584.0,
+                          917.8
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          "Padaria",
+                          4501.8,
+                          3392.0,
+                          1109.8
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Padaria",
+                          4500.9,
+                          3270.0,
+                          1230.9
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          "Padaria",
+                          4501.8,
+                          3200.0,
+                          1301.8
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Padaria",
+                          4500.9,
+                          3000.0,
+                          1500.9
+                        ],
+                        [
+                          "Matriz Centro",
+                          "Padaria",
+                          4500.9,
+                          3000.0,
+                          1500.9
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          "Açougue",
+                          6540.0,
+                          4578.0,
+                          1962.0
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          "Açougue",
+                          6540.0,
+                          4200.0,
+                          2340.0
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          "Açougue",
+                          6540.0,
+                          4200.0,
+                          2340.0
+                        ]
+                      ]
+                    }
+                  },
+                  "hint": "Use uma CTE para n?o repetir o c?lculo de faturamento."
+                },
+                {
+                  "id": "carreira_pleno_012",
+                  "category": "Carreira",
+                  "title": "Perda contra venda",
+                  "difficulty": "Pleno",
+                  "database": "mercado_pleno.db",
+                  "story": "O financeiro quer saber onde a perda pesa mais em rela??o ao faturamento.",
+                  "objective": "Sua tarefa: retorne loja, valor vendido, valor perdido e percentual de perda sobre venda em julho. Ordene pelo maior percentual de perda.",
+                  "objective_steps": [
+                    "Calcule vendas por loja.",
+                    "Calcule perdas por loja.",
+                    "Junte os dois resumos.",
+                    "Divida perda por venda para obter percentual."
+                  ],
+                  "expected_sql": "WITH vendas_loja AS (SELECT loja_id, SUM(p.preco_unitario * v.quantidade) AS vendido FROM vendas v JOIN produtos p ON p.id = v.produto_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY loja_id), perdas_loja AS (SELECT loja_id, SUM(p.custo_unitario * pe.quantidade_perdida) AS perdido FROM perdas pe JOIN produtos p ON p.id = pe.produto_id WHERE pe.data_perda >= '2026-07-01' AND pe.data_perda < '2026-08-01' GROUP BY loja_id) SELECT l.nome AS loja, ROUND(v.vendido, 2) AS valor_vendido, ROUND(p.perdido, 2) AS valor_perdido, ROUND(p.perdido * 100.0 / v.vendido, 2) AS percentual_perda FROM vendas_loja v JOIN perdas_loja p ON p.loja_id = v.loja_id JOIN lojas l ON l.id = v.loja_id ORDER BY percentual_perda DESC, loja ASC;",
+                  "expected_answer": {
+                    "query": "WITH vendas_loja AS (SELECT loja_id, SUM(p.preco_unitario * v.quantidade) AS vendido FROM vendas v JOIN produtos p ON p.id = v.produto_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY loja_id), perdas_loja AS (SELECT loja_id, SUM(p.custo_unitario * pe.quantidade_perdida) AS perdido FROM perdas pe JOIN produtos p ON p.id = pe.produto_id WHERE pe.data_perda >= '2026-07-01' AND pe.data_perda < '2026-08-01' GROUP BY loja_id) SELECT l.nome AS loja, ROUND(v.vendido, 2) AS valor_vendido, ROUND(p.perdido, 2) AS valor_perdido, ROUND(p.perdido * 100.0 / v.vendido, 2) AS percentual_perda FROM vendas_loja v JOIN perdas_loja p ON p.loja_id = v.loja_id JOIN lojas l ON l.id = v.loja_id ORDER BY percentual_perda DESC, loja ASC;",
+                    "result": {
+                      "columns": [
+                        "loja",
+                        "valor_vendido",
+                        "valor_perdido",
+                        "percentual_perda"
+                      ],
+                      "rows": [
+                        [
+                          "Matriz Centro",
+                          33430.9,
+                          5330.0,
+                          15.94
+                        ],
+                        [
+                          "Loja Compacta Vila Clara",
+                          16720.0,
+                          1575.3,
+                          9.42
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          37011.8,
+                          1203.0,
+                          3.25
+                        ]
+                      ]
+                    }
+                  },
+                  "hint": "Dois resumos tornam a compara??o mais segura."
+                },
+                {
+                  "id": "carreira_pleno_013",
+                  "category": "Carreira",
+                  "title": "Campanha eficiente",
+                  "difficulty": "Pleno",
+                  "database": "mercado_pleno.db",
+                  "story": "Marketing quer comparar campanhas por retorno relativo, n?o s? por dinheiro bruto.",
+                  "objective": "Sua tarefa: retorne campanha, canal, receita, custo e ROI percentual. Calcule ROI como (receita - custo) / custo * 100 e mantenha campanhas com ROI positivo.",
+                  "objective_steps": [
+                    "Some receita por campanha.",
+                    "Compare com o custo.",
+                    "Calcule ROI percentual.",
+                    "Use HAVING para manter retorno positivo."
+                  ],
+                  "expected_sql": "SELECT ca.nome AS campanha, ca.canal, ROUND(SUM(r.valor_compra), 2) AS receita, ca.custo, ROUND((SUM(r.valor_compra) - ca.custo) * 100.0 / ca.custo, 2) AS roi_percentual FROM campanhas ca JOIN resgates_campanha r ON r.campanha_id = ca.id GROUP BY ca.nome, ca.canal, ca.custo HAVING SUM(r.valor_compra) > ca.custo ORDER BY roi_percentual DESC, campanha ASC;",
+                  "expected_answer": {
+                    "query": "SELECT ca.nome AS campanha, ca.canal, ROUND(SUM(r.valor_compra), 2) AS receita, ca.custo, ROUND((SUM(r.valor_compra) - ca.custo) * 100.0 / ca.custo, 2) AS roi_percentual FROM campanhas ca JOIN resgates_campanha r ON r.campanha_id = ca.id GROUP BY ca.nome, ca.canal, ca.custo HAVING SUM(r.valor_compra) > ca.custo ORDER BY roi_percentual DESC, campanha ASC;",
+                    "result": {
+                      "columns": [
+                        "campanha",
+                        "canal",
+                        "receita",
+                        "custo",
+                        "roi_percentual"
+                      ],
+                      "rows": [
+                        [
+                          "Frios da Semana",
+                          "loja",
+                          1061.9,
+                          700.0,
+                          51.7
+                        ],
+                        [
+                          "Clube Limpeza",
+                          "email",
+                          726.6,
+                          500.0,
+                          45.32
+                        ],
+                        [
+                          "Fim de Semana da Padaria",
+                          "loja",
+                          926.85,
+                          650.0,
+                          42.59
+                        ],
+                        [
+                          "Volta do Hortifruti",
+                          "app",
+                          1043.55,
+                          900.0,
+                          15.95
+                        ],
+                        [
+                          "Bebidas Geladas",
+                          "app",
+                          912.8,
+                          800.0,
+                          14.1
+                        ]
+                      ]
+                    }
+                  },
+                  "hint": "ROI ? uma regra p?s-agrega??o quando depende da receita somada."
+                },
+                {
+                  "id": "carreira_pleno_014",
+                  "category": "Carreira",
+                  "title": "Setor com margem e meta",
+                  "difficulty": "Pleno",
+                  "database": "mercado_pleno.db",
+                  "story": "A lideran?a quer setores que vendem bem, mas ainda precisam provar efici?ncia.",
+                  "objective": "Sua tarefa: retorne setor, faturamento, margem percentual e quantidade de lojas com meta cadastrada. Considere julho, agrupe por setor e mantenha setores com faturamento acima de 3000.",
+                  "objective_steps": [
+                    "Junte vendas, produtos e setores.",
+                    "Calcule faturamento e margem.",
+                    "Conte lojas distintas com meta do setor.",
+                    "Use HAVING para faturamento m?nimo."
+                  ],
+                  "expected_sql": "SELECT s.nome AS setor, ROUND(SUM(p.preco_unitario * v.quantidade), 2) AS faturamento, ROUND(SUM((p.preco_unitario - p.custo_unitario) * v.quantidade) * 100.0 / SUM(p.preco_unitario * v.quantidade), 2) AS margem_percentual, COUNT(DISTINCT m.loja_id) AS lojas_com_meta FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id LEFT JOIN metas_setor m ON m.setor_id = s.id AND m.mes = '2026-07' WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome HAVING SUM(p.preco_unitario * v.quantidade) > 3000 ORDER BY margem_percentual DESC, setor ASC;",
+                  "expected_answer": {
+                    "query": "SELECT s.nome AS setor, ROUND(SUM(p.preco_unitario * v.quantidade), 2) AS faturamento, ROUND(SUM((p.preco_unitario - p.custo_unitario) * v.quantidade) * 100.0 / SUM(p.preco_unitario * v.quantidade), 2) AS margem_percentual, COUNT(DISTINCT m.loja_id) AS lojas_com_meta FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id LEFT JOIN metas_setor m ON m.setor_id = s.id AND m.mes = '2026-07' WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome HAVING SUM(p.preco_unitario * v.quantidade) > 3000 ORDER BY margem_percentual DESC, setor ASC;",
+                    "result": {
+                      "columns": [
+                        "setor",
+                        "faturamento",
+                        "margem_percentual",
+                        "lojas_com_meta"
+                      ],
+                      "rows": [
+                        [
+                          "Padaria",
+                          54016.2,
+                          50.0,
+                          2
+                        ],
+                        [
+                          "Hortifruti",
+                          40000.0,
+                          42.5,
+                          2
+                        ],
+                        [
+                          "Frios",
+                          22640.0,
+                          36.04,
+                          1
+                        ],
+                        [
+                          "Açougue",
+                          78840.0,
+                          33.33,
+                          2
+                        ],
+                        [
+                          "Mercearia",
+                          54300.0,
+                          29.83,
+                          1
+                        ],
+                        [
+                          "Bebidas",
+                          68400.0,
+                          24.56,
+                          2
+                        ],
+                        [
+                          "Limpeza",
+                          42000.0,
+                          22.67,
+                          2
+                        ]
+                      ]
+                    }
+                  },
+                  "hint": "LEFT JOIN mant?m setores vendidos mesmo que nem toda loja tenha meta."
+                },
+                {
+                  "id": "carreira_pleno_015",
+                  "category": "Carreira",
+                  "title": "Plano de a??o por loja",
+                  "difficulty": "Pleno",
+                  "database": "mercado_pleno.db",
+                  "story": "Para fechar o Pleno, a diretoria quer uma vis?o execut?vel: quais lojas precisam de a??o e por qu?.",
+                  "objective": "Sua tarefa: retorne loja, faturamento, perda percentual e diagn?stico. Classifique como revisar perdas quando o percentual de perda for maior que 3, caso contr?rio use acompanhar.",
+                  "objective_steps": [
+                    "Calcule vendas por loja.",
+                    "Calcule perdas por loja.",
+                    "Junte os indicadores.",
+                    "Use CASE para gerar diagn?stico.",
+                    "Ordene os maiores percentuais primeiro."
+                  ],
+                  "expected_sql": "WITH vendas_loja AS (SELECT loja_id, SUM(p.preco_unitario * v.quantidade) AS vendido FROM vendas v JOIN produtos p ON p.id = v.produto_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY loja_id), perdas_loja AS (SELECT loja_id, SUM(p.custo_unitario * pe.quantidade_perdida) AS perdido FROM perdas pe JOIN produtos p ON p.id = pe.produto_id WHERE pe.data_perda >= '2026-07-01' AND pe.data_perda < '2026-08-01' GROUP BY loja_id) SELECT l.nome AS loja, ROUND(v.vendido, 2) AS faturamento, ROUND(p.perdido * 100.0 / v.vendido, 2) AS percentual_perda, CASE WHEN p.perdido * 100.0 / v.vendido > 3 THEN 'revisar perdas' ELSE 'acompanhar' END AS diagnostico FROM vendas_loja v JOIN perdas_loja p ON p.loja_id = v.loja_id JOIN lojas l ON l.id = v.loja_id ORDER BY percentual_perda DESC, loja ASC;",
+                  "expected_answer": {
+                    "query": "WITH vendas_loja AS (SELECT loja_id, SUM(p.preco_unitario * v.quantidade) AS vendido FROM vendas v JOIN produtos p ON p.id = v.produto_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY loja_id), perdas_loja AS (SELECT loja_id, SUM(p.custo_unitario * pe.quantidade_perdida) AS perdido FROM perdas pe JOIN produtos p ON p.id = pe.produto_id WHERE pe.data_perda >= '2026-07-01' AND pe.data_perda < '2026-08-01' GROUP BY loja_id) SELECT l.nome AS loja, ROUND(v.vendido, 2) AS faturamento, ROUND(p.perdido * 100.0 / v.vendido, 2) AS percentual_perda, CASE WHEN p.perdido * 100.0 / v.vendido > 3 THEN 'revisar perdas' ELSE 'acompanhar' END AS diagnostico FROM vendas_loja v JOIN perdas_loja p ON p.loja_id = v.loja_id JOIN lojas l ON l.id = v.loja_id ORDER BY percentual_perda DESC, loja ASC;",
+                    "result": {
+                      "columns": [
+                        "loja",
+                        "faturamento",
+                        "percentual_perda",
+                        "diagnostico"
+                      ],
+                      "rows": [
+                        [
+                          "Matriz Centro",
+                          33430.9,
+                          15.94,
+                          "revisar perdas"
+                        ],
+                        [
+                          "Loja Compacta Vila Clara",
+                          16720.0,
+                          9.42,
+                          "revisar perdas"
+                        ],
+                        [
+                          "Filial Jardim Norte",
+                          37011.8,
+                          3.25,
+                          "revisar perdas"
+                        ]
+                      ]
+                    }
+                  },
+                  "hint": "Este ? um resumo executivo com CTE e CASE."
+                }
+              ],
+              "next_arc": {
+                "intro": {
+                  "title": "Agora a pergunta vem antes da query",
+                  "arc": "Senior 1 - Prioriza??o executiva",
+                  "story": "Ol?, analista. A promo??o para Senior n?o veio porque voc? escreve SQL maior; veio porque agora esperam que voc? transforme ambiguidade em decis?o.\n\nEste primeiro arco Senior introduz janelas, rankings e compara??es sem exagerar. O objetivo ? priorizar, n?o decorar sintaxe obscura."
+                },
+                "completion": {
+                  "title": "Senior come?ou sem hero?smo",
+                  "story": "Voc? priorizou lojas, clientes, campanhas e setores com consultas mais anal?ticas, mas ainda leg?veis. Esse ? o tom do Senior: menos tarefa mec?nica, mais decis?o defend?vel."
+                },
+                "scenarios": [
+                  {
+                    "id": "carreira_senior_001",
+                    "category": "Carreira",
+                    "title": "L?der de cada setor",
+                    "difficulty": "Senior",
+                    "database": "mercado_pleno.db",
+                    "story": "A diretoria quer saber qual loja lidera o faturamento de cada setor.",
+                    "objective": "Sua tarefa: retorne setor, loja, faturamento e posi??o. Use uma fun??o de janela para ranquear lojas dentro de cada setor e mantenha apenas a primeira posi??o.",
+                    "objective_steps": [
+                      "Calcule faturamento por setor e loja.",
+                      "Use RANK particionado por setor.",
+                      "Filtre a posi??o 1 no SELECT externo."
+                    ],
+                    "expected_sql": "WITH faturamento AS (SELECT s.nome AS setor, l.nome AS loja, SUM(p.preco_unitario * v.quantidade) AS total FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id JOIN lojas l ON l.id = v.loja_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome, l.nome), ranking AS (SELECT setor, loja, total, RANK() OVER (PARTITION BY setor ORDER BY total DESC) AS posicao FROM faturamento) SELECT setor, loja, ROUND(total, 2) AS faturamento, posicao FROM ranking WHERE posicao = 1 ORDER BY setor ASC;",
+                    "expected_answer": {
+                      "query": "WITH faturamento AS (SELECT s.nome AS setor, l.nome AS loja, SUM(p.preco_unitario * v.quantidade) AS total FROM vendas v JOIN produtos p ON p.id = v.produto_id JOIN setores s ON s.id = p.setor_id JOIN lojas l ON l.id = v.loja_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY s.nome, l.nome), ranking AS (SELECT setor, loja, total, RANK() OVER (PARTITION BY setor ORDER BY total DESC) AS posicao FROM faturamento) SELECT setor, loja, ROUND(total, 2) AS faturamento, posicao FROM ranking WHERE posicao = 1 ORDER BY setor ASC;",
+                      "result": {
+                        "columns": [
+                          "setor",
+                          "loja",
+                          "faturamento",
+                          "posicao"
+                        ],
+                        "rows": [
+                          [
+                            "Açougue",
+                            "Filial Jardim Norte",
+                            6540.0,
+                            1
+                          ],
+                          [
+                            "Bebidas",
+                            "Filial Jardim Norte",
+                            8000.0,
+                            1
+                          ],
+                          [
+                            "Frios",
+                            "Matriz Centro",
+                            6000.0,
+                            1
+                          ],
+                          [
+                            "Hortifruti",
+                            "Matriz Centro",
+                            3500.0,
+                            1
+                          ],
+                          [
+                            "Limpeza",
+                            "Matriz Centro",
+                            5000.0,
+                            1
+                          ],
+                          [
+                            "Mercearia",
+                            "Filial Jardim Norte",
+                            8320.0,
+                            1
+                          ],
+                          [
+                            "Padaria",
+                            "Filial Jardim Norte",
+                            4501.8,
+                            1
+                          ]
+                        ]
+                      }
+                    },
+                    "hint": "RANK com PARTITION BY setor encontra a loja l?der de cada setor."
+                  },
+                  {
+                    "id": "carreira_senior_002",
+                    "category": "Carreira",
+                    "title": "Top clientes por bairro",
+                    "difficulty": "Senior",
+                    "database": "mercado_pleno.db",
+                    "story": "Marketing quer acionar os principais clientes de cada bairro sem misturar realidades diferentes.",
+                    "objective": "Sua tarefa: retorne bairro, cliente, valor total e posi??o. Ranqueie clientes dentro de cada bairro pelo valor comprado em julho e mantenha os 2 primeiros por bairro.",
+                    "objective_steps": [
+                      "Some compras por cliente e bairro.",
+                      "Use ROW_NUMBER particionado por bairro.",
+                      "Filtre posi??es at? 2."
+                    ],
+                    "expected_sql": "WITH clientes AS (SELECT c.bairro, c.nome AS cliente, SUM(cc.valor_total) AS valor_total FROM compras_clientes cc JOIN clientes_mercado c ON c.id = cc.cliente_id WHERE cc.data_compra >= '2026-07-01' AND cc.data_compra < '2026-08-01' GROUP BY c.bairro, c.nome), ranking AS (SELECT bairro, cliente, valor_total, ROW_NUMBER() OVER (PARTITION BY bairro ORDER BY valor_total DESC, cliente ASC) AS posicao FROM clientes) SELECT bairro, cliente, ROUND(valor_total, 2) AS valor_total, posicao FROM ranking WHERE posicao <= 2 ORDER BY bairro ASC, posicao ASC;",
+                    "expected_answer": {
+                      "query": "WITH clientes AS (SELECT c.bairro, c.nome AS cliente, SUM(cc.valor_total) AS valor_total FROM compras_clientes cc JOIN clientes_mercado c ON c.id = cc.cliente_id WHERE cc.data_compra >= '2026-07-01' AND cc.data_compra < '2026-08-01' GROUP BY c.bairro, c.nome), ranking AS (SELECT bairro, cliente, valor_total, ROW_NUMBER() OVER (PARTITION BY bairro ORDER BY valor_total DESC, cliente ASC) AS posicao FROM clientes) SELECT bairro, cliente, ROUND(valor_total, 2) AS valor_total, posicao FROM ranking WHERE posicao <= 2 ORDER BY bairro ASC, posicao ASC;",
+                      "result": {
+                        "columns": [
+                          "bairro",
+                          "cliente",
+                          "valor_total",
+                          "posicao"
+                        ],
+                        "rows": [
+                          [
+                            "Centro",
+                            "João Mendes",
+                            1166.4,
+                            1
+                          ],
+                          [
+                            "Centro",
+                            "Marina Costa",
+                            1146.4,
+                            2
+                          ],
+                          [
+                            "Jardim Norte",
+                            "Rafael Nunes",
+                            467.4,
+                            1
+                          ],
+                          [
+                            "Jardim Norte",
+                            "Bruno Prado",
+                            400.0,
+                            2
+                          ],
+                          [
+                            "Vila Clara",
+                            "Diego Lima",
+                            280.0,
+                            1
+                          ],
+                          [
+                            "Vila Clara",
+                            "Bianca Alves",
+                            240.64,
+                            2
+                          ]
+                        ]
+                      }
+                    },
+                    "hint": "ROW_NUMBER evita empates duplicarem posi??es no ranking operacional."
+                  },
+                  {
+                    "id": "carreira_senior_003",
+                    "category": "Carreira",
+                    "title": "Intervalo entre compras",
+                    "difficulty": "Senior",
+                    "database": "mercado_pleno.db",
+                    "story": "Reten??o quer entender quem voltou r?pido e quem demorou para repetir compra.",
+                    "objective": "Sua tarefa: retorne cliente, data da compra, valor total e dias desde a compra anterior. Use LAG para comparar cada compra com a compra anterior do mesmo cliente e mantenha apenas compras com compra anterior.",
+                    "objective_steps": [
+                      "Ordene compras por cliente e data.",
+                      "Use LAG para buscar a data anterior.",
+                      "Calcule a diferen?a com julianday.",
+                      "Remova a primeira compra de cada cliente."
+                    ],
+                    "expected_sql": "WITH historico AS (SELECT c.nome AS cliente, cc.data_compra, cc.valor_total, LAG(cc.data_compra) OVER (PARTITION BY c.id ORDER BY cc.data_compra) AS compra_anterior FROM compras_clientes cc JOIN clientes_mercado c ON c.id = cc.cliente_id WHERE cc.data_compra >= '2026-07-01' AND cc.data_compra < '2026-08-01') SELECT cliente, data_compra, valor_total, CAST(julianday(data_compra) - julianday(compra_anterior) AS INTEGER) AS dias_desde_anterior FROM historico WHERE compra_anterior IS NOT NULL ORDER BY dias_desde_anterior DESC, cliente ASC;",
+                    "expected_answer": {
+                      "query": "WITH historico AS (SELECT c.nome AS cliente, cc.data_compra, cc.valor_total, LAG(cc.data_compra) OVER (PARTITION BY c.id ORDER BY cc.data_compra) AS compra_anterior FROM compras_clientes cc JOIN clientes_mercado c ON c.id = cc.cliente_id WHERE cc.data_compra >= '2026-07-01' AND cc.data_compra < '2026-08-01') SELECT cliente, data_compra, valor_total, CAST(julianday(data_compra) - julianday(compra_anterior) AS INTEGER) AS dias_desde_anterior FROM historico WHERE compra_anterior IS NOT NULL ORDER BY dias_desde_anterior DESC, cliente ASC;",
+                      "result": {
+                        "columns": [
+                          "cliente",
+                          "data_compra",
+                          "valor_total",
+                          "dias_desde_anterior"
+                        ],
+                        "rows": [
+                          [
+                            "Ana Torres",
+                            "2026-07-29",
+                            58.0,
+                            18
+                          ],
+                          [
+                            "Bruno Prado",
+                            "2026-07-30",
+                            210.0,
+                            17
+                          ],
+                          [
+                            "Bianca Alves",
+                            "2026-07-28",
+                            88.0,
+                            16
+                          ],
+                          [
+                            "Diego Lima",
+                            "2026-07-23",
+                            140.0,
+                            13
+                          ],
+                          [
+                            "Clara Rocha",
+                            "2026-07-20",
+                            59.95,
+                            11
+                          ],
+                          [
+                            "Marina Costa",
+                            "2026-07-26",
+                            160.0,
+                            11
+                          ],
+                          [
+                            "João Mendes",
+                            "2026-07-31",
+                            328.6,
+                            10
+                          ],
+                          [
+                            "João Mendes",
+                            "2026-07-16",
+                            267.8,
+                            9
+                          ],
+                          [
+                            "Rafael Nunes",
+                            "2026-07-18",
+                            130.0,
+                            9
+                          ],
+                          [
+                            "Marina Costa",
+                            "2026-07-12",
+                            220.0,
+                            8
+                          ],
+                          [
+                            "Bianca Alves",
+                            "2026-07-12",
+                            80.64,
+                            7
+                          ],
+                          [
+                            "Rafael Nunes",
+                            "2026-07-24",
+                            141.7,
+                            6
+                          ],
+                          [
+                            "João Mendes",
+                            "2026-07-21",
+                            310.0,
+                            5
+                          ],
+                          [
+                            "Rafael Nunes",
+                            "2026-07-09",
+                            100.7,
+                            5
+                          ],
+                          [
+                            "Clara Rocha",
+                            "2026-07-24",
+                            64.0,
+                            4
+                          ],
+                          [
+                            "Marina Costa",
+                            "2026-07-30",
+                            164.8,
+                            4
+                          ],
+                          [
+                            "Marina Costa",
+                            "2026-07-15",
+                            220.0,
+                            3
+                          ],
+                          [
+                            "Marina Costa",
+                            "2026-07-04",
+                            201.6,
+                            2
+                          ]
+                        ]
+                      }
+                    },
+                    "hint": "LAG compara uma linha com a anterior dentro do mesmo cliente."
+                  },
+                  {
+                    "id": "carreira_senior_004",
+                    "category": "Carreira",
+                    "title": "Campanha no ranking certo",
+                    "difficulty": "Senior",
+                    "database": "mercado_pleno.db",
+                    "story": "A diretoria quer ver campanha por efici?ncia relativa, n?o s? retorno bruto.",
+                    "objective": "Sua tarefa: retorne campanha, canal, ROI percentual e posi??o geral. Calcule ROI em uma CTE e use RANK para ordenar campanhas por ROI.",
+                    "objective_steps": [
+                      "Calcule receita por campanha.",
+                      "Calcule ROI percentual.",
+                      "Use RANK sobre o ROI.",
+                      "Ordene pela posi??o."
+                    ],
+                    "expected_sql": "WITH roi AS (SELECT ca.nome AS campanha, ca.canal, (SUM(r.valor_compra) - ca.custo) * 100.0 / ca.custo AS roi_percentual FROM campanhas ca JOIN resgates_campanha r ON r.campanha_id = ca.id GROUP BY ca.nome, ca.canal, ca.custo), ranking AS (SELECT campanha, canal, roi_percentual, RANK() OVER (ORDER BY roi_percentual DESC) AS posicao FROM roi) SELECT campanha, canal, ROUND(roi_percentual, 2) AS roi_percentual, posicao FROM ranking ORDER BY posicao ASC, campanha ASC;",
+                    "expected_answer": {
+                      "query": "WITH roi AS (SELECT ca.nome AS campanha, ca.canal, (SUM(r.valor_compra) - ca.custo) * 100.0 / ca.custo AS roi_percentual FROM campanhas ca JOIN resgates_campanha r ON r.campanha_id = ca.id GROUP BY ca.nome, ca.canal, ca.custo), ranking AS (SELECT campanha, canal, roi_percentual, RANK() OVER (ORDER BY roi_percentual DESC) AS posicao FROM roi) SELECT campanha, canal, ROUND(roi_percentual, 2) AS roi_percentual, posicao FROM ranking ORDER BY posicao ASC, campanha ASC;",
+                      "result": {
+                        "columns": [
+                          "campanha",
+                          "canal",
+                          "roi_percentual",
+                          "posicao"
+                        ],
+                        "rows": [
+                          [
+                            "Frios da Semana",
+                            "loja",
+                            51.7,
+                            1
+                          ],
+                          [
+                            "Clube Limpeza",
+                            "email",
+                            45.32,
+                            2
+                          ],
+                          [
+                            "Fim de Semana da Padaria",
+                            "loja",
+                            42.59,
+                            3
+                          ],
+                          [
+                            "Volta do Hortifruti",
+                            "app",
+                            15.95,
+                            4
+                          ],
+                          [
+                            "Bebidas Geladas",
+                            "app",
+                            14.1,
+                            5
+                          ]
+                        ]
+                      }
+                    },
+                    "hint": "Separe o c?lculo de ROI do ranking para manter a consulta leg?vel."
+                  },
+                  {
+                    "id": "carreira_senior_005",
+                    "category": "Carreira",
+                    "title": "Prioridade executiva",
+                    "difficulty": "Senior",
+                    "database": "mercado_pleno.db",
+                    "story": "Para fechar o primeiro arco Senior, voc? precisa transformar indicadores em prioridade de a??o.",
+                    "objective": "Sua tarefa: retorne loja, percentual de perda, posi??o de risco e prioridade. Calcule percentual de perda por loja, ranqueie do maior para o menor e classifique posi??o 1 como cr?tica, as demais como monitorar.",
+                    "objective_steps": [
+                      "Calcule vendas por loja.",
+                      "Calcule perdas por loja.",
+                      "Calcule percentual de perda.",
+                      "Use RANK para priorizar risco.",
+                      "Use CASE para classificar a a??o."
+                    ],
+                    "expected_sql": "WITH vendas_loja AS (SELECT loja_id, SUM(p.preco_unitario * v.quantidade) AS vendido FROM vendas v JOIN produtos p ON p.id = v.produto_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY loja_id), perdas_loja AS (SELECT loja_id, SUM(p.custo_unitario * pe.quantidade_perdida) AS perdido FROM perdas pe JOIN produtos p ON p.id = pe.produto_id WHERE pe.data_perda >= '2026-07-01' AND pe.data_perda < '2026-08-01' GROUP BY loja_id), risco AS (SELECT l.nome AS loja, p.perdido * 100.0 / v.vendido AS percentual_perda FROM vendas_loja v JOIN perdas_loja p ON p.loja_id = v.loja_id JOIN lojas l ON l.id = v.loja_id), ranking AS (SELECT loja, percentual_perda, RANK() OVER (ORDER BY percentual_perda DESC) AS posicao_risco FROM risco) SELECT loja, ROUND(percentual_perda, 2) AS percentual_perda, posicao_risco, CASE WHEN posicao_risco = 1 THEN 'critica' ELSE 'monitorar' END AS prioridade FROM ranking ORDER BY posicao_risco ASC, loja ASC;",
+                    "expected_answer": {
+                      "query": "WITH vendas_loja AS (SELECT loja_id, SUM(p.preco_unitario * v.quantidade) AS vendido FROM vendas v JOIN produtos p ON p.id = v.produto_id WHERE v.data_venda >= '2026-07-01' AND v.data_venda < '2026-08-01' GROUP BY loja_id), perdas_loja AS (SELECT loja_id, SUM(p.custo_unitario * pe.quantidade_perdida) AS perdido FROM perdas pe JOIN produtos p ON p.id = pe.produto_id WHERE pe.data_perda >= '2026-07-01' AND pe.data_perda < '2026-08-01' GROUP BY loja_id), risco AS (SELECT l.nome AS loja, p.perdido * 100.0 / v.vendido AS percentual_perda FROM vendas_loja v JOIN perdas_loja p ON p.loja_id = v.loja_id JOIN lojas l ON l.id = v.loja_id), ranking AS (SELECT loja, percentual_perda, RANK() OVER (ORDER BY percentual_perda DESC) AS posicao_risco FROM risco) SELECT loja, ROUND(percentual_perda, 2) AS percentual_perda, posicao_risco, CASE WHEN posicao_risco = 1 THEN 'critica' ELSE 'monitorar' END AS prioridade FROM ranking ORDER BY posicao_risco ASC, loja ASC;",
+                      "result": {
+                        "columns": [
+                          "loja",
+                          "percentual_perda",
+                          "posicao_risco",
+                          "prioridade"
+                        ],
+                        "rows": [
+                          [
+                            "Matriz Centro",
+                            15.94,
+                            1,
+                            "critica"
+                          ],
+                          [
+                            "Loja Compacta Vila Clara",
+                            9.42,
+                            2,
+                            "monitorar"
+                          ],
+                          [
+                            "Filial Jardim Norte",
+                            3.25,
+                            3,
+                            "monitorar"
+                          ]
+                        ]
+                      }
+                    },
+                    "hint": "A janela define prioridade relativa; CASE traduz isso para a??o."
+                  }
+                ]
+              }
+            }
+          }
         }
       }
     }

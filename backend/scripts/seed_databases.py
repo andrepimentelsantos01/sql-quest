@@ -1,7 +1,9 @@
 import sqlite3
+from datetime import date, timedelta
 from pathlib import Path
 
 DATABASES_DIR = Path(__file__).resolve().parents[1] / "app" / "data" / "databases"
+MIN_ROWS_PER_TABLE = 30
 
 
 def reset_database(name: str) -> sqlite3.Connection:
@@ -16,6 +18,77 @@ def insert_many(connection: sqlite3.Connection, table: str, columns: tuple[str, 
     placeholders = ", ".join("?" for _ in columns)
     column_names = ", ".join(columns)
     connection.executemany(f"INSERT INTO {table} ({column_names}) VALUES ({placeholders})", rows)
+
+
+def enrich_database(connection: sqlite3.Connection, min_rows: int = MIN_ROWS_PER_TABLE) -> None:
+    tables = [
+        row[0]
+        for row in connection.execute(
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
+        )
+    ]
+    for table in tables:
+        current_rows = connection.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+        if current_rows >= min_rows:
+            continue
+
+        columns_info = connection.execute(f"PRAGMA table_info({table})").fetchall()
+        insert_columns = [
+            column
+            for column in columns_info
+            if not (column[5] == 1 and column[2].upper() == "INTEGER")
+        ]
+        if not insert_columns:
+            continue
+
+        column_names = [column[1] for column in insert_columns]
+        selected_columns = ", ".join(column_names)
+        source_rows = connection.execute(f"SELECT {selected_columns} FROM {table} ORDER BY rowid").fetchall()
+        if not source_rows:
+            continue
+
+        rows_to_insert = []
+        missing_rows = min_rows - current_rows
+        for index in range(missing_rows):
+            source_row = source_rows[index % len(source_rows)]
+            serial = current_rows + index + 1
+            rows_to_insert.append(
+                tuple(
+                    enrich_value(column[1], value, serial)
+                    for column, value in zip(insert_columns, source_row)
+                )
+            )
+
+        insert_many(connection, table, tuple(column_names), rows_to_insert)
+
+
+def enrich_value(column_name: str, value, serial: int):
+    if value is None:
+        return None
+
+    normalized_column = column_name.lower()
+    if isinstance(value, int):
+        if value in (0, 1) or normalized_column.endswith("_id") or normalized_column == "id":
+            return value
+        return value + (serial % 7)
+
+    if isinstance(value, float):
+        return round(value * (1 + ((serial % 5) * 0.03)), 2)
+
+    if isinstance(value, str):
+        try:
+            parsed_date = date.fromisoformat(value)
+        except ValueError:
+            return value
+        return (parsed_date + timedelta(days=serial % 17)).isoformat()
+
+    return value
+
+
+def finalize_database(connection: sqlite3.Connection) -> None:
+    enrich_database(connection)
+    connection.commit()
+    connection.close()
 
 
 def seed_saude() -> None:
@@ -108,8 +181,7 @@ def seed_saude() -> None:
             ("Soro fisiológico", "Centro Cirúrgico", 40, 40),
         ],
     )
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_tecnologia() -> None:
@@ -205,8 +277,7 @@ def seed_tecnologia() -> None:
             ("Growth", "campanha-antiga", 999.00, "ativo", "2026-04-30"),
         ],
     )
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_esporte() -> None:
@@ -263,8 +334,7 @@ def seed_esporte() -> None:
         ("atleta", "posicao", "fim_contrato"),
         [("Davi Prado", "Goleiro", "2026-06-30"), ("Lia Torres", "Atacante", "2026-07-15"), ("Caio Lima", "Meia", "2026-08-20"), ("Rafa Nogueira", "Zagueiro", "2026-09-10"), ("Bruno Reis", "Lateral", "2026-05-20")],
     )
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_industria() -> None:
@@ -307,8 +377,7 @@ def seed_industria() -> None:
     insert_many(connection, "paradas", ("maquina_id", "inicio", "minutos_parada", "motivo"), [(1, "2026-05-03 08:00:00", 180, "falha mecânica"), (2, "2026-05-11 14:00:00", 240, "setup prolongado"), (3, "2026-05-08 10:30:00", 130, "falta de componente"), (3, "2026-05-19 16:00:00", 180, "ajuste de linha"), (4, "2026-05-15 09:00:00", 120, "manutenção corretiva"), (1, "2026-04-29 07:00:00", 300, "fora do período"), (4, "2026-06-01 08:00:00", 90, "fora do período")])
     insert_many(connection, "producao_diaria", ("linha", "data", "unidades_produzidas", "percentual_refugo"), [("Linha C", "2026-05-02", 900, 6.0), ("Linha C", "2026-05-16", 880, 6.2), ("Linha A", "2026-05-04", 1100, 3.5), ("Linha A", "2026-05-18", 1050, 4.0), ("Linha B", "2026-05-06", 1200, 2.0), ("Linha B", "2026-05-20", 1180, 2.8), ("Linha C", "2026-04-27", 870, 12.0), ("Linha A", "2026-06-01", 1000, 8.0)])
     insert_many(connection, "leituras_sensores", ("maquina_id", "data_leitura", "temperatura_c"), [(101, "2026-05-03", 90.0), (101, "2026-05-12", 93.0), (101, "2026-05-20", 79.0), (102, "2026-05-07", 85.5), (102, "2026-05-18", 88.0), (103, "2026-05-09", 81.4), (103, "2026-05-23", 83.0), (103, "2026-06-02", 95.0)])
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_educacao() -> None:
@@ -349,8 +418,7 @@ def seed_educacao() -> None:
     insert_many(connection, "avaliacoes", ("disciplina_id", "aluno", "bimestre", "nota"), [(1, "Nina Lopes", 2, 6.0), (1, "João Mendes", 2, 5.9), (2, "Bia Rocha", 2, 6.1), (2, "Lara Dias", 2, 6.7), (3, "Nina Lopes", 2, 6.8), (3, "João Mendes", 2, 6.9), (4, "Bia Rocha", 2, 8.2), (1, "Nina Lopes", 1, 9.5), (2, "Lara Dias", 1, 4.0)])
     insert_many(connection, "presencas", ("aluno", "data", "presente"), [("Nina Lopes", "2026-04-01", 1), ("Nina Lopes", "2026-04-03", 1), ("Nina Lopes", "2026-04-08", 1), ("Nina Lopes", "2026-04-10", 0), ("Nina Lopes", "2026-04-15", 0), ("João Mendes", "2026-04-01", 1), ("João Mendes", "2026-04-08", 1), ("João Mendes", "2026-04-15", 0), ("Bia Rocha", "2026-04-01", 1), ("Bia Rocha", "2026-04-02", 1), ("Bia Rocha", "2026-04-03", 1), ("Bia Rocha", "2026-04-06", 1), ("Bia Rocha", "2026-04-07", 1), ("Bia Rocha", "2026-04-08", 1), ("Bia Rocha", "2026-04-09", 1), ("Bia Rocha", "2026-04-10", 1), ("Bia Rocha", "2026-04-13", 0), ("Bia Rocha", "2026-04-14", 0), ("Bia Rocha", "2026-04-15", 0), ("Lara Dias", "2026-04-01", 1), ("Lara Dias", "2026-04-08", 1), ("Lara Dias", "2026-04-15", 1), ("Nina Lopes", "2026-05-02", 0)])
     insert_many(connection, "bolsas_estudo", ("aluno", "curso", "valor_mensal", "status"), [("Ana Souza", "Engenharia de Software", 2200.00, "ativa"), ("Bruno Lima", "Engenharia de Software", 2000.00, "ativa"), ("Carla Dias", "Administração", 1500.25, "ativa"), ("Diego Alves", "Administração", 1650.25, "ativa"), ("Eva Rocha", "Design", 2800.00, "ativa"), ("Fabio Nunes", "Pedagogia", 1900.00, "ativa"), ("Gabi Melo", "Design", 900.00, "suspensa")])
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_arte() -> None:
@@ -399,8 +467,7 @@ def seed_arte() -> None:
     insert_many(connection, "vendas", ("obra_id", "valor_venda", "status", "data_venda"), [(1, 15000.0, "concluida", "2026-01-20"), (2, 13500.0, "concluida", "2026-03-11"), (3, 19400.5, "concluida", "2026-02-08"), (4, 10000.0, "concluida", "2026-02-25"), (5, 3800.0, "concluida", "2026-03-18"), (6, 50000.0, "reservada", "2026-03-22"), (1, 7000.0, "cancelada", "2026-02-17"), (3, 12000.0, "concluida", "2026-04-03")])
     insert_many(connection, "interacoes_obras", ("obra", "tipo_interacao", "criada_em"), [("Cidade Submersa", "favorito", "2026-03-01"), ("Cidade Submersa", "favorito", "2026-03-02"), ("Cidade Submersa", "favorito", "2026-03-03"), ("Cidade Submersa", "favorito", "2026-03-04"), ("Cidade Submersa", "favorito", "2026-03-05"), ("Retrato em Azul", "favorito", "2026-03-01"), ("Retrato em Azul", "favorito", "2026-03-03"), ("Retrato em Azul", "favorito", "2026-03-06"), ("Retrato em Azul", "favorito", "2026-03-08"), ("Jardim de Concreto", "favorito", "2026-03-01"), ("Jardim de Concreto", "favorito", "2026-03-07"), ("Jardim de Concreto", "favorito", "2026-03-09"), ("Silêncio Vermelho", "favorito", "2026-03-02"), ("Silêncio Vermelho", "favorito", "2026-03-04"), ("Silêncio Vermelho", "favorito", "2026-03-06"), ("Cidade Submersa", "visualizacao", "2026-03-10"), ("Retrato em Azul", "compartilhamento", "2026-03-11")])
     insert_many(connection, "restauracoes", ("obra", "restaurador", "prazo_entrega", "status"), [("Noite de Bronze", "Clara Nunes", "2026-05-15", "em andamento"), ("Mar em Cinzas", "Otto Vieira", "2026-05-23", "em andamento"), ("Figura Partida", "Maya Castro", "2026-05-29", "em andamento"), ("Jardim Azul", "Lina Prado", "2026-06-10", "em andamento"), ("Retrato Antigo", "Caio Mota", "2026-05-20", "concluida")])
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_agricultura() -> None:
@@ -445,8 +512,7 @@ def seed_agricultura() -> None:
     insert_many(connection, "colheitas", ("talhao_id", "talhao", "cultura", "safra", "produtividade_kg_ha", "meta_kg_ha"), [(1, "T01", "Soja", "2026", 7200.0, 7500.0), (2, "T02", "Milho", "2026", 6100.0, 6000.0), (3, "T03", "Milho", "2026", 6100.0, 6500.0), (4, "T04", "Soja", "2026", 7800.0, 7600.0), (5, "T05", "Soja", "2026", 7350.0, 7600.0), (1, "T01", "Soja", "2025", 6800.0, 7000.0)])
     insert_many(connection, "irrigacoes", ("talhao_id", "data", "volume_m3"), [(1, "2026-01-10", 1200.0), (1, "2026-03-12", 1400.0), (2, "2026-02-02", 600.0), (2, "2026-04-18", 1000.0), (3, "2026-01-15", 1100.0), (3, "2026-04-03", 1400.0), (4, "2026-02-20", 1200.0), (4, "2026-03-22", 1200.0), (5, "2026-05-02", 900.0), (2, "2025-12-20", 500.0)])
     insert_many(connection, "inspecoes_pragas", ("talhao", "praga", "severidade", "data_inspecao"), [("T03", "Lagarta-do-cartucho", 4.0, "2026-04-05"), ("T03", "Lagarta-do-cartucho", 5.0, "2026-04-22"), ("T01", "Percevejo", 3.5, "2026-04-08"), ("T01", "Percevejo", 4.0, "2026-04-19"), ("T05", "Ferrugem", 3.0, "2026-04-15"), ("T02", "Mosca-branca", 2.5, "2026-04-16"), ("T03", "Lagarta-do-cartucho", 5.0, "2026-05-02")])
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_logistica() -> None:
@@ -480,8 +546,7 @@ def seed_logistica() -> None:
     insert_many(connection, "entregas", ("origem", "destino", "dias_atraso", "custo_frete"), [("São Paulo", "Curitiba", 2, 540.0), ("São Paulo", "Curitiba", 0, 510.0), ("São Paulo", "Curitiba", 3, 560.0), ("Rio de Janeiro", "Salvador", 5, 890.0), ("Rio de Janeiro", "Salvador", 1, 910.0), ("Belo Horizonte", "Vitoria", 0, 300.0), ("Belo Horizonte", "Vitoria", 2, 340.0), ("Campinas", "Goiania", 4, 720.0), ("Campinas", "Goiania", 6, 760.0), ("Campinas", "Goiania", 0, 700.0)])
     insert_many(connection, "estoque_movimentos", ("produto", "dias_em_estoque", "quantidade"), [("Monitor 27", 42, 12), ("Monitor 27", 36, 9), ("Teclado mecânico", 18, 30), ("Teclado mecânico", 22, 28), ("Cadeira ergonômica", 55, 6), ("Cadeira ergonômica", 61, 4), ("Webcam HD", 14, 35), ("Webcam HD", 11, 44)])
     insert_many(connection, "abastecimentos_frota", ("placa", "data_abastecimento", "litros", "km_rodados"), [("TRK-2045", "2026-05-04", 180.00, 520.00), ("TRK-1188", "2026-05-11", 250.00, 850.00), ("TRK-7720", "2026-05-18", 196.00, 800.00), ("TRK-0000", "2026-05-20", 50.00, 0.00), ("TRK-2045", "2026-04-28", 200.00, 400.00)])
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_games() -> None:
@@ -512,8 +577,7 @@ def seed_games() -> None:
     insert_many(connection, "sessoes_fase", ("jogador", "fase", "abandonou"), [("Ana", "Prólogo", 0), ("Bruno", "Prólogo", 0), ("Caio", "Prólogo", 0), ("Ana", "Mina Congelada", 1), ("Bruno", "Mina Congelada", 1), ("Caio", "Mina Congelada", 0), ("Duda", "Mina Congelada", 1), ("Eli", "Torre Solar", 0), ("Fabi", "Torre Solar", 1), ("Gus", "Torre Solar", 0)])
     insert_many(connection, "partidas_personagem", ("personagem", "venceu"), [("Astra", 1), ("Astra", 1), ("Astra", 0), ("Bruma", 1), ("Bruma", 0), ("Bruma", 0), ("Nix", 1), ("Nix", 1), ("Nix", 1), ("Nix", 0), ("Rook", 0), ("Rook", 1), ("Rook", 0)])
     insert_many(connection, "sessoes_dispositivo", ("dispositivo", "inicio", "crash"), [("Galaxy A32", "2026-05-01", 1), ("Galaxy A32", "2026-05-06", 1), ("Galaxy A32", "2026-05-13", 1), ("Galaxy A32", "2026-05-22", 0), ("Moto G Power", "2026-05-03", 1), ("Moto G Power", "2026-05-08", 0), ("Moto G Power", "2026-05-14", 1), ("Moto G Power", "2026-05-21", 0), ("Moto G Power", "2026-05-29", 0), ("iPhone 12", "2026-05-02", 1), ("iPhone 12", "2026-05-09", 0), ("iPhone 12", "2026-05-16", 0), ("iPhone 12", "2026-05-23", 0), ("Pixel 7", "2026-05-05", 1), ("Pixel 7", "2026-05-12", 0)])
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_financas() -> None:
@@ -566,8 +630,7 @@ def seed_financas() -> None:
     insert_many(connection, "pagamentos", ("emprestimo_id", "valor_pago", "data_pagamento"), [(1, 30000.0, "2026-04-05"), (1, 10000.0, "2026-05-03"), (2, 28000.0, "2026-04-12"), (3, 2500.0, "2026-03-20"), (4, 26000.0, "2026-04-25"), (5, 10000.0, "2026-04-11"), (6, 70000.0, "2026-04-01")])
     insert_many(connection, "faturas", ("cliente", "valor_em_aberto", "status", "data_vencimento"), [("Grupo Alameda", 18400.0, "vencida", "2026-04-10"), ("Clínica Norte", 12750.5, "vencida", "2026-04-18"), ("Mercado Azul", 9200.0, "vencida", "2026-03-29"), ("Studio Prisma", 6100.0, "vencida", "2026-04-25"), ("Oficina Central", 4400.75, "vencida", "2026-02-14"), ("Padaria Sol", 3900.0, "vencida", "2026-04-28"), ("Loja Horizonte", 25000.0, "aberta", "2026-04-22"), ("Tech Vila", 30000.0, "vencida", "2026-05-03")])
     insert_many(connection, "transacoes_cartao", ("cartao", "cliente", "valor", "status", "data_transacao"), [("**** 8842", "Marina Costa", 4000.00, "negada", "2026-05-04"), ("**** 8842", "Marina Costa", 5200.00, "negada", "2026-05-18"), ("**** 1920", "Rafael Nunes", 3000.50, "negada", "2026-05-08"), ("**** 1920", "Rafael Nunes", 3100.00, "negada", "2026-05-19"), ("**** 4311", "Bianca Alves", 1800.00, "negada", "2026-05-12"), ("**** 7750", "João Mendes", 599.00, "negada", "2026-05-22"), ("**** 8842", "Marina Costa", 7000.00, "aprovada", "2026-05-20"), ("**** 4311", "Bianca Alves", 5000.00, "negada", "2026-06-02")])
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_tesouraria() -> None:
@@ -686,8 +749,7 @@ def seed_tesouraria() -> None:
             (1, "REF-UNICO", "2026-05-12", "Referência parecida", -750.00),
         ],
     )
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_carreira_padaria() -> None:
@@ -992,8 +1054,7 @@ def seed_carreira_padaria() -> None:
             ("Filial", 7.5, "2026-08-02"),
         ],
     )
-    connection.commit()
-    connection.close()
+    finalize_database(connection)
 
 
 def seed_mercado_pleno() -> None:
@@ -1067,6 +1128,53 @@ def seed_mercado_pleno() -> None:
             motivo TEXT NOT NULL,
             FOREIGN KEY (loja_id) REFERENCES lojas(id),
             FOREIGN KEY (produto_id) REFERENCES produtos(id)
+        );
+
+        CREATE TABLE clientes_mercado (
+            id INTEGER PRIMARY KEY,
+            nome TEXT NOT NULL,
+            bairro TEXT NOT NULL,
+            segmento TEXT NOT NULL
+        );
+
+        CREATE TABLE compras_clientes (
+            id INTEGER PRIMARY KEY,
+            cliente_id INTEGER NOT NULL,
+            loja_id INTEGER NOT NULL,
+            data_compra TEXT NOT NULL,
+            valor_total REAL NOT NULL,
+            itens INTEGER NOT NULL,
+            canal TEXT NOT NULL,
+            FOREIGN KEY (cliente_id) REFERENCES clientes_mercado(id),
+            FOREIGN KEY (loja_id) REFERENCES lojas(id)
+        );
+
+        CREATE TABLE campanhas (
+            id INTEGER PRIMARY KEY,
+            nome TEXT NOT NULL,
+            canal TEXT NOT NULL,
+            custo REAL NOT NULL,
+            data_inicio TEXT NOT NULL
+        );
+
+        CREATE TABLE resgates_campanha (
+            id INTEGER PRIMARY KEY,
+            campanha_id INTEGER NOT NULL,
+            cliente_id INTEGER NOT NULL,
+            data_resgate TEXT NOT NULL,
+            valor_compra REAL NOT NULL,
+            FOREIGN KEY (campanha_id) REFERENCES campanhas(id),
+            FOREIGN KEY (cliente_id) REFERENCES clientes_mercado(id)
+        );
+
+        CREATE TABLE metas_setor (
+            id INTEGER PRIMARY KEY,
+            loja_id INTEGER NOT NULL,
+            setor_id INTEGER NOT NULL,
+            mes TEXT NOT NULL,
+            meta_faturamento REAL NOT NULL,
+            FOREIGN KEY (loja_id) REFERENCES lojas(id),
+            FOREIGN KEY (setor_id) REFERENCES setores(id)
         );
         """
     )
@@ -1218,8 +1326,96 @@ def seed_mercado_pleno() -> None:
             (3, 11, "2026-08-01", 99, "fora do período"),
         ],
     )
-    connection.commit()
-    connection.close()
+    insert_many(
+        connection,
+        "clientes_mercado",
+        ("id", "nome", "bairro", "segmento"),
+        [
+            (1, "Marina Costa", "Centro", "recorrente"),
+            (2, "Rafael Nunes", "Jardim Norte", "recorrente"),
+            (3, "Bianca Alves", "Vila Clara", "novo"),
+            (4, "João Mendes", "Centro", "recorrente"),
+            (5, "Clara Rocha", "Jardim Norte", "promocional"),
+            (6, "Diego Lima", "Vila Clara", "novo"),
+            (7, "Ana Torres", "Centro", "promocional"),
+            (8, "Bruno Prado", "Jardim Norte", "recorrente"),
+        ],
+    )
+    insert_many(
+        connection,
+        "compras_clientes",
+        ("cliente_id", "loja_id", "data_compra", "valor_total", "itens", "canal"),
+        [
+            (1, 1, "2026-07-02", 180.0, 12, "loja"),
+            (1, 1, "2026-07-12", 220.0, 14, "loja"),
+            (1, 2, "2026-07-26", 160.0, 10, "app"),
+            (2, 2, "2026-07-04", 95.0, 8, "loja"),
+            (2, 2, "2026-07-18", 130.0, 9, "app"),
+            (3, 3, "2026-07-05", 72.0, 5, "loja"),
+            (3, 3, "2026-07-28", 88.0, 6, "app"),
+            (4, 1, "2026-07-07", 260.0, 20, "loja"),
+            (4, 1, "2026-07-21", 310.0, 22, "loja"),
+            (5, 2, "2026-07-09", 55.0, 4, "app"),
+            (5, 2, "2026-07-24", 64.0, 5, "app"),
+            (6, 3, "2026-07-10", 140.0, 11, "loja"),
+            (7, 1, "2026-07-11", 45.0, 3, "app"),
+            (7, 1, "2026-07-29", 58.0, 4, "app"),
+            (8, 2, "2026-07-13", 190.0, 13, "loja"),
+            (8, 2, "2026-07-30", 210.0, 15, "loja"),
+            (1, 1, "2026-06-20", 500.0, 30, "loja"),
+            (4, 1, "2026-08-02", 500.0, 30, "loja"),
+        ],
+    )
+    insert_many(
+        connection,
+        "campanhas",
+        ("id", "nome", "canal", "custo", "data_inicio"),
+        [
+            (1, "Volta do Hortifruti", "app", 900.0, "2026-07-01"),
+            (2, "Fim de Semana da Padaria", "loja", 650.0, "2026-07-05"),
+            (3, "Clube Limpeza", "email", 500.0, "2026-07-10"),
+            (4, "Bebidas Geladas", "app", 800.0, "2026-07-15"),
+            (5, "Frios da Semana", "loja", 700.0, "2026-07-20"),
+        ],
+    )
+    insert_many(
+        connection,
+        "resgates_campanha",
+        ("campanha_id", "cliente_id", "data_resgate", "valor_compra"),
+        [
+            (1, 1, "2026-07-03", 180.0),
+            (1, 2, "2026-07-05", 95.0),
+            (1, 5, "2026-07-09", 55.0),
+            (2, 4, "2026-07-08", 260.0),
+            (2, 7, "2026-07-11", 45.0),
+            (3, 3, "2026-07-18", 88.0),
+            (3, 6, "2026-07-19", 140.0),
+            (4, 8, "2026-07-21", 190.0),
+            (4, 1, "2026-07-26", 160.0),
+            (5, 4, "2026-07-22", 310.0),
+            (5, 8, "2026-07-30", 210.0),
+        ],
+    )
+    insert_many(
+        connection,
+        "metas_setor",
+        ("loja_id", "setor_id", "mes", "meta_faturamento"),
+        [
+            (1, 1, "2026-07", 3000.0),
+            (1, 2, "2026-07", 4500.0),
+            (1, 3, "2026-07", 5200.0),
+            (1, 5, "2026-07", 7000.0),
+            (2, 1, "2026-07", 3200.0),
+            (2, 3, "2026-07", 4200.0),
+            (2, 6, "2026-07", 5000.0),
+            (2, 7, "2026-07", 7600.0),
+            (3, 2, "2026-07", 2500.0),
+            (3, 4, "2026-07", 2600.0),
+            (3, 6, "2026-07", 1600.0),
+            (3, 7, "2026-07", 6200.0),
+        ],
+    )
+    finalize_database(connection)
 
 
 def main() -> None:

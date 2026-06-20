@@ -1024,7 +1024,7 @@ function GameOverModal({ state, onReview, onBackToMenu }) {
             <div className="game-over-copy">
               <p>O cargo de Analista de Dados Júnior na Padaria Pão Nosso de Cada Dia foi encerrado antes do período de experiência.</p>
               <p>Seu Joaquim agradeceu o esforço, ofereceu um pão de queijo de despedida e explicou que a padaria ainda não está pronta para decisões baseadas em “quase acertei a query”.</p>
-              <p>Mas nem tudo está perdido. Volte ao Modo Livre, pratique filtros, agregações e ordenações com calma, e quando sentir que suas consultas já conseguem separar opinião de evidência, retorne ao Modo Carreira.</p>
+              <p>Mas nem tudo está perdido. Volte ao Modo Livre, pratique filtros, agregações e ordenações com calma e, quando sentir que suas consultas já conseguem separar opinião de evidência, retorne ao Modo Carreira.</p>
             </div>
           ) : (
             <>
