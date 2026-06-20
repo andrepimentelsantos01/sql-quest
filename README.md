@@ -4,7 +4,7 @@ SQL Quest é um jogo para praticar SQL com missões narrativas. O jogador recebe
 
 ## O que tem no jogo
 
-SQL Quest se propõe a ser uma espécie de hitman da análise de dados: o jogador entra em situações urgentes, recebe uma missão narrativa e precisa resolver o problema com evidência objetiva em SQL.
+SQL Quest se propõe a ser uma espécie de simulador de análise de dados: o jogador entra em situações urgentes, recebe uma missão narrativa e precisa resolver o problema com evidência objetiva em SQL.
 
 O jogo tem um terminal para executar comandos SQL reais contra bancos SQLite simulados. Cada consulta retorna dados reais do banco da missão, permitindo testar, errar, ajustar e validar a resposta pelo resultado retornado.
 
