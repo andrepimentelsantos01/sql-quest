@@ -1,14 +1,14 @@
 # SQL Quest
 
-SQL Quest e um jogo para praticar SQL com missoes narrativas. O jogador recebe um contexto, consulta o esquema disponivel e escreve uma consulta SQL real. O backend executa a consulta em SQLite e valida o resultado contra uma resposta esperada, sem comparar o texto da SQL.
+SQL Quest é um jogo para praticar SQL com missões narrativas. O jogador recebe um contexto, consulta o esquema disponível e escreve uma consulta SQL real. O backend executa a consulta em SQLite e valida o resultado contra uma resposta esperada, sem comparar o texto da SQL.
 
 ## O que tem no jogo
 
-SQL Quest se propoe a ser uma especie de hitman da analise de dados: o jogador entra em situacoes urgentes, recebe uma missao narrativa e precisa resolver o problema com evidencia objetiva em SQL.
+SQL Quest se propõe a ser uma espécie de hitman da análise de dados: o jogador entra em situações urgentes, recebe uma missão narrativa e precisa resolver o problema com evidência objetiva em SQL.
 
-O jogo tem um terminal para executar comandos SQL reais contra bancos SQLite simulados. Cada consulta retorna dados reais do banco da missao, permitindo testar, errar, ajustar e validar a resposta pelo resultado retornado.
+O jogo tem um terminal para executar comandos SQL reais contra bancos SQLite simulados. Cada consulta retorna dados reais do banco da missão, permitindo testar, errar, ajustar e validar a resposta pelo resultado retornado.
 
-Tambem existe um sistema de ajuda em formato de mini game: o jogador responde perguntas sobre fundamentos de SQL para desbloquear apoio durante a missao, conectando pratica direta com revisao de conceitos.
+Também existe um sistema de ajuda em formato de mini game: o jogador responde perguntas sobre fundamentos de SQL para desbloquear apoio durante a missão, conectando prática direta com revisão de conceitos.
 
 ## Stack
 
@@ -17,21 +17,21 @@ Tambem existe um sistema de ajuda em formato de mini game: o jogador responde pe
 - Backend: FastAPI
 - Banco: SQLite
 
-## Portas padrao
+## Portas padrão
 
 - Backend local: `http://localhost:8002`
 - Frontend local: `http://localhost:5173`
 
-Nao ha fallback automatico de porta. Se uma porta estiver ocupada, encerre o processo antigo antes de iniciar o app.
+Não há fallback automático de porta. Se uma porta estiver ocupada, encerre o processo antigo antes de iniciar o app.
 
-## Rodar a aplicacao completa
+## Rodar a aplicação completa
 
 ```bash
 npm install
 npm run dev:app
 ```
 
-O `npm install` na raiz instala as dependencias do frontend, cria `backend/.venv` e instala as dependencias do backend. Use Python 3.12, 3.13 ou 3.14.
+O `npm install` na raiz instala as dependências do frontend, cria `backend/.venv` e instala as dependências do backend. Use Python 3.12, 3.13 ou 3.14.
 
 O script `dev:app` inicia backend e frontend. O frontend chama `/_backend` e o Vite redireciona essa rota para `http://localhost:8002` em desenvolvimento.
 
@@ -46,7 +46,7 @@ python scripts/seed_databases.py
 uvicorn app.main:app --host 127.0.0.1 --port 8002
 ```
 
-Configuracao opcional:
+Configuração opcional:
 
 ```bash
 CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
@@ -76,7 +76,7 @@ Deploy recomendado:
 
 Passos:
 
-1. Suba o repositorio no GitHub.
+1. Suba o repositório no GitHub.
 2. No Render, crie o backend a partir do `render.yaml`.
 3. Depois que o backend publicar, copie a URL da API.
 4. No Vercel, crie o frontend usando a pasta `frontend`.
@@ -92,31 +92,31 @@ VITE_API_BASE_URL=https://sua-api.onrender.com
 CORS_ORIGINS=https://seu-frontend.vercel.app
 ```
 
-O frontend tambem aceita `/api` como fallback para deploys em que frontend e backend ficam no mesmo dominio.
+O frontend também aceita `/api` como fallback para deploys em que frontend e backend ficam no mesmo domínio.
 
 ### Deploy monorepo na Vercel
 
-Se a Vercel detectar o projeto como multiplos servicos, use o `vercel.json` da raiz. Ele publica:
+Se a Vercel detectar o projeto como múltiplos serviços, use o `vercel.json` da raiz. Ele publica:
 
 - Frontend em `/`
 - Backend em `/_backend`
 
-Nesse modo, nao e necessario configurar `VITE_API_BASE_URL`; o frontend usa `/_backend` automaticamente em producao.
+Nesse modo, não é necessário configurar `VITE_API_BASE_URL`; o frontend usa `/_backend` automaticamente em produção.
 
-O frontend nao referencia `localhost` no client. Em producao, as chamadas usam `/_backend`.
+O frontend não referencia `localhost` no client. Em produção, as chamadas usam `/_backend`.
 
 ## MVP atual
 
-- Missoes narrativas por categoria.
-- Validacao por resultado retornado.
+- Missões narrativas por categoria.
+- Validação por resultado retornado.
 - Bloqueio de comandos de escrita e comandos perigosos.
-- SQLite em modo somente leitura para execucao das consultas.
-- HUD com sequencia e vidas.
+- SQLite em modo somente leitura para execução das consultas.
+- HUD com sequência e vidas.
 - Terminal SQL com CodeMirror e destaque de sintaxe.
 - Ajuda por quiz e sistema de Game Over.
 
 ## Crescimento planejado
 
-Adicione novas situacoes em `backend/app/data/scenarios.json` e crie/alimente o banco correspondente em `backend/scripts/seed_databases.py`. Cada situacao deve apontar para um arquivo SQLite em `backend/app/data/databases`.
+Adicione novas situações em `backend/app/data/scenarios.json` e crie/alimente o banco correspondente em `backend/scripts/seed_databases.py`. Cada situação deve apontar para um arquivo SQLite em `backend/app/data/databases`.
 
-Para padronizar novas situacoes, use o blueprint em `docs/blueprint-novas-situacoes.md`.
+Para padronizar novas situações, use o blueprint em `docs/blueprint-novas-situacoes.md`.
