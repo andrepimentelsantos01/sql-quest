@@ -27,10 +27,13 @@ Nao ha fallback automatico de porta. Se uma porta estiver ocupada, encerre o pro
 ## Rodar a aplicacao completa
 
 ```bash
+npm install
 npm run dev:app
 ```
 
-O script inicia backend e frontend. O frontend chama `/_backend` e o Vite redireciona essa rota para `http://localhost:8002` em desenvolvimento.
+O `npm install` na raiz instala as dependencias do frontend, cria `backend/.venv` e instala as dependencias do backend. Use Python 3.12, 3.13 ou 3.14.
+
+O script `dev:app` inicia backend e frontend. O frontend chama `/_backend` e o Vite redireciona essa rota para `http://localhost:8002` em desenvolvimento.
 
 ## Rodar backend manualmente
 

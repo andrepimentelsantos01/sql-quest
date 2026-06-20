@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "chcp 65001 >NUL && powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\install-app.ps1",
+    "install:app": "chcp 65001 >NUL && powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\install-app.ps1",
+    "setup": "npm run install:app",
     "dev:app": "chcp 65001 >NUL && powershell -NoProfile -ExecutionPolicy Bypass -File .\\scripts\\dev-app.ps1"
   }
 }

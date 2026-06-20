@@ -5,6 +5,7 @@ $OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 $rootPath = Split-Path -Parent $PSScriptRoot
 $backendPath = Join-Path $rootPath "backend"
 $frontendPath = Join-Path $rootPath "frontend"
+$backendVenvPython = Join-Path $backendPath ".venv\Scripts\python.exe"
 $backendHost = "127.0.0.1"
 $backendPort = 8002
 $frontendPort = 5173
@@ -101,8 +102,20 @@ try {
   Stop-ProcessOnPort -ServiceName "Backend" -Port $backendPort
   Stop-ProcessOnPort -ServiceName "Frontend" -Port $frontendPort
 
+  if (-not (Test-Path (Join-Path $frontendPath "node_modules"))) {
+    throw (Format-PtText "Dependencias do frontend nao encontradas. Rode npm install na raiz do projeto.")
+  }
+
+  if (Test-Path $backendVenvPython) {
+    $backendPython = $backendVenvPython
+  }
+  else {
+    $backendPython = "python"
+    Write-Host (Format-PtText "backend\.venv nao encontrado; usando python do sistema. Rode npm install na raiz para preparar tudo automaticamente.")
+  }
+
   Write-Host "Iniciando backend em http://localhost:$backendPort"
-  $jobs += Start-DevJob -Name "backend" -WorkingDirectory $backendPath -Command "python" -CommandArguments @("-m", "uvicorn", "app.main:app", "--host", $backendHost, "--port", "$backendPort")
+  $jobs += Start-DevJob -Name "backend" -WorkingDirectory $backendPath -Command $backendPython -CommandArguments @("-m", "uvicorn", "app.main:app", "--host", $backendHost, "--port", "$backendPort")
 
   Write-Host "Aguardando API em http://localhost:$backendPort/api/health"
   Wait-HttpReady -Url "http://$backendHost`:$backendPort/api/health"

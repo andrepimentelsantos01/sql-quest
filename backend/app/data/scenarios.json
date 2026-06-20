@@ -212,9 +212,9 @@
     "objective_steps": [
       "Comece pelas partidas dentro do período analisado.",
       "Relacione as finalizações ao atleta responsável.",
-      "Some gols e tentativas para medir eficiência real.",
+      "Some gols e finalizações para medir a eficiência de chute.",
       "Mantenha apenas atletas com volume válido de finalizações.",
-      "Organize a lista pela melhor conversão e use o nome como desempate."
+      "Organize a lista pela maior eficiência de chute e use o nome como desempate."
     ],
     "expected_sql": "SELECT j.nome AS atleta, ROUND(SUM(f.gols) * 100.0 / SUM(f.finalizacoes), 2) AS eficiencia_chute FROM jogadores j JOIN finalizacoes_partida f ON f.jogador_id = j.id WHERE f.data_jogo >= '2026-03-01' AND f.data_jogo < '2026-04-01' GROUP BY j.nome HAVING SUM(f.finalizacoes) > 0 ORDER BY eficiencia_chute DESC, atleta ASC;",
     "expected_answer": {
@@ -240,7 +240,7 @@
         ]
       }
     },
-    "hint": "Junte jogadores com finalizações, filtre o período e divida o total de gols pelo total de finalizações."
+    "hint": "Junte a tabela de jogadores com finalizações, filtre o período e divida o total de gols pelo total de finalizações."
   },
   {
     "id": "industria_001",
@@ -374,7 +374,7 @@
     "objective_steps": [
       "Comece pelas avaliações do segundo bimestre.",
       "Relacione cada avaliação à disciplina correspondente.",
-      "Calcule a média de desempenho por matéria.",
+      "Calcule a média de desempenho por disciplina.",
       "Mantenha apenas disciplinas abaixo do patamar esperado.",
       "Organize a lista começando pelas menores médias."
     ],
@@ -589,7 +589,7 @@
     "objective_steps": [
       "Comece pelas entregas que quebraram o prazo prometido.",
       "Agrupe os atrasos por rota.",
-      "Conte quantas ocorrências cada trajeto acumulou.",
+      "Conte quantas ocorrências cada rota acumulou.",
       "Organize a lista pelas rotas mais problemáticas e use origem e destino como desempate."
     ],
     "expected_sql": "SELECT origem, destino, COUNT(*) AS entregas_atrasadas FROM entregas WHERE dias_atraso > 0 GROUP BY origem, destino ORDER BY entregas_atrasadas DESC, origem ASC, destino ASC;",
@@ -809,9 +809,9 @@
     "objective": "Sua tarefa: retorne o squad e a quantidade de incidentes abertos entre 2026-04-01 e 2026-05-01. Ordene da maior quantidade para a menor. Em caso de empate, ordene por squad em ordem alfabética.",
     "objective_steps": [
       "Comece pelos incidentes abertos no mês solicitado.",
-      "Relacione cada ocorrência ao time responsável pelo serviço.",
-      "Conte o volume de incidentes por equipe.",
-      "Organize a lista pela maior concentração e use o nome do time como desempate."
+      "Relacione cada ocorrência ao squad responsável pelo serviço.",
+      "Conte o volume de incidentes por squad.",
+      "Organize a lista pela maior concentração e use o nome do squad como desempate."
     ],
     "expected_sql": "SELECT s.squad, COUNT(*) AS incidentes FROM servicos s JOIN incidentes i ON i.servico_id = s.id WHERE i.aberto_em >= '2026-04-01' AND i.aberto_em < '2026-05-01' GROUP BY s.squad ORDER BY incidentes DESC, s.squad ASC;",
     "expected_answer": {
@@ -1058,7 +1058,7 @@
     "objective_steps": [
       "Comece pelas entregas que chegaram fora do prazo.",
       "Agrupe os casos por rota.",
-      "Calcule o custo médio de frete de cada trajeto atrasado.",
+      "Calcule o custo médio de frete de cada rota atrasada.",
       "Organize a lista pelos maiores custos e use origem e destino como desempate."
     ],
     "expected_sql": "SELECT origem, destino, ROUND(AVG(custo_frete), 2) AS custo_medio FROM entregas WHERE dias_atraso > 0 GROUP BY origem, destino ORDER BY custo_medio DESC, origem ASC, destino ASC;",
@@ -1190,7 +1190,7 @@
     "objective": "Sua tarefa: retorne serviço, squad, total de incidentes, incidentes críticos e percentual crítico entre 2026-04-01 e 2026-05-01, considerando apenas serviços com pelo menos 2 incidentes no período. Ordene por maior percentual crítico, depois maior total e serviço em ordem alfabética.",
     "objective_steps": [
       "Comece pelos incidentes do mês analisado.",
-      "Relacione cada ocorrência ao serviço e ao time responsável.",
+      "Relacione cada ocorrência ao serviço e ao squad responsável.",
       "Conte o volume total e os casos críticos de cada serviço.",
       "Calcule o percentual de criticidade de cada grupo.",
       "Mantenha apenas serviços com volume suficiente para análise.",
@@ -1237,11 +1237,11 @@
     "objective": "Sua tarefa: retorne atleta, gols, finalizações e eficiência de chute entre 2026-03-01 e 2026-04-01, considerando apenas atletas com finalizações e eficiência acima da média do grupo. Ordene da maior eficiência para a menor.",
     "objective_steps": [
       "Comece pelas partidas do período solicitado.",
-      "Relacione gols e tentativas aos atletas responsáveis.",
-      "Calcule a eficiência ofensiva de cada jogador.",
+      "Relacione gols e finalizações aos atletas responsáveis.",
+      "Calcule a eficiência de chute de cada atleta.",
       "Compare cada eficiência com a média do grupo.",
       "Mantenha apenas atletas acima da média.",
-      "Organize a lista começando pela melhor conversão."
+      "Organize a lista começando pela maior eficiência de chute."
     ],
     "expected_sql": "WITH desempenho AS (SELECT j.nome AS atleta, SUM(f.gols) AS gols, SUM(f.finalizacoes) AS finalizacoes, ROUND(SUM(f.gols) * 100.0 / SUM(f.finalizacoes), 2) AS eficiencia_chute FROM jogadores j JOIN finalizacoes_partida f ON f.jogador_id = j.id WHERE f.data_jogo >= '2026-03-01' AND f.data_jogo < '2026-04-01' GROUP BY j.nome HAVING SUM(f.finalizacoes) > 0), media_eficiencia AS (SELECT AVG(eficiencia_chute) AS media FROM desempenho) SELECT atleta, gols, finalizacoes, eficiencia_chute FROM desempenho CROSS JOIN media_eficiencia WHERE eficiencia_chute > media ORDER BY eficiencia_chute DESC, atleta ASC;",
     "expected_answer": {
@@ -1271,14 +1271,14 @@
     "title": "Pior máquina por setor",
     "difficulty": "Sênior",
     "database": "industria.db",
-    "story": "Olá, analista! Hoje você está numa indústria onde cada gerencia garante que o gargalo está na máquina ao lado, no turno anterior ou em algum detalhe que convenientemente nunca faz parte da sua gestão.\n\nA gerência quer uma visão cirúrgica dentro de cada setor de qual equipamento concentrou mais minutos parados em maio.\n\nNão basta saber o setor problemático, a manutenção precisa sair da reunião com alvo claro, ordem de prioridade e menos espaço para desculpa técnica.\n\nSua missão é ranquear as máquinas dentro de cada setor e revelar a pior de cada um. Porque na indústria equipamento problemático adora se esconder atrás da média do setor.",
+    "story": "Olá, analista! Hoje você está numa indústria onde cada gerencia garante que o gargalo está na máquina ao lado, no turno anterior ou em algum detalhe que convenientemente nunca faz parte da sua gestão.\n\nA gerência quer uma visão cirúrgica dentro de cada setor de qual máquina concentrou mais minutos parados em maio.\n\nNão basta saber o setor problemático, a manutenção precisa sair da reunião com alvo claro, ordem de prioridade e menos espaço para desculpa técnica.\n\nSua missão é ranquear as máquinas dentro de cada setor e revelar a pior de cada um. Porque na indústria máquina problemática adora se esconder atrás da média do setor.",
     "objective": "Sua tarefa: retorne setor, máquina e minutos parados entre 2026-05-01 e 2026-06-01 para a máquina com maior parada dentro de cada setor. Ordene pelo maior total de minutos parados e depois setor em ordem alfabética.",
     "objective_steps": [
       "Comece pelas paradas do mês analisado.",
       "Relacione cada ocorrência à máquina e ao setor responsável.",
-      "Some o tempo parado de cada equipamento.",
+      "Some o tempo parado de cada máquina.",
       "Compare as máquinas dentro do próprio setor.",
-      "Mantenha apenas a pior máquina de cada área.",
+      "Mantenha apenas a pior máquina de cada setor.",
       "Organize a lista pelos maiores tempos perdidos."
     ],
     "expected_sql": "WITH paradas_maquina AS (SELECT m.nome AS maquina, m.setor, SUM(p.minutos_parada) AS minutos_parados FROM maquinas m JOIN paradas p ON p.maquina_id = m.id WHERE p.inicio >= '2026-05-01' AND p.inicio < '2026-06-01' GROUP BY m.nome, m.setor), ranking AS (SELECT maquina, setor, minutos_parados, RANK() OVER (PARTITION BY setor ORDER BY minutos_parados DESC) AS posicao_setor FROM paradas_maquina) SELECT setor, maquina, minutos_parados FROM ranking WHERE posicao_setor = 1 ORDER BY minutos_parados DESC, setor ASC;",
@@ -1374,9 +1374,9 @@
       "Comece pelo catálogo completo de obras.",
       "Relacione cada peça ao artista responsável.",
       "Calcule a receita com status 'concluida' por obra.",
-      "Conte também os sinais de interesse do público.",
-      "Mantenha obras com venda ou interesse relevante.",
-      "Organize a lista por maior receita, depois por maior desejo do público."
+      "Conte também os favoritos de cada obra.",
+      "Mantenha obras com receita ou favoritos relevantes.",
+      "Organize a lista por maior receita, depois por maior quantidade de favoritos."
     ],
     "expected_sql": "WITH receita_obra AS (SELECT o.id AS obra_id, o.titulo AS obra, a.nome AS artista, SUM(CASE WHEN v.status = 'concluida' THEN v.valor_venda ELSE 0 END) AS receita FROM obras o JOIN artistas a ON a.id = o.artista_id LEFT JOIN vendas v ON v.obra_id = o.id GROUP BY o.id, o.titulo, a.nome), favoritos AS (SELECT interacoes_obras.obra AS obra, COUNT(*) AS favoritos FROM interacoes_obras WHERE tipo_interacao = 'favorito' GROUP BY interacoes_obras.obra) SELECT r.artista, r.obra, ROUND(r.receita, 2) AS receita, COALESCE(f.favoritos, 0) AS favoritos FROM receita_obra r LEFT JOIN favoritos f ON f.obra = r.obra WHERE r.receita > 0 OR COALESCE(f.favoritos, 0) >= 3 ORDER BY receita DESC, favoritos DESC, r.obra ASC;",
     "expected_answer": {
@@ -1490,7 +1490,7 @@
     "objective": "Sua tarefa: retorne origem, destino, taxa de atraso, custo médio e posição de risco por rota. Calcule a taxa como entregas atrasadas divididas pelo total de entregas da rota. Ordene pela posição, origem e destino.",
     "objective_steps": [
       "Comece pelo histórico completo de entregas por rota.",
-      "Calcule o total de entregas e os atrasos de cada trajeto.",
+      "Calcule o total de entregas e os atrasos de cada rota.",
       "Calcule a taxa de atraso e o custo médio de cada rota.",
       "Crie uma posição de risco combinando atraso e custo.",
       "Organize a lista pela prioridade de risco definida."
@@ -1897,7 +1897,7 @@
       "Comece pelas leituras de sensores no período.",
       "Mantenha apenas temperaturas acima do limite.",
       "Relacione cada leitura à máquina e ao setor.",
-      "Calcule a média de temperatura por equipamento.",
+      "Calcule a média de temperatura por máquina.",
       "Ordene da maior temperatura média para a menor."
     ],
     "expected_sql": "SELECT m.nome AS maquina, m.setor, ROUND(AVG(l.temperatura_c), 2) AS temperatura_media FROM maquinas m JOIN leituras_sensores l ON l.maquina_id = m.id WHERE l.data_leitura >= '2026-05-01' AND l.data_leitura < '2026-06-01' AND l.temperatura_c > 80 GROUP BY m.nome, m.setor ORDER BY temperatura_media DESC;",
