@@ -4,6 +4,7 @@ import { sql } from "@codemirror/lang-sql";
 import { EditorView } from "@codemirror/view";
 import { Play, Plus, Terminal } from "lucide-react";
 import { motion } from "motion/react";
+import useMobileLayout from "../useMobileLayout";
 import SchemaViewer from "./SchemaViewer";
 
 export const terminalTheme = EditorView.theme({
@@ -61,7 +62,14 @@ export default function SqlTerminal({
   onRequestAssist,
   assistDisabled,
 }) {
-  const extensions = useMemo(() => [sql(), terminalTheme], []);
+  const mobile = useMobileLayout();
+  const extensions = useMemo(() => [
+    sql(), terminalTheme,
+    ...(mobile ? [EditorView.lineWrapping, EditorView.contentAttributes.of({
+      autocapitalize: "off", autocorrect: "off", spellcheck: "false",
+      "aria-label": "Consulta SQL",
+    })] : []),
+  ], [mobile]);
   const basicSetup = useMemo(
     () => ({
       drawSelection: false,
@@ -88,12 +96,15 @@ export default function SqlTerminal({
         <TerminalStatusIndicator status={status} errorMessage={errorMessage} hasResult={hasResult} />
       </div>
 
+      {mobile && status === "error" && errorMessage ? (
+        <div className="mobile-sql-error" role="alert">{errorMessage}</div>
+      ) : null}
       {schema ? <SchemaViewer schema={schema} compact /> : null}
 
       <div className="codemirror-frame">
         <CodeMirror
           value={value}
-          height="230px"
+          height={mobile ? "clamp(150px, 32dvh, 260px)" : "230px"}
           extensions={extensions}
           basicSetup={basicSetup}
           onChange={onChange}

@@ -8,6 +8,7 @@ export default function MissionReport({
   canSubmit,
   onRequestHelp,
   helpLoading,
+  helpDisabled = false,
   taskAccepted,
   onGiveUpTask,
   givingUp,
@@ -31,7 +32,7 @@ export default function MissionReport({
 
         {!reviewMode ? (
           <div className="report-actions">
-            <button className="danger-help-button" type="button" onClick={onRequestHelp} disabled={helpLoading}>
+            <button className="danger-help-button" type="button" onClick={onRequestHelp} disabled={helpLoading || helpDisabled}>
               <HelpCircle size={15} />
               {helpLoading ? "..." : "Pedir Ajuda"}
             </button>

@@ -1385,11 +1385,11 @@
             "intro": {
               "title": "Cliente não é só cupom",
               "arc": "Pleno 2 - Clientes, canais e recorrência",
-              "story": "Olá, analista! O Mercado Pão Nosso já sabe olhar margem, estoque e fornecedor. Agora a diretoria quer entender quem compra, por onde compra e quais clientes voltam antes que a concorrência descubra primeiro.\n\nEste arco aumenta a dificuldade com comportamento de cliente, ticket médio, canais e recorrência. A regra continua clara: consultas mais compostas, mas sempre com um motivo de negócio."
+              "story": "Olá, analista! O Mercado Pão Nosso ganhou carrinhos, aplicativo e clientes que já não passam pelo balcão de seu Joaquim. Ele conhece os fregueses antigos pelo nome, mas admite que reconhecer alguém pela compra de seis pães deixou de ser um sistema de relacionamento suficiente.\n\nA equipe de marketing quer distribuir cupons. O financeiro quer saber quanto isso custa. Dona Célia quer entender quem volta, por qual canal e o que cada campanha realmente deixa no caixa. Na reunião, todos concordaram em conhecer melhor o cliente; cada um estava pensando em uma coisa diferente.\n\nSua missão é organizar essa conversa com evidências sobre bairros, canais, recorrência e retorno das campanhas. Porque cliente fiel merece mais do que receber três mensagens iguais de uma empresa que diz conhecer suas preferências."
             },
             "completion": {
-              "title": "Cliente deixou rastro útil",
-              "story": "Você saiu do relatório operacional e começou a enxergar comportamento. Ticket, canal, recorrência e bairro agora fazem parte da conversa sem transformar a análise em adivinhação."
+              "title": "Clientes reconhecidos, campanhas sob medida",
+              "story": "Parabéns, analista! Você mostrou ao Mercado Pão Nosso que clientes não cabem todos no mesmo cupom. Os bairros revelaram perfis de compra, os canais ganharam números comparáveis e a recorrência passou a ter evidência além da memória de seu Joaquim.\n\nMarketing agora consegue discutir campanhas com o financeiro usando a mesma conta. A lista de clientes para retenção virou ponto de partida para ouvir pessoas, sem confundir uma compra pequena com uma história inteira.\n\nDona Célia aprovou a próxima etapa: relacionar esse crescimento às metas e às perdas da operação. Conhecer quem compra foi um avanço. Agora a rede precisa provar que consegue crescer sem deixar o resultado pelo caminho."
             },
             "scenarios": [
               {
@@ -1398,7 +1398,7 @@
                 "title": "Ticket por bairro",
                 "difficulty": "Pleno",
                 "database": "mercado_pleno.db",
-                "story": "A diretoria quer saber quais bairros concentram clientes com maior ticket médio no mês.",
+                "story": "Olá, analista! Seu Joaquim ainda escolhe onde anunciar perguntando de que rua o cliente veio. Com três lojas e pedidos pelo aplicativo, a conversa do balcão já não acompanha a rede.\n\nMarketing quer direcionar a próxima ação por bairro, enquanto o financeiro pede que uma compra isolada não vire argumento para todo o orçamento.\n\nCompare o ticket médio e o volume de compras dos bairros no período solicitado. Antes de imprimir os panfletos, descubra onde os dados sustentam a aposta.",
                 "objective": "Sua tarefa: retorne o bairro, a quantidade de compras e o ticket médio entre 2026-07-01 e 2026-08-01. Junte clientes e compras, agrupe por bairro, mantenha bairros com pelo menos 2 compras e ordene pelo maior ticket médio.",
                 "objective_steps": [
                   "Junte compras com clientes.",
@@ -1443,7 +1443,7 @@
                 "title": "Canal que puxa carrinho",
                 "difficulty": "Pleno",
                 "database": "mercado_pleno.db",
-                "story": "O time digital quer saber se app e loja física trazem compras com perfis diferentes.",
+                "story": "Olá, analista! A equipe do aplicativo comemorou o crescimento dos pedidos. No mesmo dia, o gerente da matriz afirmou que a loja física continua carregando o negócio nas costas. Os dois levaram números, mas nenhum levou a mesma métrica.\n\nDona Célia pediu uma comparação de canais com total vendido, quantidade de compras e valor médio por compra. O entusiasmo terá de esperar até o fechamento das contas.\n\nMostre o perfil de cada canal em julho. Porque comparar carrinhos exige um pouco mais de cuidado do que comparar o barulho das comemorações.",
                 "objective": "Sua tarefa: retorne o canal, o total vendido, o total de compras e o valor médio por compra no período de julho. Agrupe por canal e ordene pelo maior total vendido.",
                 "objective_steps": [
                   "Filtre compras de julho.",
@@ -1486,7 +1486,7 @@
                 "title": "Recorrência de verdade",
                 "difficulty": "Pleno",
                 "database": "mercado_pleno.db",
-                "story": "O marketing quer separar cliente fiel de cliente que apareceu uma vez por causa de promoção.",
+                "story": "Olá, analista! O novo programa de relacionamento já tem uma apresentação pronta e nenhuma definição compartilhada de cliente recorrente. Seu Joaquim sugeriu incluir quem cumprimenta a equipe pelo nome.\n\nMarketing precisa identificar quem voltou a comprar durante julho e entender o valor movimentado por esses clientes. Uma visita promocional não conta a mesma história que compras repetidas.\n\nIdentifique os clientes com a recorrência exigida e organize seus resultados. A lista deve nascer das compras, embora saber o nome de quem atende continue sendo uma boa ideia.",
                 "objective": "Sua tarefa: retorne cliente, segmento, quantidade de compras e valor total em julho. Considere apenas clientes com 2 ou mais compras no período e ordene pelo maior valor total.",
                 "objective_steps": [
                   "Junte clientes e compras.",
@@ -1565,7 +1565,7 @@
                 "title": "Campanha pagou o café?",
                 "difficulty": "Pleno",
                 "database": "mercado_pleno.db",
-                "story": "A empresa gastou com campanha e agora alguém precisa dizer se o retorno justifica a empolgação.",
+                "story": "Olá, analista! As campanhas do mercado renderam resgates, reuniões e um relatório com muitas cores. O financeiro pediu um detalhe que ficou fora dos slides: quanto sobrou depois do custo de cada ação.\n\nA equipe de marketing quer manter as campanhas no próximo mês. Antes de renovar o orçamento, Dona Célia pediu que receita e custo apareçam lado a lado.\n\nCalcule o retorno líquido de cada campanha. Porque cupom usado rende comemoração, mas a conta também precisa participar da festa.",
                 "objective": "Sua tarefa: retorne campanha, canal, receita gerada, custo e retorno líquido. Junte campanhas e resgates, agrupe por campanha e ordene pelo maior retorno líquido.",
                 "objective_steps": [
                   "Junte campanhas com resgates.",
@@ -1632,7 +1632,7 @@
                 "title": "Clientes em risco de sumir",
                 "difficulty": "Pleno",
                 "database": "mercado_pleno.db",
-                "story": "Seu Joaquim quer uma lista curta de clientes que compraram pouco ou gastaram baixo no mês para uma ação de retenção.",
+                "story": "Olá, analista! Seu Joaquim reparou que alguns fregueses apareceram menos. No aplicativo, a equipe percebeu um movimento parecido, mas cada pessoa trouxe uma lista diferente de clientes para contatar.\n\nO mercado decidiu começar pelos critérios de frequência e valor definidos para julho. A lista será um convite para entender o cliente, não uma conclusão automática sobre por que ele comprou menos.\n\nIdentifique os clientes que atendem aos critérios de retenção e priorize os menores valores. Antes de oferecer outro desconto, a equipe precisa saber com quem conversar.",
                 "objective": "Sua tarefa: retorne cliente, bairro, quantidade de compras e valor total em julho. Mantenha clientes com até 2 compras ou valor total abaixo de 250, e ordene pelo menor valor total.",
                 "objective_steps": [
                   "Junte clientes com compras.",
@@ -1691,12 +1691,12 @@
             "next_arc": {
               "intro": {
                 "title": "Meta, campanha e decisão",
-                "arc": "Pleno 3 - Gestáo de performance",
-                "story": "Olá, analista! Agora a conversa subiu um andar: não basta saber o que aconteceu, é preciso comparar contra meta, explicar campanha e priorizar ação.\n\nEste arco fecha o Pleno com análises que combinam vendas, metas, campanhas e perdas. A dificuldade sobe por composição, não por truque."
+                "arc": "Pleno 3 - Gestão de performance",
+                "story": "Olá, analista! O Mercado Pão Nosso fechou mais um mês com vendas que renderiam um belo cartaz. O financeiro, porém, chegou à reunião com outra pilha de papéis: metas não atingidas, perdas de produtos e campanhas cujo sucesso dependia de quem fazia a apresentação.\n\nSeu Joaquim quer expandir. Dona Célia quer saber quais lojas sustentam esse plano. Os gerentes pedem critérios claros para não comparar uma operação saudável com outra que vende muito e desperdiça quase na mesma velocidade.\n\nSua missão é conectar vendas, metas, margem e perdas em um plano de ação que caiba na rotina das lojas. Esta é sua última etapa como Pleno: transformar análises separadas em decisões que alguém consiga executar na segunda-feira, mesmo antes do segundo café."
               },
               "completion": {
-                "title": "Pleno fechado com critério",
-                "story": "Você conectou metas, perdas e campanhas sem transformar consulta em labirinto. A partir daqui, o jogo começa a cobrar raciocínio analítico mais sónior: decompor problemas, comparar períodos e priorizar decisão."
+                "title": "A promoção veio com um plano",
+                "story": "Parabéns, analista! Você fechou a etapa Pleno colocando metas, margem, campanhas e perdas na mesma conversa. Os gerentes receberam prioridades compreensíveis, o financeiro conseguiu apontar riscos e seu Joaquim guardou, por enquanto, a pasta de imóveis para novas lojas.\n\nDona Célia percebeu que você já não entrega apenas uma resposta por solicitação: ajuda a escolher a pergunta e mostra o que fazer com o resultado. Na reunião seguinte, veio a promoção para Analista de Dados Sênior. Seu Joaquim comemorou com café passado na hora e uma promessa de reuniões mais curtas. A primeira parte foi cumprida.\n\nFalta a decisão mais importante da jornada: ordenar as prioridades da rede antes da próxima expansão. Agora você vai ajudar a liderança a escolher onde agir primeiro e quais resultados merecem virar referência."
               },
               "scenarios": [
                 {
@@ -1705,7 +1705,7 @@
                   "title": "Meta por setor",
                   "difficulty": "Pleno",
                   "database": "mercado_pleno.db",
-                  "story": "A diretoria quer saber quais lojas e setores bateram ou ficaram abaixo da meta mensal.",
+                  "story": "Olá, analista! Os gerentes chegaram à reunião com vendas em destaque e metas em letras pequenas. Seu Joaquim elogiou o movimento até Dona Célia perguntar o que havia sido combinado no início do mês.\n\nAs metas variam por loja e setor. Comparar apenas o faturamento esconderia tanto os avanços quanto os compromissos que ficaram para trás.\n\nRelacione o realizado à meta de cada combinação de loja e setor. A pauta deve começar pelos maiores desvios negativos, antes que alguém proponha resolver tudo com um cartaz na vitrine.",
                   "objective": "Sua tarefa: retorne loja, setor, faturamento, meta e diferença para a meta em julho. Junte vendas, produtos, setores, lojas e metas. Ordene pela maior diferença negativa primeiro.",
                   "objective_steps": [
                     "Calcule faturamento por loja e setor.",
@@ -1946,7 +1946,7 @@
                   "title": "Perda contra venda",
                   "difficulty": "Pleno",
                   "database": "mercado_pleno.db",
-                  "story": "O financeiro quer saber onde a perda pesa mais em relação ao faturamento.",
+                  "story": "Olá, analista! O financeiro encontrou valores de perda que parecem pequenos perto do faturamento total. Uma gerente lembrou que esse conforto desaparece quando se olha cada loja separadamente.\n\nA rede precisa comparar perdas em relação às vendas do mesmo mês. Só o valor absoluto não mostra onde o desperdício pesa mais sobre a operação.\n\nCalcule o percentual de perda de cada loja e destaque as maiores proporções. Porque um número discreto no consolidado pode fazer bastante estrago na prateleira.",
                   "objective": "Sua tarefa: retorne loja, valor vendido, valor perdido e percentual de perda sobre venda em julho. Ordene pelo maior percentual de perda.",
                   "objective_steps": [
                     "Calcule vendas por loja.",
@@ -1994,7 +1994,7 @@
                   "title": "Campanha eficiente",
                   "difficulty": "Pleno",
                   "database": "mercado_pleno.db",
-                  "story": "Marketing quer comparar campanhas por retorno relativo, não só por dinheiro bruto.",
+                  "story": "Olá, analista! A campanha mais comentada também recebeu a maior verba. Marketing quer repetir a receita; o financeiro quer saber se o investimento menor de outra ação trabalhou melhor.\n\nDona Célia pediu uma comparação proporcional ao custo, com o cálculo de ROI explícito. Faturamento alto, sozinho, não decide a renovação do orçamento.\n\nIdentifique as campanhas com ROI positivo e mostre seus resultados. A próxima reunião terá espaço para criatividade, desde que ela traga a calculadora.",
                   "objective": "Sua tarefa: retorne campanha, canal, receita, custo e ROI percentual. Calcule ROI como (receita - custo) / custo * 100 e mantenha campanhas com ROI positivo.",
                   "objective_steps": [
                     "Some receita por campanha.",
@@ -2060,7 +2060,7 @@
                   "title": "Setor com margem e meta",
                   "difficulty": "Pleno",
                   "database": "mercado_pleno.db",
-                  "story": "A liderança quer setores que vendem bem, mas ainda precisam provar eficiência.",
+                  "story": "Olá, analista! Os setores de maior venda pediram reforço de equipe e mais espaço nas lojas. Seu Joaquim gostou de todos os pedidos, o que deixou o financeiro imediatamente preocupado.\n\nA liderança quer enxergar faturamento, margem e cobertura de metas antes de distribuir recursos. Vender bastante é relevante; entender o resultado dessas vendas também.\n\nAnalise os setores que ultrapassam o faturamento solicitado e apresente seus indicadores. Assim, a conversa sobre eficiência começa antes da disputa pelo corredor novo.",
                   "objective": "Sua tarefa: retorne setor, faturamento, margem percentual e quantidade de lojas com meta cadastrada. Considere julho, agrupe por setor e mantenha setores com faturamento acima de 3000.",
                   "objective_steps": [
                     "Junte vendas, produtos e setores.",
@@ -2132,7 +2132,7 @@
                   "title": "Plano de ação por loja",
                   "difficulty": "Pleno",
                   "database": "mercado_pleno.db",
-                  "story": "Para fechar o Pleno, a diretoria quer uma visão executável: quais lojas precisam de ação e por quê.",
+                  "story": "Olá, analista! Sua última reunião como Pleno começa com uma solicitação de Dona Célia: cada gerente deve sair sabendo o que fazer depois que a tela do relatório for fechada.\n\nA rede definiu um limite de perda sobre vendas para separar lojas que precisam de revisão daquelas que devem continuar em acompanhamento. Seu Joaquim pediu que o diagnóstico coubesse em uma frase.\n\nPrepare o plano de ação por loja seguindo esse critério. Uma boa análise também precisa sobreviver ao caminho entre a sala de reunião e o chão da operação.",
                   "objective": "Sua tarefa: retorne loja, faturamento, percentual de perda e diagnóstico. Classifique como revisar perdas quando o percentual de perda for maior que 3, caso contrário use acompanhar.",
                   "objective_steps": [
                     "Calcule vendas por loja.",
@@ -2178,13 +2178,13 @@
               ],
               "next_arc": {
                 "intro": {
-                  "title": "Agora a pergunta vem antes da query",
-                  "arc": "Sênior 1 - Priorização executiva",
-                  "story": "Olá, analista. A promoção para Sênior não veio porque você escreve SQL maior; veio porque agora esperam que você transforme ambiguidade em decisão.\n\nEste primeiro arco Sênior introduz janelas, rankings e comparações sem exagerar. O objetivo é priorizar, não decorar sintaxe obscura."
+                  "title": "A última reunião antes da expansão",
+                  "arc": "Sênior - O futuro do Pão Nosso",
+                  "story": "Olá, analista! A pasta de expansão voltou à mesa. Dentro dela há propostas de novas lojas, um orçamento que não atende a todos os pedidos e um bilhete de seu Joaquim: crescer sem perder o que trouxe a gente até aqui.\n\nDona Célia convocou a reunião que decidirá os próximos passos do Mercado Pão Nosso. Os gerentes precisam saber onde aprender com outras unidades, marketing precisa priorizar clientes e campanhas, e o financeiro quer que os riscos sejam tratados antes de assinar novos compromissos.\n\nSua missão final é construir essas prioridades com comparações justas e evidências que a equipe consiga defender. A rede que começou contando pães agora precisa escolher seu futuro. E você, que chegou para escrever a primeira query, conquistou um lugar na mesa onde a decisão será tomada."
                 },
                 "completion": {
-                  "title": "Sênior começou sem heroísmo",
-                  "story": "Você priorizou lojas, clientes, campanhas e setores com consultas mais analíticas, mas ainda legíveis. Esse é o tom do Sênior: menos tarefa mecânica, mais decisão defendível."
+                  "title": "Carreira concluída — do balcão à decisão",
+                  "story": "Parabéns, analista! Você concluiu a carreira do SQL Quest. Da primeira consulta na padaria à priorização dos riscos da rede, foram 40 missões transformando dados em decisões.\n\nNa reunião final, você mostrou as lojas que podem servir de referência, os clientes de maior valor em cada bairro, os intervalos entre compras e a eficiência das campanhas. Por último, colocou as perdas em ordem de prioridade: antes de expandir, a rede sabe onde precisa agir.\n\nDona Célia aprovou uma expansão por etapas, acompanhada de revisão dos indicadores. Os gerentes saíram com responsabilidades claras. Seu Joaquim fechou a pasta, serviu um café e disse que finalmente conseguia explicar o plano sem começar com eu acho. Ninguém teve coragem de interromper aquele marco histórico.\n\nVocê começou como Júnior, cresceu como Pleno e encerra esta jornada como Sênior, ajudando a equipe a decidir com critério. A Padaria Pão Nosso de Cada Dia virou Mercado Pão Nosso; o cuidado com cada escolha continua sendo parte da receita.\n\nObrigado por jogar. A história está concluída, e suas conquistas ficam salvas neste navegador. Você pode revisitar este último arco ou iniciar uma nova carreira quando quiser."
                 },
                 "scenarios": [
                   {
@@ -2193,7 +2193,7 @@
                     "title": "Líder de cada setor",
                     "difficulty": "Sênior",
                     "database": "mercado_pleno.db",
-                    "story": "A diretoria quer saber qual loja lidera o faturamento de cada setor.",
+                    "story": "Olá, analista! Antes de contratar consultoria para todas as lojas, Dona Célia quer descobrir o que a própria rede já faz bem. Os gerentes concordaram, cada um imaginando que sua unidade seria o exemplo.\n\nO faturamento precisa ser comparado dentro de cada setor. Uma liderança em padaria não torna automaticamente a mesma loja referência em hortifruti.\n\nIdentifique a loja líder de cada setor com o ranking solicitado. O resultado vai orientar a troca de práticas entre equipes, sem eleger um campeão por aclamação.",
                     "objective": "Sua tarefa: retorne setor, loja, faturamento e posição. Use uma função de janela para ranquear lojas dentro de cada setor e mantenha apenas a primeira posição.",
                     "objective_steps": [
                       "Calcule faturamento por setor e loja.",
@@ -2264,7 +2264,7 @@
                     "title": "Top clientes por bairro",
                     "difficulty": "Sênior",
                     "database": "mercado_pleno.db",
-                    "story": "Marketing quer acionar os principais clientes de cada bairro sem misturar realidades diferentes.",
+                    "story": "Olá, analista! Marketing reservou uma ação de relacionamento para os principais clientes de cada bairro. Uma lista única da rede concentraria todos os convites nos mesmos lugares.\n\nSeu Joaquim quer que cada região seja representada. Dona Célia pediu uma classificação dentro de cada bairro, baseada no valor comprado em julho.\n\nEncontre os dois primeiros clientes de cada bairro. A equipe precisa de prioridades locais antes de transformar proximidade com o cliente em mais uma campanha genérica.",
                     "objective": "Sua tarefa: retorne bairro, cliente, valor total e posição. Ranqueie clientes dentro de cada bairro pelo valor comprado em julho e mantenha os 2 primeiros por bairro.",
                     "objective_steps": [
                       "Some compras por cliente e bairro.",
@@ -2329,7 +2329,7 @@
                     "title": "Intervalo entre compras",
                     "difficulty": "Sênior",
                     "database": "mercado_pleno.db",
-                    "story": "Retenção quer entender quem voltou rápido e quem demorou para repetir compra.",
+                    "story": "Olá, analista! A equipe de retenção descobriu que saber quantas compras alguém fez não explica o ritmo dessas visitas. Há quem volte no dia seguinte e quem só reapareça semanas depois.\n\nPara planejar o contato com mais contexto, o time precisa comparar cada compra com a anterior do mesmo cliente. A primeira visita não tem intervalo anterior para oferecer.\n\nCalcule os dias entre compras consecutivas. A consulta deve ajudar a equipe a observar hábitos, antes de decidir que todo silêncio merece uma notificação.",
                     "objective": "Sua tarefa: retorne cliente, data da compra, valor total e dias desde a compra anterior. Use LAG para comparar cada compra com a compra anterior do mesmo cliente e mantenha apenas compras com compra anterior.",
                     "objective_steps": [
                       "Ordene compras por cliente e data.",
@@ -2467,7 +2467,7 @@
                     "title": "Campanha no ranking certo",
                     "difficulty": "Sênior",
                     "database": "mercado_pleno.db",
-                    "story": "A diretoria quer ver campanha por eficiência relativa, não só retorno bruto.",
+                    "story": "Olá, analista! Na véspera da decisão de expansão, o orçamento de marketing voltou à pauta. Cada campanha trouxe seu próprio argumento para ficar com uma fatia maior.\n\nDona Célia pediu um ranking geral de ROI, com o cálculo separado da classificação para que a conta possa ser conferida. O nome mais criativo não receberá pontos extras.\n\nOrganize as campanhas por eficiência relativa. O investimento do próximo ciclo precisa de uma ordem que continue fazendo sentido depois que os slides forem fechados.",
                     "objective": "Sua tarefa: retorne campanha, canal, ROI percentual e posição geral. Calcule ROI em uma CTE e use RANK para ordenar campanhas por ROI.",
                     "objective_steps": [
                       "Calcule receita por campanha.",
@@ -2527,7 +2527,7 @@
                     "title": "Prioridade executiva",
                     "difficulty": "Sênior",
                     "database": "mercado_pleno.db",
-                    "story": "Para fechar o primeiro arco Sênior, você precisa transformar indicadores em prioridade de ação.",
+                    "story": "Olá, analista! Chegou a última análise antes da assinatura do plano de expansão. Seu Joaquim colocou a caneta na mesa; Dona Célia pediu que ela esperasse mais uma consulta.\n\nA rede precisa saber qual loja exige atenção imediata às perdas e quais devem ser monitoradas. A regra foi acordada: ordenar o percentual de perda e tratar a primeira posição como crítica.\n\nEntregue o ranking de risco e a prioridade de cada loja. Sua jornada começou descobrindo o campeão da vitrine; termina ajudando a proteger o futuro de todas elas.",
                     "objective": "Sua tarefa: retorne loja, percentual de perda, posição de risco e prioridade. Calcule percentual de perda por loja, ranqueie do maior para o menor e classifique posição 1 como crítica, as demais como monitorar.",
                     "objective_steps": [
                       "Calcule vendas por loja.",

@@ -1,7 +1,9 @@
-import { memo } from "react";
+import { memo, useId, useState } from "react";
 import { CalendarRange, Database, SlidersHorizontal, Table2 } from "lucide-react";
 
 function SchemaViewer({ schema, compact = false }) {
+  const [expanded, setExpanded] = useState(true);
+  const contentId = useId();
   const tables = schema?.tables ?? schema ?? {};
   const analysisPeriod = schema?.analysis_period;
   const businessRules = schema?.business_rules;
@@ -17,6 +19,11 @@ function SchemaViewer({ schema, compact = false }) {
         </div>
       </div>
 
+      <button type="button" className="schema-mobile-toggle" aria-expanded={expanded}
+        aria-controls={contentId} onClick={() => setExpanded((current) => !current)}>
+        {expanded ? "Recolher esquema e regras" : `Mostrar esquema e regras (${Object.keys(tables).length} tabelas)`}
+      </button>
+      <div id={contentId} className={`schema-content${expanded ? "" : " mobile-collapsed"}`}>
       {periodItems.length ? (
         <div className="period-context-card" aria-label={analysisPeriod?.title ?? "Janela solicitada"}>
           <div className="period-context-header">
@@ -68,6 +75,7 @@ function SchemaViewer({ schema, compact = false }) {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </section>
   );

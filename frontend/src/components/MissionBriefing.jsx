@@ -17,7 +17,7 @@ export default function MissionBriefing({ scenario, onAcceptTask, onRejectTask, 
           <span>{scenario.difficulty}</span>
         </div>
       </div>
-      <p>{scenario.story}</p>
+      <p className="mission-story">{scenario.story}</p>
       <ObjectivePanel objective={scenario.objective} objectiveSteps={scenario.objective_steps} />
       <AnimatePresence mode="wait">
         {!accepted ? (

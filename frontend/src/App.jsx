@@ -1,3 +1,4 @@
+import { CAREER_STORAGE_KEY, readCareerProgress, careerCheckpoint } from "./careerProgress";
 import { useEffect, useMemo, useRef, useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { sql } from "@codemirror/lang-sql";
@@ -42,6 +43,13 @@ const MODE_FREE = "free";
 const MODE_CAREER = "career";
 
 export default function App() {
+  const [savedCareer, setSavedCareer] = useState(() => {
+    try { return readCareerProgress(localStorage); } catch { return null; }
+  });
+  const [careerReady, setCareerReady] = useState(false);
+  const [careerSolved, setCareerSolved] = useState(false);
+  const [saveWarning, setSaveWarning] = useState("");
+  const [newCareerOpen, setNewCareerOpen] = useState(false);
   const terminalSectionRef = useRef(null);
   const [appMode, setAppMode] = useState(null);
   const [scenario, setScenario] = useState(null);
@@ -82,6 +90,7 @@ export default function App() {
   const [loadingFreeRoundOptions, setLoadingFreeRoundOptions] = useState(false);
 
   function resetMissionState() {
+    setCareerSolved(false);
     setError("");
     setTerminalError("");
     setTerminalDirty(false);
@@ -113,13 +122,19 @@ export default function App() {
     }
   }
 
-  async function loadCareerRound(step) {
+  async function loadCareerRound(step, checkpointPlayer = null) {
     setLoadingRound(true);
-    resetMissionState();
     try {
       const nextScenario = await fetchCareerRound(step);
+      resetMissionState();
+      setGameOverState(null);
+      setGameOverModalOpen(false);
+      setCareerCompleteOpen(false);
+      setCareerIntroOpen(false);
+      if (checkpointPlayer) setPlayer(checkpointPlayer);
       setScenario(nextScenario);
       setCareerStep(step);
+      setCareerReady(true);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -161,7 +176,49 @@ export default function App() {
     await loadFreeRound(filters);
   }
 
+  async function handleResumeCareer() {
+    if (!savedCareer) return handleSelectCareerMode();
+    setCareerReady(false);
+    setAppMode(MODE_CAREER);
+    setLoadingRound(true);
+    resetMissionState();
+    try {
+      const nextScenario = await fetchCareerRound(savedCareer.step);
+      if (nextScenario.id !== savedCareer.scenarioId) throw new Error("Esta carreira mudou. Inicie uma nova jornada pelo menu.");
+      setScenario(nextScenario);
+      setCareerStep(savedCareer.step);
+      setPlayer(savedCareer.player);
+      setQuery(savedCareer.query);
+      setTaskAccepted(Boolean(savedCareer.taskAccepted));
+      setPreviewResult(savedCareer.previewResult ?? null);
+      setTerminalDirty(Boolean(savedCareer.terminalDirty));
+      setTerminalError(savedCareer.terminalError ?? "");
+      setCareerSolved(Boolean(savedCareer.solved));
+      setModalResult(savedCareer.modalResult ?? null);
+      setAssistLineIndex(savedCareer.assistLineIndex ?? 0);
+      setUsedSqlHelpQuestionIds(savedCareer.usedSqlHelpQuestionIds ?? []);
+      setUsedSqlHelpResult(savedCareer.usedSqlHelpResult ?? null);
+      setGameOverState(savedCareer.gameOverState ?? null);
+      setGameOverModalOpen(Boolean(savedCareer.gameOverModalOpen));
+      setReviewAfterGameOver(Boolean(savedCareer.reviewAfterGameOver));
+      setCareerCompleteOpen(Boolean(savedCareer.completeOpen));
+      setCareerIntro(savedCareer.intro ?? null);
+      setCareerIntroStartStep(savedCareer.introStartStep ?? 0);
+      setCareerIntroOpen(Boolean(savedCareer.intro));
+      setCareerReady(true);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoadingRound(false);
+    }
+  }
+
   async function handleSelectCareerMode() {
+    setCareerReady(false);
+    setNewCareerOpen(false);
+    setGameOverState(null);
+    setGameOverModalOpen(false);
+    setCareerIntroOpen(false);
     setAppMode(MODE_CAREER);
     setPlayer(INITIAL_PLAYER);
     setUsedSqlHelpQuestionIds([]);
@@ -183,7 +240,6 @@ export default function App() {
   }
 
   async function handleStartCareer() {
-    setCareerIntroOpen(false);
     await loadCareerRound(careerIntroStartStep);
   }
 
@@ -208,6 +264,7 @@ export default function App() {
   }
 
   async function handleSubmit() {
+    if (appMode === MODE_CAREER && (careerSolved || reviewAfterGameOver || player.lives <= 0)) return;
     if (!scenario || !query.trim()) {
       return;
     }
@@ -220,6 +277,7 @@ export default function App() {
       const response = await submitQuery(scenario.id, query);
       const correct = isCorrectResult(response.correct);
       const normalizedResponse = { ...response, correct };
+      if (appMode === MODE_CAREER && correct) setCareerSolved(true);
       const gameOver = !correct && player.lives <= 1;
       setPreviewResult(response.user_result);
       setModalResult(gameOver ? null : normalizedResponse);
@@ -252,6 +310,7 @@ export default function App() {
   }
 
   async function handleNextRound() {
+    if (appMode === MODE_CAREER && (!careerSolved || loadingRound)) return;
     setModalResult(null);
     if (appMode === MODE_CAREER) {
       const nextStep = careerStep + 1;
@@ -312,6 +371,7 @@ export default function App() {
   }
 
   function handleRequestSqlHelp() {
+    if (appMode === MODE_CAREER && (careerSolved || reviewAfterGameOver || player.lives <= 0)) return;
     if (scenario && usedSqlHelpResult?.scenarioId === scenario.id) {
       setSqlHelpQuestion(null);
       setSqlHelpResult(usedSqlHelpResult);
@@ -406,22 +466,22 @@ export default function App() {
   }
 
   async function handleRetryGame() {
+    if (appMode === MODE_CAREER) {
+      const checkpoint = careerCheckpoint(scenario.career);
+      await loadCareerRound(checkpoint.step, checkpoint.player);
+      return;
+    }
     setGameOverState(null);
     setGameOverModalOpen(false);
     setReviewAfterGameOver(false);
     setPlayer(INITIAL_PLAYER);
     setUsedSqlHelpQuestionIds([]);
-    if (appMode === MODE_CAREER) {
-      await loadCareerRound(0);
-      return;
-    }
-
     await loadFreeRound(freeRoundFilters);
   }
 
   function handleReviewGameOver() {
     setGameOverModalOpen(false);
-    setPlayer(INITIAL_PLAYER);
+    if (appMode !== MODE_CAREER) setPlayer(INITIAL_PLAYER);
     setTerminalError("");
     setTerminalDirty(false);
   }
@@ -440,6 +500,7 @@ export default function App() {
   }
 
   function handleBackToMenu() {
+    setCareerReady(false);
     setAppMode(null);
     setScenario(null);
     setCareerIntroOpen(false);
@@ -463,6 +524,30 @@ export default function App() {
   }
 
   useEffect(() => {
+    if (appMode !== MODE_CAREER || !careerReady || loadingRound || !scenario?.career) return;
+    const snapshot = {
+      version: 1, step: careerStep, scenarioId: scenario.id, arc: scenario.career.arc,
+      total: scenario.career.total, player, query, taskAccepted, previewResult,
+      solved: careerSolved, modalResult, assistLineIndex, usedSqlHelpQuestionIds,
+      usedSqlHelpResult, gameOverState, gameOverModalOpen, reviewAfterGameOver,
+      terminalDirty, terminalError,
+      completeOpen: careerCompleteOpen,
+      completed: careerSolved && careerStep + 1 === scenario.career.total,
+      intro: careerIntroOpen ? careerIntro : null, introStartStep: careerIntroStartStep,
+    };
+    setSavedCareer(snapshot);
+    try {
+      localStorage.setItem(CAREER_STORAGE_KEY, JSON.stringify(snapshot));
+      setSaveWarning("");
+    } catch {
+      setSaveWarning("Não foi possível salvar neste navegador. Mantenha esta página aberta para preservar sua carreira.");
+    }
+  }, [appMode, careerReady, loadingRound, scenario, careerStep, player, query, taskAccepted,
+    previewResult, careerSolved, modalResult, assistLineIndex, usedSqlHelpQuestionIds,
+    usedSqlHelpResult, gameOverState, gameOverModalOpen, reviewAfterGameOver, careerCompleteOpen,
+    terminalDirty, terminalError, careerIntroOpen, careerIntro, careerIntroStartStep]);
+
+  useEffect(() => {
     if (!taskAccepted) {
       return undefined;
     }
@@ -478,15 +563,22 @@ export default function App() {
     <div className="game-root">
       <GameAmbientEffects />
       <main className="app-shell">
+        {saveWarning ? <div className="error-banner" role="status">{saveWarning}</div> : null}
         {!appMode ? (
-          <ModeMenu onSelectFree={handleSelectFreeMode} onSelectCareer={handleSelectCareerMode} />
+          <ModeMenu onSelectFree={handleSelectFreeMode} onSelectCareer={handleResumeCareer} savedCareer={savedCareer} onNewCareer={() => setNewCareerOpen(true)} />
         ) : (
           <>
             <GameHud streak={player.streak} lives={player.lives} />
-            <ModeBar mode={appMode} scenario={scenario} onBackToMenu={handleBackToMenu} />
+            <ModeBar mode={appMode} scenario={scenario} onBackToMenu={handleBackToMenu}
+              busy={appMode === MODE_CAREER && (loadingRound || submitting || previewing || assisting || answeringSqlHelp || loadingSqlHelp)} />
 
             {error ? <div className="error-banner">{error}</div> : null}
 
+            {appMode === MODE_CAREER && careerSolved && !careerCompleteOpen && !careerIntroOpen ? (
+              <div className="hint career-progress-notice">Missão concluída.
+                <button type="button" className="primary-button" onClick={handleNextRound} disabled={loadingRound}>Continuar jornada</button>
+              </div>
+            ) : null}
             {loadingRound || !scenario ? (
               <section className="loading-panel">
                 {appMode === MODE_CAREER && careerIntroOpen ? "Preparando início da carreira..." : "Carregando missão..."}
@@ -522,16 +614,17 @@ export default function App() {
                             errorMessage={terminalError}
                             hasResult={Boolean(previewResult)}
                             onRequestAssist={() => setAssistModalOpen(true)}
-                            assistDisabled={player.lives <= 0 || assisting || reviewAfterGameOver}
+                            assistDisabled={player.lives <= 0 || assisting || reviewAfterGameOver || (appMode === MODE_CAREER && careerSolved)}
                           />
                         </div>
                         <MissionReport
                           result={previewResult}
                           onSubmit={handleSubmit}
                           submitting={submitting}
-                          canSubmit={Boolean(query.trim())}
+                          canSubmit={Boolean(query.trim()) && !(appMode === MODE_CAREER && careerSolved)}
                           onRequestHelp={handleRequestSqlHelp}
                           helpLoading={loadingSqlHelp}
+                          helpDisabled={appMode === MODE_CAREER && careerSolved}
                           taskAccepted={taskAccepted && appMode !== MODE_CAREER}
                           onGiveUpTask={() => setGiveUpModalOpen(true)}
                           givingUp={loadingRound}
@@ -549,6 +642,18 @@ export default function App() {
           </>
         )}
 
+        {newCareerOpen ? (
+          <div className="modal-backdrop">
+            <section className="modal" role="dialog" aria-modal="true" aria-labelledby="new-career-title">
+              <h3 id="new-career-title">Começar uma nova carreira?</h3>
+              <p>O progresso salvo será substituído quando você iniciar a primeira missão.</p>
+              <div className="modal-actions">
+                <button className="ghost-button" onClick={() => setNewCareerOpen(false)}>Manter minha carreira</button>
+                <button className="primary-button" onClick={handleSelectCareerMode}>Começar do início</button>
+              </div>
+            </section>
+          </div>
+        ) : null}
         <ResultModal result={modalResult} onClose={() => setModalResult(null)} onNextRound={handleNextRound} />
         <FreeModeModal
           open={freeModeModalOpen}
@@ -560,6 +665,8 @@ export default function App() {
         />
         <CareerIntroModal
           intro={careerIntro}
+          loading={loadingRound}
+          error={careerIntroOpen ? error : ""}
           open={careerIntroOpen}
           isInitialArc={careerIntroStartStep === 0}
           onStart={handleStartCareer}
@@ -567,29 +674,30 @@ export default function App() {
         />
         <CareerCompleteModal
           open={careerCompleteOpen}
+          loading={loadingRound}
+          error={careerCompleteOpen ? error : ""}
           completion={scenario?.career?.completion}
           hasNextArc={Boolean(scenario?.career && scenario.career.step + 1 < scenario.career.total)}
           onBackToMenu={handleBackToMenu}
           onRestart={() => {
             const currentCareer = scenario?.career;
             const arcStartStep = currentCareer ? currentCareer.step - currentCareer.arc_step : 0;
-            setCareerCompleteOpen(false);
-            restoreLives();
-            loadCareerRound(arcStartStep);
+            loadCareerRound(arcStartStep, careerCheckpoint(currentCareer).player);
           }}
           onContinue={async () => {
             const nextStep = (scenario?.career?.step ?? careerStep) + 1;
             const nextArc = (scenario?.career?.arc_index ?? 0) + 1;
-            setCareerCompleteOpen(false);
-            restoreLives();
             setLoadingRound(true);
             try {
               const intro = await fetchCareerArcIntro(nextArc);
+              setCareerCompleteOpen(false);
+              setError("");
               setCareerIntro(intro);
               setCareerIntroStartStep(nextStep);
               setCareerIntroOpen(true);
             } catch (err) {
               setError(err.message);
+              setCareerCompleteOpen(true);
             } finally {
               setLoadingRound(false);
             }
@@ -634,6 +742,9 @@ export default function App() {
         <IntroModal open={introOpen} onStart={handleStartIntro} />
         <GameOverModal
           state={gameOverModalOpen ? gameOverState : null}
+          loading={appMode === MODE_CAREER && loadingRound}
+          error={appMode === MODE_CAREER && gameOverModalOpen ? error : ""}
+          onRestart={appMode === MODE_CAREER ? handleRetryGame : null}
           onReview={handleReviewGameOver}
           onBackToMenu={handleBackToMenu}
         />
@@ -642,7 +753,7 @@ export default function App() {
   );
 }
 
-function ModeMenu({ onSelectFree, onSelectCareer }) {
+function ModeMenu({ onSelectFree, onSelectCareer, savedCareer, onNewCareer }) {
   return (
     <motion.section
       className="mode-menu-panel"
@@ -664,15 +775,17 @@ function ModeMenu({ onSelectFree, onSelectCareer }) {
         </button>
         <button type="button" className="mode-card-button career" onClick={onSelectCareer}>
           <BriefcaseBusiness size={24} />
-          <span>Modo Carreira</span>
-          <small>Uma trilha sequencial começando como Analista Júnior.</small>
+          <span>{savedCareer ? (savedCareer.completed ? "Carreira concluída" : "Continuar carreira") : "Modo Carreira"}</span>
+          <small>{savedCareer ? `${savedCareer.arc} · Missão ${savedCareer.step + 1} de ${savedCareer.total}` : "Da primeira query à decisão que transforma uma rede."}</small>
         </button>
       </div>
+      {savedCareer ? <button type="button" className="ghost-button" onClick={onNewCareer}>Nova carreira</button> : null}
+      <p>O modo carreira salva automaticamente neste navegador.</p>
     </motion.section>
   );
 }
 
-function ModeBar({ mode, scenario, onBackToMenu }) {
+function ModeBar({ mode, scenario, onBackToMenu, busy }) {
   const career = scenario?.career;
 
   return (
@@ -680,12 +793,12 @@ function ModeBar({ mode, scenario, onBackToMenu }) {
       <div>
         <strong>{mode === MODE_CAREER ? "Modo Carreira" : "Modo Livre"}</strong>
         {career ? (
-          <span>{career.arc}</span>
+          <span>{career.arc} · Missão {career.step + 1} de {career.total}</span>
         ) : (
           <span>{mode === MODE_CAREER ? "Trilha sequencial" : "Missões aleatórias"}</span>
         )}
       </div>
-      <button type="button" className="ghost-button" onClick={onBackToMenu}>
+      <button type="button" className="ghost-button" onClick={onBackToMenu} disabled={busy}>
         Voltar ao menu
       </button>
     </div>
@@ -826,7 +939,7 @@ function FreeModeModal({ open, options, loadingOptions, loadingRound, onCancel, 
   );
 }
 
-function CareerIntroModal({ intro, open, isInitialArc, onStart, onBack }) {
+function CareerIntroModal({ intro, open, isInitialArc, onStart, onBack, loading, error }) {
   if (!open || !intro) {
     return null;
   }
@@ -855,19 +968,21 @@ function CareerIntroModal({ intro, open, isInitialArc, onStart, onBack }) {
             </span>
             <h2 id="career-intro-title">{intro.title}</h2>
           </div>
+          {error ? <p className="error-banner" role="alert">{error}</p> : null}
           <div className="career-arc-badge">{intro.arc}</div>
           <div className="intro-copy">
             {intro.story.split("\n\n").map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+          {error ? <p className="error-banner" role="alert">{error}</p> : null}
           <div className="modal-actions">
-            <button type="button" className="ghost-button" onClick={onBack}>
+            <button type="button" className="ghost-button" onClick={onBack} disabled={loading}>
               Voltar ao menu
             </button>
-            <button type="button" className="start-missions-button" onClick={onStart}>
+            <button type="button" className="start-missions-button" onClick={onStart} disabled={loading}>
               <Play size={18} />
-              {isInitialArc ? "Iniciar modo carreira" : "Continuar trabalhando na padaria"}
+              {isInitialArc ? "Iniciar modo carreira" : "Iniciar próximo arco"}
             </button>
           </div>
         </motion.div>
@@ -876,7 +991,7 @@ function CareerIntroModal({ intro, open, isInitialArc, onStart, onBack }) {
   );
 }
 
-function CareerCompleteModal({ open, completion, hasNextArc, onBackToMenu, onRestart, onContinue }) {
+function CareerCompleteModal({ open, completion, hasNextArc, onBackToMenu, onRestart, onContinue, loading, error }) {
   if (!open) {
     return null;
   }
@@ -906,16 +1021,17 @@ function CareerCompleteModal({ open, completion, hasNextArc, onBackToMenu, onRes
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
+          {error ? <p className="error-banner" role="alert">{error}</p> : null}
           <div className="modal-actions">
-            <button type="button" className="ghost-button" onClick={onRestart}>
+            <button type="button" className="ghost-button" onClick={onRestart} disabled={loading}>
               Refazer arco
             </button>
             {hasNextArc ? (
-              <button type="button" className="primary-button" onClick={onContinue}>
-                Seguir trabalhando na padaria...
+              <button type="button" className="primary-button" onClick={onContinue} disabled={loading}>
+                Seguir para o próximo arco
               </button>
             ) : (
-              <button type="button" className="primary-button" onClick={onBackToMenu}>
+              <button type="button" className="primary-button" onClick={onBackToMenu} disabled={loading}>
                 Voltar ao menu
               </button>
             )}
@@ -984,7 +1100,7 @@ function IntroModal({ open, onStart }) {
   );
 }
 
-function GameOverModal({ state, onReview, onBackToMenu }) {
+function GameOverModal({ state, onReview, onBackToMenu, onRestart, loading, error }) {
   if (!state) {
     return null;
   }
@@ -1019,12 +1135,11 @@ function GameOverModal({ state, onReview, onBackToMenu }) {
             <PartyPopper size={30} />
           </motion.div>
 
-          <h3 id="game-over-title">{isCareer ? "Fim de carreira... por enquanto" : "Fim de jogo"}</h3>
+          <h3 id="game-over-title">{isCareer ? "Uma pausa para rever o plano" : "Fim de jogo"}</h3>
           {isCareer ? (
             <div className="game-over-copy">
-              <p>O cargo de Analista de Dados Júnior na Padaria Pão Nosso de Cada Dia foi encerrado antes do período de experiência.</p>
-              <p>Seu Joaquim agradeceu o esforço, ofereceu um pão de queijo de despedida e explicou que a padaria ainda não está pronta para decisões baseadas em “quase acertei a query”.</p>
-              <p>Mas nem tudo está perdido. Volte ao Modo Livre, pratique filtros, agregações e ordenações com calma e, quando sentir que suas consultas já conseguem separar opinião de evidência, retorne ao Modo Carreira.</p>
+              <p>As tentativas deste arco acabaram. Seu Joaquim sugeriu um café antes da próxima reunião; os dados podem esperar pela revisão.</p>
+              <p>Os arcos anteriores continuam concluídos. Você pode revisar a resposta ou recomeçar este arco com cinco vidas.</p>
             </div>
           ) : (
             <>
@@ -1043,13 +1158,15 @@ function GameOverModal({ state, onReview, onBackToMenu }) {
             </motion.div>
           ) : null}
 
+          {error ? <p className="error-banner" role="alert">{error}</p> : null}
           <div className="modal-actions">
+            {onRestart ? <button type="button" className="primary-button" onClick={onRestart} disabled={loading}>Recomeçar este arco</button> : null}
             {state.canReview ? (
-              <button type="button" className="ghost-button" onClick={onReview}>
+              <button type="button" className="ghost-button" onClick={onReview} disabled={loading}>
                 Revisar query
               </button>
             ) : null}
-            <button type="button" className="primary-button" onClick={onBackToMenu}>
+            <button type="button" className="primary-button" onClick={onBackToMenu} disabled={loading}>
               Voltar ao menu
             </button>
           </div>

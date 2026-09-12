@@ -66,3 +66,11 @@ npm run dev
 ```bash
 VITE_API_BASE_URL=/_backend
 ```
+
+## Modo carreira
+
+A história completa tem 40 missões: quatro arcos Júnior, três Pleno e um arco final Sênior. A jornada acompanha a transformação da padaria em Mercado Pão Nosso e termina com a decisão sobre a expansão da rede.
+
+O progresso é salvo automaticamente no navegador ao iniciar uma missão e durante a jornada, incluindo consulta, vidas, resultados, ajudas e telas de transição. Use **Continuar carreira** no menu para retomar. O salvamento é local: não sincroniza entre dispositivos e pode ser apagado ao limpar os dados do navegador.
+
+Após Game Over, **Recomeçar este arco** retorna à primeira missão do arco atual com cinco vidas, preservando os arcos anteriores. **Nova carreira** pede confirmação antes de substituir o progresso; **Refazer arco** reinicia o arco atual. A missão resolvida não contabiliza acertos novamente ao ser reaberta.
